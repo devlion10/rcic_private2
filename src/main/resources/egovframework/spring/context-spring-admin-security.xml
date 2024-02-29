@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:s="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/security
+                        http://www.springframework.org/schema/security/spring-security-4.1.xsd">
+    <!-- spring-security 상세설정 -->
+
+	<!-- 관리자 시큐리티 -->
+	<s:http pattern="/admin/**" auto-config="true" disable-url-rewriting="true" use-expressions="true">
+		<s:intercept-url pattern="/admin/login*" access="permitAll" />
+		<s:intercept-url pattern="/admin/logout*" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN','ROLE_USER')" />
+
+		<s:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+
+        <s:csrf disabled="true"/>
+
+		<s:logout logout-success-url="/admin/login"
+				  logout-url="/admin/spring_logout"
+				  invalidate-session="true" />
+
+		<s:form-login login-page="/admin/login"
+					  default-target-url="/admin/main"
+					  login-processing-url="/admin/spring_login"
+                      username-parameter="userId"
+                      password-parameter="password"
+					  authentication-failure-url="/admin/spring_login"
+        />
+	</s:http>
+	<!-- // 관리자 시큐리티 -->
+</beans>

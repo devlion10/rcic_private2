@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<aop:config>
+
+		<aop:pointcut id="serviceMethod" expression="execution(* kr.or.lx.rcic..impl.*Impl.*(..))" />
+		<aop:pointcut id="serviceMethod" expression="execution(* kr.or.lx.rcic.frmwrk.user..impl.*Impl.*(..))" />
+		<aop:pointcut id="serviceMethod" expression="execution(* kr.or.lx.rcic.modules.**..impl.*Impl.*(..))" />
+		<aop:pointcut id="serviceMethod" expression="execution(* kr.or.lx.rcic.impala.**..impl.*Impl.*(..))" />
+			
+		<aop:aspect ref="exceptionTransfer">
+			<aop:after-throwing throwing="exception" pointcut-ref="serviceMethod" method="transfer" />
+		</aop:aspect>
+	</aop:config>
+	
+	<bean id="exceptionTransfer" class="kr.or.lx.rcic.egovframework.cmmn.ExceptionTransfer">
+		<property name="exceptionHandlerService">
+			<list>
+				<ref bean="defaultExceptionHandleManager" />
+				<ref bean="otherExceptionHandleManager" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="defaultExceptionHandleManager" class="kr.or.lx.rcic.egovframework.cmmn.DefaultExceptionHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="antPathMater"/>
+		</property>
+		<property name="patterns">
+			<list>
+				<value>**service.impl.*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="egovHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="otherExceptionHandleManager" class="kr.or.lx.rcic.egovframework.cmmn.DefaultExceptionHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="antPathMater"/>
+		</property>
+		<property name="patterns">
+			<list>
+				<value>**service.impl.*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="otherHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="egovHandler" class="kr.or.lx.rcic.egovframework.cmmn.EgovComExcepHndlr" />
+	<bean id="otherHandler" class="kr.or.lx.rcic.egovframework.cmmn.EgovComOthersExcepHndlr" />	
+	
+</beans>

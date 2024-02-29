@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.dataCntc.mapper.DataCntcMapper">
+	
+	<select id="selectRoadNameChangeCnt" resultType="int">
+		/* 새주소 도로명 변동분(기초번호) 변동일시 별 카운트 조회 */
+        select count(*)
+        from rcic.tl_road_name_change 
+        where chg_dt = #{chg_dt}
+    </select>
+    
+    
+    <select id="selectRoadNameChangeShpDataCnt" resultType="int">
+		/* 새주소 도로명 변동분(도로명이 부여된 도로 도형) 변동일시 별 카운트 조회 */
+        select count(*)
+        from rcic.tl_road_name_change_shp 
+		where to_date(substring(opert_de::varchar,0,9),'YYYYMMDD') <![CDATA[ >= ]]> to_date(substring(#{opert_de}::varchar,0,9),'YYYYMMDD')
+	
+    </select>
+    
+    <select id="selectRoadNameChangeShpDeleteDataCnt" resultType="int" >
+		/* 새주소 도로명 변동분(도로명이 부여된 도로 도형) 조건별 카운트 조회 */
+		select 
+			count(*) 
+		from 
+			rcic.tl_road_name_change_shp 
+		where 
+			rds_man_no = #{RDS_MAN_NO}::double precision 
+			and sig_cd = #{SIG_CD}::varchar 
+			and div_cd = #{DIV_CD}::varchar 
+    </select>
+    
+    <select id="selectRoadNameAllChangeCnt" resultType="int">
+		/* 전체분에서 등록일자별 카운트 조회(기초번호) */
+        select count(*)
+		from rcic.tl_road_name_all
+		where substring(reg_dt::varchar,0,11) = to_date(#{chg_dt},'YYYYMMDD')::varchar
+    </select>
+    
+    <select id="selectRoadNameAllChangeShpCnt" resultType="int">
+		/* 전체분에서 등록일자별 카운트 조회(도로명이 부여된 도로 도형) */
+        select count(*)
+		from rcic.tl_road_name_all_shp
+		where substring(opert_de::varchar,0,9) = substring(#{opert_de}::varchar,0,9)
+    </select>
+    
+    <select id="selectRoadNameChangeList" resultType="egovMap">
+		/* 변동분의 날짜 및 변경 사유 별 리스트를 가져온다(기초번호) */
+        select 
+        	* 
+        from 
+        	rcic.tl_road_name_change 
+        where 
+        	chg_dt = #{chg_dt} 
+        	and 
+        	mvm_res_cd = #{mvm_res_cd} 
+    </select>
+    
+    <select id="selectRoadNameChangeShpList" resultType="egovMap">
+		/* 변동분의 변경 사유 별 리스트를 가져온다(도로명이 부여된 도로 도형) */
+        select 
+        	* 
+        from 
+        	rcic.tl_road_name_change_shp 
+        where 
+        	opert_de = replace(to_date(now()::varchar, 'YYYY-MM-DD HH24:MI:SS')::varchar,'-','')
+        	and
+        	div_cd = #{div_cd} 
+        	
+    </select>
+    
+    <select id="selectRoadNameChangeShpCList" resultType="egovMap">
+		/* 변동분의 날짜 및 변경 사유 별 리스트를 가져온다(도로명이 부여된 도로 도형) */
+        select 
+        	* 
+        from 
+        	rcic.tl_road_name_change_shp 
+        where 
+        	substring(opert_de::varchar,0,9) = substring(#{opert_de}::varchar,0,9)
+        	and
+        	div_cd = #{div_cd} 
+    </select>
+
+	<insert id="insertRoadNameChange">
+		/* 새주소 도로명 변동분 적재 */
+		insert into rcic.tl_road_name_change(
+			  sig_cd
+			, bsi_int_sn
+			, bsi_mn
+			, bsi_sl
+			, rds_man_no
+			, ctp_nm
+			, sig_nm
+			, emd_cd    
+			, emd_nm    
+			, rn_cd
+			, rn
+			, rbp_cn
+			, rep_cn
+			, center_x
+			, center_y
+			, mvm_res_cd
+			, chg_dt
+		)
+		values (
+			 #{sig_cd}                   
+			,#{bsi_int_sn}                  
+			,#{bsi_mn}                  
+			,#{bsi_sl}                   
+			,#{rds_man_no}                   
+			,#{ctp_nm}                   
+			,#{sig_nm}                       
+			,#{emd_cd}                    
+			,#{emd_nm}                    
+			,#{rn_cd}     
+			,#{rn}   
+			,#{rbp_cn}   
+			,#{rep_cn}   
+			,#{center_x}   
+			,#{center_y}   
+			,#{mvm_res_cd}    
+			,#{chg_dt}         
+	)
+	</insert>
+	
+	<insert id="insertRoadNameAll">
+		/* 새주소 도로명 전체분 적재 */
+		insert into rcic.tl_road_name_all(
+			  sig_cd
+			, bsi_int_sn
+			, bsi_mn
+			, bsi_sl
+			, rds_man_no
+			, ctp_nm
+			, sig_nm
+			, emd_cd    
+			, emd_nm    
+			, rn_cd
+			, rn
+			, rbp_cn
+			, rep_cn
+			, center_x
+			, center_y
+			, reg_dt
+		)
+		values (
+			 #{sig_cd}                   
+			,#{bsi_int_sn}                  
+			,#{bsi_mn}                  
+			,#{bsi_sl}                   
+			,#{rds_man_no}                   
+			,#{ctp_nm}                   
+			,#{sig_nm}                       
+			,#{emd_cd}                    
+			,#{emd_nm}                    
+			,#{rn_cd}     
+			,#{rn}   
+			,#{rbp_cn}   
+			,#{rep_cn}   
+			,#{center_x}::double precision 
+			,#{center_y}::double precision   
+			,now()
+	)
+	</insert>
+	
+	<delete id="deleteRoadName">
+		/* 기존 새주소 도로명 테이블 데이터 모두 제거 */
+		delete from rcic.tl_road_name
+	</delete>
+	
+	<delete id="deleteRoadNameAll">
+		/* 기전체분 자료 전체 삭제(기초번호_txt) */
+		delete from rcic.tl_road_name_all
+	</delete>
+	
+	<delete id="deleteRoadNameShpAll">
+		/* 전체분 자료 전체 삭제(도로명이 부여된 도로 도형_shp) */
+		delete from rcic.tl_road_name_all_shp
+	</delete>
+	
+	<update id="insertRoadName">
+		/* 전체분 데이터를 기존 새주소 도로명으로 마이그레이션 */
+		insert into rcic.tl_road_name(
+			  gid
+			, seq
+			, alwnc_resn
+			, eng_rn
+			, rbp_cn
+			, rep_cn
+			, rn
+			, pnu
+			, sido_nm
+			, sido_cd
+			, sgg_nm
+			, sgg_cd
+			, emd_nm
+			, emd_cd
+			, ri_nm
+			, ri_cd
+			, geom
+			, regist_dt
+			, updt_dt
+			, rds_man_no
+		)
+		select 
+			  nextval('rcic.tl_road_name_gid_seq') as gid	
+			, currval('rcic.tl_road_name_gid_seq') as seq
+			, a.alwnc_resn as alwnc_resn
+			, a.eng_rn as eng_rn
+			, a.rbp_cn as rbp_cn
+			, a.rep_cn as rep_cn
+			, a.rn as rn
+			, '' as pnu
+			, b.ctp_nm as sido_nm
+			, substr(a.sig_cd,0,3) as sido_cd
+			, b.sig_nm as sgg_nm
+			, a.sig_cd as sgg_cd
+			, b.emd_nm as emd_nm
+			, b.emd_cd as emd_cd
+			, '' as ri_nm
+			, '' as ri_cd
+			, public.st_transform(a.geom,5179) as geom
+			, a.reg_dt
+			, a.chg_dt
+			, a.rds_man_no::varchar
+		from 
+			rcic.tl_road_name_all_shp a left outer join (select DISTINCT ctp_nm, sig_nm, emd_nm, emd_cd, sig_cd, rds_man_no, rn_cd from rcic.tl_road_name_all) b
+			on a.sig_cd = b.sig_cd and a.rds_man_no::varchar = b.rds_man_no and a.rn_cd = b.rn_cd
+	</update>
+	
+	<!-- <update id="insertRoadName">
+		/* 전체분 데이터를 기존 새주소 도로명으로 마이그레이션 */
+		insert into rcic.tl_road_name(
+			  gid
+			, seq
+			, sgg_cd
+			, sgg_nm
+			, sido_cd
+			, sido_nm
+			, emd_cd
+			, emd_nm
+			, rn
+			, rbp_cn
+			, rep_cn
+			, geom
+			, regist_dt
+		)
+		select 
+			  nextval('rcic.tl_road_name_gid_seq') as gid	
+			, currval('rcic.tl_road_name_gid_seq') as seq
+			, sig_cd as sgg_cd
+			, sig_nm as sgg_nm
+			, substr(sig_cd,0,3) as sido_cd
+			, ctp_nm as sido_nm
+			, emd_cd
+			, emd_nm
+			, rn
+			, rbp_cn
+			, rep_cn
+			, public.st_setsrid(public.st_makeline(public.st_point(center_x::float, center_y::float)),4326) as geom
+			, reg_dt as regist_dt
+		from 
+			rcic.tl_road_name_all
+		where 
+			rn_cd in(select a.rn_cd from (select distinct rn_cd, rds_man_no from rcic.tl_road_name_all order by rn_cd asc, rds_man_no asc)a)
+			and
+			rds_man_no in(select a.rds_man_no from (select distinct rn_cd, rds_man_no from rcic.tl_road_name_all order by rn_cd asc, rds_man_no asc)a)
+		group by 
+			sgg_cd, sgg_nm, sido_cd, sido_nm, emd_cd, emd_nm, rn, rbp_cn, rep_cn, reg_dt
+	</update> -->
+	
+	<update id="insertRoadNameAllChange">
+		/* 변동분 생성시킬 데이터를 전체분에 적재 */
+		insert into rcic.tl_road_name_all(
+			  sig_cd
+			, bsi_int_sn
+			, bsi_mn
+			, bsi_sl
+			, rds_man_no
+			, ctp_nm
+			, sig_nm
+			, emd_cd
+			, emd_nm
+			, rn_cd
+			, rn
+			, rbp_cn
+			, rep_cn
+			, center_x
+			, center_y
+			, reg_dt
+			, chg_dt
+		)
+		select 
+			  sig_cd
+			, bsi_int_sn 
+			, bsi_mn
+			, bsi_sl
+			, rds_man_no
+			, ctp_nm
+			, sig_nm
+			, emd_cd
+			, emd_nm
+			, rn_cd
+			, rn
+			, rbp_cn
+			, rep_cn
+			, center_x::double precision
+			, center_y::double precision
+			, chg_dt::timestamp with time zone as reg_dt
+			, chg_dt::timestamp with time zone as chg_dt
+		from 
+			rcic.tl_road_name_change
+		where 
+			chg_dt = #{chg_dt}
+			and 
+			mvm_res_cd = 'C'
+	</update>
+	
+	
+	<update id="insertRoadNameAllShpChange">
+		/* 변동분 생성시킬 데이터를 전체분에 적재 */
+		insert into rcic.tl_road_name_all_shp(
+			   alwnc_de
+			  , alwnc_resn
+			  , bsi_int
+			  , eng_rn
+			  , mvmn_de
+			  , mvmn_resn
+			  , mvm_res_cd
+			  , ntfc_de
+			  , opert_de
+			  , rbp_cn
+			  , rds_dpn_se
+			  , rds_man_no
+			  , rep_cn, rn
+			  , rn_cd
+			  , road_bt
+			  , road_lt
+			  , roa_cls_se
+			  , sig_cd
+			  , wdr_rd_cd
+			  , geom
+			  , reg_dt
+		)
+		select 
+			    alwnc_de
+			  , alwnc_resn
+			  , bsi_int
+			  , eng_rn
+			  , mvmn_de
+			  , mvmn_resn
+			  , mvm_res_cd
+			  , ntfc_de
+			  , opert_de
+			  , rbp_cn
+			  , rds_dpn_se
+			  , rds_man_no
+			  , rep_cn
+			  , rn
+			  , rn_cd
+			  , road_bt
+			  , road_lt
+			  , roa_cls_se
+			  , sig_cd
+			  , wdr_rd_cd
+			  , geom
+			  , now()
+		from 
+			rcic.tl_road_name_change_shp
+		where 
+			substring(opert_de::varchar,0,9) = substring(#{opert_de}::varchar,0,9)
+			and 
+			div_cd = 'C'
+	</update>
+	
+	<update id="updateRoadNameAllShpChange">
+		/* 변동분 생성시킬 데이터를 전체분에 적재(update) */
+		insert into rcic.tl_road_name_all_shp(
+			   alwnc_de
+			  , alwnc_resn
+			  , bsi_int
+			  , eng_rn
+			  , mvmn_de
+			  , mvmn_resn
+			  , mvm_res_cd
+			  , ntfc_de
+			  , opert_de
+			  , rbp_cn
+			  , rds_dpn_se
+			  , rds_man_no
+			  , rep_cn, rn
+			  , rn_cd
+			  , road_bt
+			  , road_lt
+			  , roa_cls_se
+			  , sig_cd
+			  , wdr_rd_cd
+			  , geom
+			  , reg_dt
+			  , chg_dt
+		)
+		select 
+			    alwnc_de
+			  , alwnc_resn
+			  , bsi_int
+			  , eng_rn
+			  , mvmn_de
+			  , mvmn_resn
+			  , mvm_res_cd
+			  , ntfc_de
+			  , opert_de
+			  , rbp_cn
+			  , rds_dpn_se
+			  , rds_man_no
+			  , rep_cn, rn
+			  , rn_cd
+			  , road_bt
+			  , road_lt
+			  , roa_cls_se
+			  , sig_cd
+			  , wdr_rd_cd
+			  , geom
+			  , now()
+			  , now()
+		from 
+			rcic.tl_road_name_change_shp
+		where 
+			substring(opert_de::varchar,0,9) = substring(#{opert_de}::varchar,0,9)
+			and 
+			div_cd = 'C'
+	</update>
+	
+	<update id="updateRoadNameAllChange">
+		/* 변동분 변경 데이터를 찾아서 전체분에 반영 */
+		insert into rcic.tl_road_name_all(
+				  sig_cd
+				, bsi_int_sn
+				, bsi_mn
+				, bsi_sl
+				, rds_man_no
+				, ctp_nm
+				, sig_nm
+				, emd_cd
+				, emd_nm
+				, rn_cd
+				, rn
+				, rbp_cn
+				, rep_cn
+				, center_x
+				, center_y
+				, reg_dt
+				, chg_dt
+			)
+			select 
+				  sig_cd
+				, bsi_int_sn 
+				, bsi_mn
+				, bsi_sl
+				, rds_man_no
+				, ctp_nm
+				, sig_nm
+				, emd_cd
+				, emd_nm
+				, rn_cd
+				, rn
+				, rbp_cn
+				, rep_cn
+				, center_x::double precision
+				, center_y::double precision
+				, chg_dt::timestamp with time zone as reg_dt
+				, chg_dt::timestamp with time zone as chg_dt
+			from 
+				rcic.tl_road_name_change
+			where 
+				chg_dt = #{chg_dt}
+				and 
+				mvm_res_cd = 'U'
+	</update>
+	
+	
+	<delete id="deleteRoadNameAllChange">
+		/* 변동분 삭제할 데이터를 전체분에서 모두 삭제(기초번호) */
+		delete from rcic.tl_road_name_all
+		where 
+			bsi_int_sn = #{bsiIntSn}
+			and
+			bsi_mn = #{bsiMn}
+			and
+			center_x::varchar = #{centerX}
+			and
+			center_y::varchar = #{centerY}
+	</delete>
+	
+	<delete id="deleteRoadNameAllShpChange">
+		/* 특정날짜 변동분 삭제할 데이터를 전체분에서 모두 삭제(도로명이 부여된 도로 도형_shp) */
+		delete from rcic.tl_road_name_all_shp
+		where 
+			sig_cd = #{sigCd}
+			and
+			rds_man_no = #{rdsManNo}
+	</delete>
+	
+	<insert id="insertRoadNameChangeShpData" parameterType='java.util.List'>
+        insert into rcic.tl_road_name_change_shp
+        (
+	          alwnc_de
+	        , alwnc_resn
+	        , bsi_int
+	        , eng_rn
+	        , mvmn_de
+	        , mvmn_resn
+	        , mvm_res_cd
+	        , ntfc_de
+	        , opert_de
+	        , rbp_cn
+	        , rds_dpn_se
+	        , rds_man_no
+	        , rep_cn
+	        , rn
+	        , rn_cd
+	        , road_bt
+	        , road_lt
+	        , roa_cls_se
+	        , sig_cd
+	        , wdr_rd_cd
+	        , geom
+	        , div_cd
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+ 		     #{item.ALWNC_DE}
+            ,#{item.ALWNC_RESN}
+            ,#{item.BSI_INT}
+            ,#{item.ENG_RN}
+            ,#{item.MVMN_DE}
+            ,#{item.MVMN_RESN}
+            ,#{item.MVM_RES_CD}
+            ,#{item.NTFC_DE}
+            ,#{item.OPERT_DE}
+            ,#{item.RBP_CN}
+            ,#{item.RDS_DPN_SE}
+            ,#{item.RDS_MAN_NO}
+            ,#{item.REP_CN}
+            ,#{item.RN}
+            ,#{item.RN_CD}
+            ,#{item.ROAD_BT}
+            ,#{item.ROAD_LT}
+            ,#{item.ROA_CLS_SE}
+            ,#{item.SIG_CD}
+            ,#{item.WDR_RD_CD}
+            ,public.st_transform(public.st_geomfromtext('${item.geom}',5179),5179)
+            ,#{item.DIV_CD}
+            )
+        </foreach>
+    </insert>
+    
+    <insert id="insertRoadNameAllShpData" parameterType='java.util.List'>
+        insert into rcic.tl_road_name_all_shp
+        (
+	          alwnc_de
+	        , alwnc_resn
+	        , bsi_int
+	        , eng_rn
+	        , mvmn_de
+	        , mvmn_resn
+	        , mvm_res_cd
+	        , ntfc_de
+	        , opert_de
+	        , rbp_cn
+	        , rds_dpn_se
+	        , rds_man_no
+	        , rep_cn
+	        , rn
+	        , rn_cd
+	        , road_bt
+	        , road_lt
+	        , roa_cls_se
+	        , sig_cd
+	        , wdr_rd_cd
+	        , geom
+	        , reg_dt
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+ 		     #{item.ALWNC_DE}
+            ,#{item.ALWNC_RESN}
+            ,#{item.BSI_INT}
+            ,#{item.ENG_RN}
+            ,#{item.MVMN_DE}
+            ,#{item.MVMN_RESN}
+            ,#{item.MVM_RES_CD}
+            ,#{item.NTFC_DE}
+            ,#{item.OPERT_DE}
+            ,#{item.RBP_CN}
+            ,#{item.RDS_DPN_SE}
+            ,#{item.RDS_MAN_NO}
+            ,#{item.REP_CN}
+            ,#{item.RN}
+            ,#{item.RN_CD}
+            ,#{item.ROAD_BT}
+            ,#{item.ROAD_LT}
+            ,#{item.ROA_CLS_SE}
+            ,#{item.SIG_CD}
+            ,#{item.WDR_RD_CD}
+            ,public.st_transform(public.st_geomfromtext('${item.geom}',5179),5179)
+            ,now()
+            )
+        </foreach>
+    </insert>
+    
+    
+    <insert id="insertRoadNameChangeShpDeleteData">
+		/* 변동분 자료에(도로명이 부여된 도로 도형_shp)에 삭제할 리스트 적재 */
+		 insert into rcic.tl_road_name_change_shp
+        (
+	          rds_man_no
+	        , sig_cd
+	        , opert_de
+	        , div_cd
+        )
+		values 
+		(
+			 #{RDS_MAN_NO}::double precision                   
+			,#{SIG_CD}  
+			,replace(to_date(now()::varchar, 'YYYY-MM-DD')::varchar,'-','')                
+			,#{DIV_CD}                  
+		)
+	</insert>
+	
+	<insert id="insertCbndData" parameterType='java.util.List'>
+		/* 연속지적도 API(vworld) 결과 데이터를 적재한다. */
+        insert into rcic.tb_cbnd_info
+        (
+	            seq
+	          , pnu
+	          , addr
+	          , jibun
+	          , sub_jibun
+	          , stdr_dt
+	          , sido_cd
+	          , sgg_cd
+	          , emd_cd
+	          , ri_cd
+	          , geom
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+	 		     nextval('rcic.seq_tb_cbnd_info')
+	            ,#{item.pnu}
+	            ,#{item.addr}
+	            ,#{item.bonbun}
+	            ,#{item.bubun}
+	            ,now()
+	            ,SUBSTRING(#{item.pnu},0,3)
+	            ,SUBSTRING(#{item.pnu},0,6)
+	            ,SUBSTRING(#{item.pnu},0,9)
+	            ,SUBSTRING(#{item.pnu},0,11)
+	            ,public.ST_SetSRID(public.ST_GeomFromGeoJSON(#{item.geom}), 3857) 
+            )
+        </foreach>
+    </insert>
+    
+    <select id="getRoadNameEmdCdList" resultType="egovMap">
+		/* 새주소도로명에서 emd_cd(읍면동 코드) 전체 리스트를 가져온다 */
+        select 
+        	distinct emd_cd 
+        from 
+        	rcic.tl_road_name 
+        where 
+        	emd_cd is not null and emd_cd !=''
+    </select>
+    
+    <delete id="deleteCbndInfo">
+		/* 연속지적도 테이블 데이터 모두 제거 */
+		delete from rcic.tb_cbnd_info
+	</delete>
+	
+	<!-- 행정구역API -->
+		<!--  * 시도 API * -->
+	<insert id="insertSidoData" parameterType='java.util.List'>
+		/* 행정경계_시도 API(vworld) 결과 데이터를 적재한다. */
+        insert into rcic.tb_legaldong_sido
+        (
+	            sido_cd
+	          , sido_nm
+	          , geom
+	          , alias
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+	            #{item.sido_cd}
+	            ,#{item.sido_nm}
+	            ,public.ST_SetSRID(public.ST_GeomFromGeoJSON(#{item.geom}), 3857) 
+	            ,#{item.alias}
+            )
+        </foreach>
+    </insert>
+	
+	<delete id="deleteSidoInfo">
+		/* 시도 테이블 데이터 모두 제거 / 시퀀스 리셋 */
+		truncate table rcic.tb_legaldong_sido
+	</delete>
+	
+	
+		<!--  * 시군구 API * -->
+	<insert id="insertSggData" parameterType='java.util.List'>
+		/* 행정경계_시군구 API(vworld) 결과 데이터를 적재한다. */
+        insert into rcic.tb_legaldong_sgg
+        (
+        	    id
+	          , geom
+        	  , regist_dt
+	          , sgg_cd
+	          , sgg_nm
+	          , sido_cd
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+	            nextval('rcic.tb_legaldong_sgg_id_seq2')
+	            ,public.ST_SetSRID(public.ST_GeomFromGeoJSON(#{item.geom}), 3857) 
+	            ,now()
+	            ,#{item.sgg_cd}
+	            ,#{item.sgg_nm}
+	            , substring(#{item.sgg_cd}::varchar,1,2)
+            )
+        </foreach>
+    </insert>
+	
+	<delete id="deleteSggInfo">
+		/* 시군구 테이블 데이터 모두 제거 / 시퀀스 리셋 */
+		truncate table rcic.tb_legaldong_sgg;
+		ALTER SEQUENCE rcic.tb_legaldong_sgg_id_seq2 RESTART WITH 1;
+	</delete>
+	
+	
+		<!--  * 읍면동 API * -->
+	<insert id="insertEmdData" parameterType='java.util.List'>
+		/* 행정경계_읍면동 API(vworld) 결과 데이터를 적재한다. */
+        insert into rcic.tb_legaldong_emd
+        (
+        	    id
+	          , geom
+        	  , regist_dt
+	          , emd_cd
+	          , emd_nm
+	          , sgg_cd
+	          , sgg_nm
+	          , sido_cd
+	          , sido_nm
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+	            nextval('rcic.tb_legaldong_emd_id_seq')
+	            ,public.ST_SetSRID(public.ST_GeomFromGeoJSON(#{item.geom}), 3857) 
+	            ,now()
+	            ,#{item.emd_cd}
+	            ,#{item.emd_nm}
+	            , substring(#{item.emd_cd}::varchar,1,5)
+	            ,#{item.sgg_nm}
+	            , substring(#{item.emd_cd}::varchar,1,2)
+	            ,#{item.sido_nm}
+            )
+        </foreach>
+    </insert>
+	
+	<delete id="deleteEmdInfo">
+		/* 읍면동 테이블 데이터 모두 제거 / 시퀀스 리셋 */
+		truncate table rcic.tb_legaldong_emd;
+		ALTER SEQUENCE rcic.tb_legaldong_emd_id_seq RESTART WITH 1;
+	</delete>
+	
+	
+		<!--  * 리 API * -->
+	<insert id="insertLiData" parameterType='java.util.List'>
+		/* 행정경계_리 API(vworld) 결과 데이터를 적재한다. */
+        insert into rcic.tb_legaldong_li
+        (
+        	    id
+	          , geom
+	          , li_cd
+	          , li_nm
+	          , emd_cd
+	          , seq
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+	            nextval('rcic.tb_legaldong_li_id_seq')
+	            ,public.ST_SetSRID(public.ST_GeomFromGeoJSON(#{item.geom}), 3857) 
+	            ,#{item.li_cd}
+	            ,#{item.li_nm}
+	            , substring(#{item.li_cd}::varchar,1,8)
+	            ,#{item.li_cd}
+            )
+        </foreach>
+    </insert>
+	
+	<delete id="deleteLiInfo">
+		/* 리 테이블 데이터 모두 제거 / 시퀀스 리셋 */
+		truncate table rcic.tb_legaldong_li;
+		ALTER SEQUENCE rcic.tb_legaldong_li_id_seq RESTART WITH 1;
+	</delete>
+	
+	<select id="selectRoadInfoList" resultType="egovMap" parameterType="String">
+		select
+		   distinct y.road_no, y.sect
+		from
+		(
+			select 
+				a.geom
+			from 
+				rcic.tb_legaldong_sgg a
+				,(select geom from rcic.tb_analysis_loc_info where loc_ty = '01' and seq = (select seq from rcic.tb_analysis_info where resultno = #{resultno})) b
+			where 
+				public.st_within(public.st_transform(b.geom, 3857), public.st_transform(a.geom, 3857))
+		) x
+		,(	
+			select 
+				geom, road_no, sect 
+			from
+				rcic.n3a_a0010000 
+		) y
+		where 
+			public.st_intersects(public.st_transform(y.geom, 3857), public.st_transform(x.geom, 3857))
+	</select>
+	
+	<select id="selectRoadLayerList" resultType="egovMap" parameterType="String">
+		select 
+			* 
+		from 
+			rcic.tl_road_layer 
+		where 
+			lay_nm in(select fac_ty_nm from rcic.tb_analysis_fac_info where resultno = #{resultno})
+	</select>
+	
+	<insert id="insertRoadLayerData" parameterType='java.util.List'>
+		/* 도로대장 49종 krris api 데이터 적재 */
+        insert into rcic.tl_krris_api_data
+        (
+	          road_no
+	        , sect
+	        , road_name
+	        , lay_nm
+	        , lay_color
+	        , lay_img
+	        , geometry
+	        , reg_dt
+        )
+        values
+        <foreach collection='list' item='item' separator=','>
+            (
+ 		      #{item.roadNo}
+ 		    , #{item.sect}
+ 		    , #{item.roadName}
+ 		    , #{item.layNm}
+ 		    , #{item.layColor}
+ 		    , #{item.layImg}
+            , public.ST_AsGeoJSON(#{item.geometry})
+            , now()
+            )
+            
+        </foreach>
+    </insert>
+    
+    <delete id="deleteRoadLayerData">
+		/* 도로대장 49종 krris api 데이터 전체 삭제 */
+		delete from rcic.tl_krris_api_data
+	</delete>
+	
+	<select id="selectRoadLayerDataCnt" resultType="int">
+		/* 도로대장 49종 krris api 특정 레이어 카운트 조회 */
+		SELECT count(*) 
+		FROM rcic.tl_krris_api_data 
+		where road_no = #{roadNo} and sect = #{sect} and lay_nm = #{layNm}
+    </select>
+    
+    <select id="selectRoadLayerDataList" resultType="egovMap">
+		/* 도로대장 49종 krris api 데이터 조회 */
+        select 
+        	* 
+        from 
+        	rcic.tl_krris_api_data 
+        where 
+        	road_no = #{roadNo} 
+			and
+			sect = #{sect} 
+			and
+			lay_nm = #{layNm} 
+    </select>
+    
+    
+    <insert id="insertRoadLayerDataFlag">
+		/* 도로대장 49종 krris api 클라이언트 요청 정보 적재*/
+		insert into rcic.tl_krris_api_data_flag(
+			  road_no
+			, sect
+			, lay_nm
+			, result_yn
+			, req_dt
+		)
+		values (
+			 #{roadNo}                   
+			,#{sect}                  
+			,#{layNm}                  
+			,#{resultYN}                   
+			,now()
+			
+		)
+	</insert>
+	
+	<delete id="deleteRoadLayerDataFlag">
+		/* 도로대장 49종 krris api 클라이언트 요청 정보 삭제 */
+		delete 
+		from 
+			rcic.tl_krris_api_data_flag 
+	</delete>
+	
+	<update id="updateRoadLayerDataFlag">
+		/* 도로대장 49종 krris api 클라이언트 요청 정보 업데이트 */
+		update
+			rcic.tl_krris_api_data_flag
+		set
+			result_yn = #{resultYN}
+		where
+			road_no = #{roadNo} 
+			and
+			sect = #{sect} 
+			and
+			lay_nm = #{layNm} 	
+	</update>
+	
+	<select id="selectRoadLayerDataFlag" resultType="egovMap">
+		/* 도로대장 49종 krris api 데이터 조회 */
+        select 
+        	* 
+        from 
+        	rcic.tl_krris_api_data_flag 
+        where 
+			road_no = #{roadNo} 
+			and
+			sect = #{sect} 
+			and
+			lay_nm = #{layNm}
+    </select>
+    
+    <select id="selectRoadLayerDataFlagCnt" resultType="int">
+		/* 도로대장 49종 krris api 요청 레이어 카운트 조회 */
+		SELECT count(*) 
+		FROM rcic.tl_krris_api_data_flag 
+		where road_no = #{roadNo} and sect = #{sect} and lay_nm = #{layNm}
+    </select>
+	
+
+</mapper>
+

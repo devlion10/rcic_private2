@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.fac.mapper.FacMapper">
+
+<!--진행공사수 -->
+<select id="selectFacListCnt" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		SELECT COUNT (*) AS cnt,'1' AS toolbar_type 
+		 FROM rcic.tb_analysis_info 
+	 	 WHERE stdr_dt between #{fromDt}  and  #{toDt}
+	 	 and geom is not null 
+	 	  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		  </if>
+	  		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+			 	 <if test="gSelectedTarget=='sido'">
+				 AND sido_cd =#{gSelectedCode}
+				</if>
+				<if test="gSelectedTarget=='sgg'">
+				 AND sgg_cd =#{gSelectedCode}
+				 </if>
+				 <if test="gSelectedTarget=='emd'">
+				 AND emd_cd =#{gSelectedCode}
+				 </if>
+			 </if>
+		UNION ALL 
+		SELECT COUNT (*),'2' FROM rcic.tb_analysis_info 
+	 WHERE stdr_dt between #{fromDt}  and  #{toDt} 
+		  AND resultno IN (
+			              SELECT resultno 
+			                FROM rcic.tb_g2b_result_info 
+			               WHERE search_word='국도') 
+          and geom is not null			            
+           <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		    </if>
+		    <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+		UNION ALL 
+		SELECT COUNT (*) , '3' 
+		  FROM rcic.tb_analysis_info 
+	 WHERE stdr_dt between #{fromDt}  and  #{toDt}  
+		   AND resultno IN (
+					SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN ('30','28','7','23','8','18','37'))
+        and geom is not null
+          <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      
+		       <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+				 
+		UNION ALL
+			SELECT COUNT(*) ,'4'
+		  FROM rcic.tb_analysis_info 
+	 WHERE stdr_dt between #{fromDt}  and  #{toDt}  
+	  and geom is not null
+		   AND resultno IN (SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN (select code from tb_sys_cmm_code_dtl where group_code='CD0004' and rm='2'))
+		    <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		       <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+			UNION ALL 
+			SELECT COUNT (*) AS cnt , '5' 
+			FROM rcic.tb_analysis_info 
+			 WHERE stdr_dt between #{fromDt}  and  #{toDt}  
+			AND forecast_end_dt IS NOT NULL 
+			and forecast_end_dt <![CDATA[<>]]>''  
+			and forecast_end_dt between   #{toDt}   and to_char(#{toDt} ::date  + integer '30','yyyymmdd') 
+				  
+		     <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      
+		       <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+				 
+	</select>
+
+	<!--진행공사에 대한 맵 -->	
+	<select id="selectFacListMap" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select count(*)  as cnt
+				<if test="type=='sido'">
+				 ,sido_cd
+				</if>
+				<if test="type=='sgg'">
+				 ,sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				 ,emd_cd
+				 </if>
+		  from tb_analysis_info
+		  where stdr_dt BETWEEN #{fromDt}  and  #{toDt} 
+		    and geom is not null
+		    
+		      <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+			<if test="type=='sido'">
+			group by sido_cd
+			</if>
+			<if test="type=='sgg'">
+			and sgg_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.sggCd}'
+					</foreach>	
+					) 
+			and sgg_cd is not null 
+			group by sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			 		and emd_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.emdCd}'
+					</foreach>	
+					)  
+			and emd_cd is not null 
+			group by emd_cd
+			 </if>
+	</select>
+	
+	
+	<!--국도공사수 대한 맵 -->	
+	<select id="selectFacListMap2" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select count(*)  as cnt
+				<if test="type=='sido'">
+				 ,sido_cd
+				</if>
+				<if test="type=='sgg'">
+				 ,sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				 ,emd_cd
+				 </if>
+		  from tb_analysis_info
+		   WHERE stdr_dt between #{fromDt}  and  #{toDt} 
+		   AND resultno IN (
+			              SELECT resultno 
+			                FROM rcic.tb_g2b_result_info 
+			               WHERE search_word='국도') 
+		    and geom is not null
+		    
+		     <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		       <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 and sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 and sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 and emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+			<if test="type=='sido'">
+			group by sido_cd
+			</if>
+			<if test="type=='sgg'">
+			and sgg_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.sggCd}'
+					</foreach>	
+					) 
+			 and geom is not null
+			and sgg_cd is not null 
+			group by sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			 		and emd_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.emdCd}'
+					</foreach>	
+					)  
+			and geom is not null
+			and emd_cd is not null 
+			group by emd_cd
+			 </if>
+	</select>
+	
+	<!--도로개설수 대한 맵 -->	
+	<select id="selectFacListMap3" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select count(*)  as cnt
+				<if test="type=='sido'">
+				 ,sido_cd
+				</if>
+				<if test="type=='sgg'">
+				 ,sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				 ,emd_cd
+				 </if>
+		  FROM rcic.tb_analysis_info 
+	 WHERE stdr_dt between #{fromDt}  and  #{toDt}
+	 
+	  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+		   AND resultno IN (
+					SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN ('30','28','7','23','8','18','37'))
+		    and geom is not null
+			<if test="type=='sido'">
+			group by sido_cd
+			</if>
+			<if test="type=='sgg'">
+			and sgg_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.sggCd}'
+					</foreach>	
+					) 
+			and sgg_cd is not null 
+			group by sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			 		and emd_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.emdCd}'
+					</foreach>	
+					)  
+			and geom is not null
+			and emd_cd is not null 
+			group by emd_cd
+			 </if>
+	</select>
+	
+	
+	<!--시설공사 대한 맵 -->	
+	<select id="selectFacListMap4" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select count(*)  as cnt
+				<if test="type=='sido'">
+				 ,sido_cd
+				</if>
+				<if test="type=='sgg'">
+				 ,sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				 ,emd_cd
+				 </if>
+		  FROM rcic.tb_analysis_info 
+	 WHERE stdr_dt between #{fromDt}  and  #{toDt}  
+	  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+		   AND resultno IN (SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN (select code from tb_sys_cmm_code_dtl where group_code='CD0004' and rm='2'))
+			<if test="type=='sido'">
+			group by sido_cd
+			</if>
+			<if test="type=='sgg'">
+			and sgg_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.sggCd}'
+					</foreach>	
+					) 
+			and sgg_cd is not null 
+			group by sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			 		and emd_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.emdCd}'
+					</foreach>	
+					)  
+			and geom is not null
+			and emd_cd is not null 
+			group by emd_cd
+			 </if>
+	</select>
+	
+	<!--시설공사 대한 맵 -->	
+	<select id="selectFacListMap5" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select count(*)  as cnt
+				<if test="type=='sido'">
+				 ,sido_cd
+				</if>
+				<if test="type=='sgg'">
+				 ,sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				 ,emd_cd
+				 </if>
+		 FROM rcic.tb_analysis_info 
+		WHERE stdr_dt between #{fromDt}  and  #{toDt}  
+		  AND forecast_end_dt IS NOT NULL 
+		  AND forecast_end_dt  between #{fromDt}  and  #{toDt}
+		    and geom is not null 
+		    
+		    <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      
+		       <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+				 
+			<if test="type=='sido'">
+			group by sido_cd
+			</if>
+			<if test="type=='sgg'">
+			and sgg_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.sggCd}'
+					</foreach>	
+					) 
+			and sgg_cd is not null 
+			group by sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			 		and emd_cd in 
+					(
+					<foreach collection='list' item='item' separator=','>
+					'${item.emdCd}'
+					</foreach>	
+					)  
+			and geom is not null
+			and emd_cd is not null 
+			group by emd_cd
+			 </if>
+	</select>
+	
+	<!--공사리스트-->	
+	<select id="selectFacList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		SELECT
+	      RNUM, *
+		  FROM (SELECT T2.*
+			  FROM (SELECT  ROW_NUMBER () OVER (ORDER BY stdr_dt desc, seq, sido_cd, sgg_cd, emd_cd) RNUM, T1.* 
+				     FROM (
+						select * , (case when pnu is not null then 'pnu'
+									       when moct_cd is not null then 'moct_cd'
+												 when road_cd is not null then 'road_cd'
+												 when poi_cd is not null then 'poi_cd'
+												 when upis_cd is not null then 'upis_cd' 
+												 else 'zone_cd'
+												 end 
+									 ) as type,
+						  (select code_nm from tb_sys_cmm_code_dtl dt where group_code='CD0002' and code = (select fac_ty_cd from tb_analysis_fac_info info where info.resultno = a.resultno limit 1)) as fac_ty_nm,
+						   lpad((select fac_ty_cd from tb_analysis_fac_info info where info.resultno = a.resultno limit 1),2,'0') as fac_ty_cd,
+						  (select count(*) from tb_analysis_fac_info info where info.resultno = a.resultno) as cnt,
+						  ST_AsGeoJSON(new_geom) as new_geom
+						  from tb_analysis_info a  
+						  where stdr_dt BETWEEN #{fromDt}  and  #{toDt} 
+						    and geom is not null 	
+						      
+						     <if test="topToolbar=='toobar_2'">
+						       AND resultno IN (
+				              SELECT resultno 
+				                FROM rcic.tb_g2b_result_info 
+				               WHERE search_word='국도') 
+						     </if>
+						     <if test="topToolbar=='toobar_3'">
+						     	AND resultno IN (
+									SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN ('30','28','7','23','8','18','37'))
+
+						     </if>
+						     <if test="topToolbar=='toobar_4'">
+						     	 AND resultno IN (SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN (select code from tb_sys_cmm_code_dtl where group_code='CD0004' and rm='2'))
+						     </if>
+						     <if test="topToolbar=='toobar_5'">
+									AND forecast_end_dt IS NOT NULL 
+									and forecast_end_dt <![CDATA[<>]]>''  
+									and forecast_end_dt between   #{toDt}   and to_char(#{toDt} ::date  + integer '30','yyyymmdd') 
+						     </if>
+						    
+						      <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+						    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+						    	)
+						      </if>
+						       <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+								 	 <if test="gSelectedTarget=='sido'">
+									 AND sido_cd =#{gSelectedCode}
+									</if>
+									<if test="gSelectedTarget=='sgg'">
+									 AND sgg_cd =#{gSelectedCode}
+									 </if>
+									 <if test="gSelectedTarget=='emd'">
+									 AND emd_cd =#{gSelectedCode}
+									 </if>
+								 </if>
+						  order by stdr_dt desc, seq, sido_cd, sgg_cd, emd_cd
+				  		) T1
+		   ) T2
+			WHERE T2.RNUM <![CDATA[<=]]> #{currPage} * #{listCnt} 
+			 ) T3
+			WHERE T3.RNUM <![CDATA[>=]]> #{currPage} * #{listCnt} - (#{listCnt} - 1)
+	</select>
+	
+	<!--공사리스트 cnt-->	
+	<select id="selectFacCnt" parameterType="java.util.HashMap"  resultType="int">
+	
+			select count(*) as cnt
+			  from tb_analysis_info
+		 	 WHERE stdr_dt between #{fromDt}  and  #{toDt}
+		 	  and geom is not null 
+		 	  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+		        <if test="topToolbar=='toobar_2'">
+			       AND resultno IN (
+	              SELECT resultno 
+	                FROM rcic.tb_g2b_result_info 
+	               WHERE search_word='국도') 
+			     </if>
+			     <if test="topToolbar=='toobar_3'">
+			     	AND resultno IN (
+						SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN ('30','28','7','23','8','18','37'))
+
+			     </if>
+			     <if test="topToolbar=='toobar_4'">
+			     	 AND resultno IN (SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN (select code from tb_sys_cmm_code_dtl where group_code='CD0004' and rm='2'))
+			     </if>
+			     <if test="topToolbar=='toobar_5'">
+			    	 AND forecast_end_dt IS NOT NULL 
+					and forecast_end_dt <![CDATA[<>]]>''  
+					and forecast_end_dt between   #{toDt}   and to_char(#{toDt} ::date  + integer '30','yyyymmdd') 
+			     </if>
+	</select>
+	
+	<!--공사종류-->	
+	<select id="selectFacByResultNo" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select *,(select code_nm from tb_sys_cmm_code_dtl dt  where group_code='CD0004' and  dt.code = fac_ty_cd ) as fac_nm 
+  		   from tb_analysis_fac_info
+  		   where resultno = #{resultno}
+  		   <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+			 	 <if test="gSelectedTarget=='sido'">
+				 AND sido_cd =#{gSelectedCode}
+				</if>
+				<if test="gSelectedTarget=='sgg'">
+				 AND sgg_cd =#{gSelectedCode}
+				 </if>
+				 <if test="gSelectedTarget=='emd'">
+				 AND emd_cd =#{gSelectedCode}
+				 </if>
+			 </if>
+							 
+	</select>
+	
+		<!--도로요소-->	
+	<select id="selectRoadByResultNo" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select *,(select code_nm from tb_sys_cmm_code_dtl dt  where group_code='CD0002' and  dt.code =road_ty_cd ) as road_nm 
+  		   from tb_analysis_road_info
+  		   where resultno = #{resultno}
+  		   <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+		 	 <if test="gSelectedTarget=='sido'">
+			 AND sido_cd =#{gSelectedCode}
+			</if>
+			<if test="gSelectedTarget=='sgg'">
+			 AND sgg_cd =#{gSelectedCode}
+			 </if>
+			 <if test="gSelectedTarget=='emd'">
+			 AND emd_cd =#{gSelectedCode}
+			 </if>
+		 </if>
+	</select>
+	
+	
+	 <!--국도공사수에 대한 맵 -->
+	<select id="selectFacNormalRoadMap" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select count(*)  as cnt
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(type)">
+				<if test="type=='sido'">
+				 ,sido_cd
+				</if>
+				<if test="type=='sgg'">
+				 ,sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				 ,emd_cd
+				 </if>
+			</if>
+		  from tb_analysis_info
+		  where stdr_dt BETWEEN #{fromDt}  and  #{toDt}
+		   <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%')
+		    	)
+		      </if>
+		      
+		    	 <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+				 	 <if test="gSelectedTarget=='sido'">
+					 AND sido_cd =#{gSelectedCode}
+					</if>
+					<if test="gSelectedTarget=='sgg'">
+					 AND sgg_cd =#{gSelectedCode}
+					 </if>
+					 <if test="gSelectedTarget=='emd'">
+					 AND emd_cd =#{gSelectedCode}
+					 </if>
+				 </if>
+			and geom is not null 				  
+			 and resultno in (select resultno 
+								     from tb_g2b_result_info
+									  where search_word='국도'
+									)
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(type)">
+				<if test="type=='sido'">
+				group by sido_cd
+				</if>
+				<if test="type=='sgg'">
+				and sgg_cd is not null 
+				group by sgg_cd
+				 </if>
+				 <if test="type=='emd'">
+				and emd_cd is not null 
+				group by emd_cd
+				 </if>
+			</if>									
+	</select>
+	
+	<!--도로개설수 -->
+	<select id="selectFacRoadOpen" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select count(*) as cnt
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(type)">
+			<if test="type=='sido'">
+			 ,sido_cd
+			</if>
+			<if test="type=='sgg'">
+			 ,sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			 ,emd_cd
+			 </if>
+		</if>
+		from tb_analysis_info
+		where stdr_dt BETWEEN #{fromDt}  and  #{toDt}
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+		    	AND (bidntcenm like CONCAT('%',#{searchKeyword},'%') OR ntceinsttnm like CONCAT('%',#{searchKeyword},'%') OR analysis_2 like CONCAT('%',#{searchKeyword},'%'))
+	      </if> 
+		and geom is not null 
+		AND resultno IN (
+						SELECT resultno FROM rcic.tb_analysis_road_info WHERE road_ty_cd IN ('30','28','7','23','8','18','37'))
+
+					  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(gSelectedCode)">
+							 	 <if test="gSelectedTarget=='sido'">
+								 AND sido_cd =#{gSelectedCode}
+								</if>
+								<if test="gSelectedTarget=='sgg'">
+								 AND sgg_cd =#{gSelectedCode}
+								 </if>
+								 <if test="gSelectedTarget=='emd'">
+								 AND emd_cd =#{gSelectedCode}
+								 </if>
+							 </if>
+							 
+  		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(type)">
+			<if test="type=='sido'">
+			group by sido_cd
+			</if>
+			<if test="type=='sgg'">
+			and sgg_cd is not null 
+			group by sgg_cd
+			 </if>
+			 <if test="type=='emd'">
+			and emd_cd is not null 
+			group by emd_cd
+			 </if>
+		</if>	
+	</select>
+	
+	<select id="searchGeomByKey" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select ST_AsGeoJSON(ST_AsText(#{geom})) as geom
+	</select>
+	
+	<select id="selectChart99" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select *
+		 from tb_g2b_result_info a , tb_analysis_info b 
+		 where a.resultno = b.resultno
+		   and a.resultno= #{resultno};
+	</select>
+	
+	<select id="selectChart99Detail" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		 
+			select fac_ty_cd , (select code_nm from tb_sys_cmm_code_dtl dt where group_code='CD0004' and code = fac_ty_cd) as cc ,'fac' as type
+		from  tb_analysis_fac_info info
+		where info.resultno =#{resultno}
+		union all 
+			select road_ty_cd , (select code_nm from tb_sys_cmm_code_dtl dt where group_code='CD0002' and code = road_ty_cd) ,'road'
+		from  tb_analysis_road_info info
+		where info.resultno =#{resultno}
+		
+	</select>
+	
+	
+</mapper>	 

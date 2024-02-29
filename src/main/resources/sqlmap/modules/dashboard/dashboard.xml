@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.dashboard.mapper.DashboardMapper">
+  
+	<select id="selectInterfaceList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		SELECT
+		      *
+		  FROM (SELECT T2.*
+			  FROM (SELECT  ROW_NUMBER () OVER (order by service_no ) RNUM, T1.*
+				  FROM (
+				 select * 
+					from tb_service_info
+					where 1=1
+					<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(service_no)">
+					  AND service_no = #{ service_no }
+				   </if>
+				   
+					<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+						  AND service_nm like CONCAT('%',#{searchKeyword},'%')
+					   </if> 
+					 order by  service_no 	 
+				 ) T1
+		       ) T2
+		WHERE T2.RNUM <![CDATA[<=]]> #{currPage} * #{listCnt}
+	     ) T3
+	  WHERE T3.RNUM <![CDATA[>=]]> #{currPage} * #{listCnt} - (#{listCnt} - 1)
+	</select>		
+	
+		<!-- 수집현황 LIST -->	
+	<select id="selectInterfaceListCnt" parameterType="java.util.HashMap"  resultType="int">
+		select count(*) as cnt
+		from tb_service_info
+		WHERE 1=1
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(service_no)">
+			  AND service_no = #{ service_no }
+		   </if>
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+			  AND service_nm like CONCAT('%',#{searchKeyword},'%')
+		   </if> 
+	</select>	
+	
+	<insert id="insertInterface"  parameterType="java.util.HashMap">
+
+		INSERT INTO rcic.tb_service_info
+		(service_no, service_nm, service_url, use_yn, last_run_date, detail_service_nm, detail_service_ty, auto_yn
+	 	, consumerKey, consumerSecret, acessToken, acessTokenSecret 
+					VALUES (#{group_code}, (select max(code::integer)+1 from tb_sys_cmm_code_dtl where group_code=#{group_code}) 
+						            ,  #{code_nm}, (select max(code::integer)+1 from tb_sys_cmm_code_dtl where group_code=#{group_code}), #{code_dc}, #{use_yn}, NULL, 'admin', now());
+	
+	</insert> 
+	
+	<insert id="updateInterface"  parameterType="java.util.HashMap">
+		UPDATE rcic.tb_service_info
+			SET  code_nm=#{code_nm}, code_dc=#{code_dc}, use_at=#{use_yn} , regist_id='admin', regist_dt=now()
+			WHERE group_code = #{group_code} AND CODE  = #{group_seq};		
+	
+	</insert> 
+	
+	<!-- 코드Detail삭제 -->
+    <update id="deleteInterface" parameterType="java.util.HashMap">
+        DELETE FROM rcic.tb_service_info
+       	WHERE group_code = #{group_code} 
+       	  AND code IN
+        <foreach collection="codesArry" item="type"  open="(" close=")" separator=",">
+            #{type.code}
+        </foreach>
+    </update>
+    
+    <!-- GPS 데이터 리스트 -->
+    <select id="selectGPSInfo" parameterType="java.util.HashMap" resultType="egovMap">
+    	SELECT
+    		*
+    		, (select f_road_ty_cd from rcic.tb_traffic_info where seq = f_traffic_seq limit 1)
+    	FROM
+    		rcic.tb_gps_info
+    	WHERE 1=1
+    	<if test="seq != null">
+    		AND f_traffic_seq = #{seq}
+    	</if>
+    </select>
+    
+    <!-- 도로변화 수집정보 이미지  -->
+    <select id="selectTrafficInfo" parameterType="java.util.HashMap" resultType="egovMap">
+    	select *
+		from rcic.tb_traffic_info info, rcic.tb_traffic_att_file att
+		where info.seq = att.f_traffic_seq
+		and info.f_analysis_seq = #{seq}
+    </select>
+    
+    <!-- api 사용현황 개수 조회 -->
+    <select id="getApiUseStatusCount" resultType="int">
+	    select count(*)
+	      from rcic.tb_api_use_dtl
+	     where use_de <![CDATA[>=]]> #{startDt}
+	       and use_de <![CDATA[<=]]> #{endDt}
+    </select>
+    
+    <!-- api 사용현황 목록 조회  -->
+    <select id="getApiUseStatsList" resultType="egovMap">
+	    select api_provd_no
+	           , count(*) as cnt
+	      from rcic.tb_api_use_dtl
+	     where use_de <![CDATA[>=]]> #{startDt}
+	       and use_de <![CDATA[<=]]> #{endDt}
+	  	group by 1
+    	order by api_provd_no ASC
+    </select>
+    
+    <!-- 영상파일 타입 가져오기 -->
+    <select id="selectMediaInfo" parameterType="java.util.HashMap" resultType="egovMap">
+    	SELECT
+    		file_type as media_type
+    	FROM
+    		rcic.tb_traffic_att_file
+    	WHERE 1=1
+    	<if test="seq != null">
+    		AND f_traffic_seq in (select seq from tb_traffic_info where f_analysis_seq = #{seq})
+    	</if>
+    </select>
+</mapper>	 

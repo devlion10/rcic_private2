@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.dataProvdInfo.mapper.DataProvdInfoMapper">
+
+    <resultMap id="dataProvdInfoResultMap" type="kr.or.lx.rcic.modules.dataProvdInfo.entity.DataProvdInfo">
+        <!-- 데이터제공번호 -->
+        <result property="id" column="data_provd_no"/>
+        <!-- 데이터종류 -->
+        <result property="dataKnd" column="data_knd"/>
+        <!-- 데이터명 -->
+        <result property="dataNm" column="data_nm"/>
+        <!-- 데이터설명 -->
+        <result property="dataDc" column="data_dc"/>
+        <!-- 기준일자 -->
+        <result property="stdrDe" column="stdr_de"/>
+        <!-- 파일위치 -->
+        <result property="filePath" column="file_path"/>
+        <!-- 파일명 -->
+        <result property="fileName" column="file_name"/>
+        <!-- 파일크기 -->
+        <result property="fileSize" column="file_size"/>
+        <!-- 파일유형 -->
+        <result property="fileTy" column="file_ty"/>
+        <!-- 공간좌표계 -->
+        <result property="spceCntm" column="spce_cntm"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="id != null">
+            AND data_provd_no = #{id}
+        </if>
+        <if test="dataKnd != null and dataKnd != ''">
+            AND data_knd = #{dataKnd}
+        </if>
+        <if test="dataNm != null and dataNm != ''">
+            AND data_nm = #{dataNm}
+        </if>
+        <if test="dataDc != null and dataDc != ''">
+            AND data_cd = #{dataDc}
+        </if>
+        <if test="stdrDe != null and stdrDe != ''">
+            AND stdr_de = #{stdrDe}
+        </if>
+        <if test="filePath != null and filePath != ''">
+            AND file_path = #{filePath}
+        </if>
+        <if test="fileName != null and fileName != ''">
+            AND file_name = #{fileName}
+        </if>
+        <if test="fileSize != null">
+            AND file_size = #{fileSize}
+        </if>
+        <if test="fileTy != null and fileTy != ''">
+            AND file_ty = #{fileTy}
+        </if>
+        <if test="spceCntm != null and spceCntm != ''">
+            AND spce_cntm = #{spceCntm}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtEq != null and registDtEq != ''">
+            AND regist_dt = STR_TO_DATE(#{registDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="updtDt != null and updtDt.enabled == true">
+            
+            <if test="updtDtEq != null and updtDtEq != ''">
+            AND updt_dt = STR_TO_DATE(#{updtDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="updtDtFrom != null and updtDtFrom != ''">
+            AND updt_dt <![CDATA[ >= ]]> STR_TO_DATE(#{updtDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtTo != null and updtDtTo != ''">
+            AND updt_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{updtDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+    </sql>
+
+    <select id="getDataProvdInfo" resultMap="dataProvdInfoResultMap">
+        SELECT
+            data_provd_no, data_knd, data_nm, data_dc, stdr_de, file_path, file_name, file_size, file_ty, spce_cntm, regist_dt, updt_dt
+        FROM rcic.tb_data_provd_info
+        WHERE
+         data_provd_no = #{id}
+	</select>
+
+    <select id="selectDataProvdInfoCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.dataProvdInfo.mapper.DataProvdInfoMapper.simpleListDataProvdInfoCnt */
+
+        SELECT COUNT(*)
+        FROM rcic.tb_data_provd_info
+        <include refid="whereConditions" />
+    </select>
+    
+    <insert id="insertDownloadHistory" parameterType="hashmap">
+    
+    	INSERT INTO RCIC.TB_DATA_USE_DTL(DATA_PROVD_NO, USER_SEQ, DOWN_DT, CONECT__IP, REGIST_DT)
+		VALUES(#{dataProvdNo}, #{userSeq}, now(), #{clientIp}, now())
+    
+    </insert>
+    
+    <select id="selectDataProvdInfoList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        SELECT
+            DATA_PROVD_NO, 
+            DATA_KND, 
+            DATA_NM, 
+            DATA_DC,
+            STDR_DE, 
+            FILE_PATH, 
+            FILE_NAME, 
+            FILE_SIZE, 
+            (SELECT CODE_NM FROM RCIC.TB_SYS_CMM_CODE_DTL CD WHERE GROUP_CODE='FILE_TY' AND FILE_TY = CD.CODE) AS FILE_TY,
+            SPCE_CNTM, 
+            TO_CHAR(REGIST_DT, 'YYYY-MM-DD' ) AS REGIST_DT,
+            TO_CHAR(UPDT_DT, 'YYYY-MM-DD' ) AS UPDT_DT,
+            (SELECT COUNT(*) FROM RCIC.TB_DATA_USE_DTL D WHERE D.DATA_PROVD_NO=A.DATA_PROVD_NO) AS CNT
+        FROM RCIC.TB_DATA_PROVD_INFO A
+        <include refid="whereConditions" />
+        ORDER BY STDR_DE DESC, DATA_KND ASC
+        <include refid="common.footerRow"/>
+	</select>
+
+    <update id="updateDataProvdInfo" parameterType="kr.or.lx.rcic.modules.dataProvdInfo.entity.DataProvdInfo">
+        /* kr.or.lx.rcic.modules.dataProvdInfo.mapper.DataProvdInfoMapper.updateDataProvdInfo */
+
+        UPDATE rcic.tb_data_provd_info
+        SET
+               data_knd = #{dataKnd}
+                    , data_nm = #{dataNm}
+                    , data_dc = #{dataDc}
+                    , stdr_de = #{stdrDe}
+                    , file_path = #{filePath}
+                    , file_name = #{fileName}
+                    , file_size = #{fileSize}
+                    , file_ty = #{fileTy}
+                    , spce_cntm = #{spceCntm}
+                      , updt_dt = NOW()
+              WHERE
+             data_provd_no = #{id}
+    </update>
+
+    <update id="updateDataProvdInfoDynamic" parameterType="kr.or.lx.rcic.modules.dataProvdInfo.entity.DataProvdInfo">
+        /* kr.or.lx.rcic.modules.dataProvdInfo.mapper.DataProvdInfoMapper.updateDataProvdInfoDynamic */
+
+        UPDATE rcic.tb_data_provd_info
+            <set>
+            <if test="dataKnd != null and dataKnd != ''">
+                data_knd = #{dataKnd},
+            </if>
+            <if test="dataNm != null and dataNm != ''">
+                data_nm = #{dataNm},
+            </if> 
+            <if test="dataDc != null and dataDc != ''">
+                data_dc = #{dataDc},
+            </if>
+            <if test="stdrDe != null and stdrDe != ''">
+                stdr_de = #{stdrDe},
+            </if>
+            <if test="filePath != null and filePath != ''">
+                file_path = #{filePath},
+            </if>
+            <if test="fileName != null and fileName != ''">
+                file_name = #{fileName},
+            </if>
+            <if test="fileSize != null">
+                file_size = #{fileSize},
+            </if>
+            <if test="fileTy != null and fileTy != ''">
+                file_ty = #{fileTy},
+            </if>
+            <if test="spceCntm != null and spceCntm != ''">
+                spce_cntm = #{spceCntm},
+            </if>
+            <if test="registDt != null">
+                regist_dt = #{registDt},
+            </if>
+            <if test="updtDt != null">
+                updt_dt = NOW(),
+            </if>
+            </set>
+        WHERE
+             data_provd_no = #{id}
+    </update>
+
+    <delete id="deleteDataProvdInfo" parameterType="kr.or.lx.rcic.modules.dataProvdInfo.entity.DataProvdInfo">
+        /* kr.or.lx.rcic.modules.dataProvdInfo.mapper.DataProvdInfoMapper.deleteDataProvdInfo */
+
+        DELETE FROM rcic.tb_data_provd_info
+        WHERE
+             data_provd_no = #{id}
+    </delete>
+
+    <insert id="insertDataProvdInfo">
+        /* kr.or.lx.rcic.modules.dataProvdInfo.mapper.DataProvdInfoMapper.insertDataProvdInfo */
+        <selectKey keyColumn="data_provd_no" order="BEFORE" keyProperty="id" resultType="long">
+            select nextval('rcic.sq_tb_data_provd_info')
+        </selectKey>
+        INSERT INTO rcic.tb_data_provd_info
+        (
+        data_provd_no, data_knd, data_nm, data_dc, stdr_de, file_path, file_name, file_size, file_ty, spce_cntm, regist_dt, updt_dt
+        )
+        VALUES (
+        #{id},
+        #{dataKnd},
+        #{dataNm},
+        #{dataDc},
+        #{stdrDe},
+        #{filePath},
+        #{fileName},
+        #{fileSize},
+        #{fileTy},
+        #{spceCntm},
+        NOW(),
+        NOW()
+        )
+	</insert>
+
+    <delete id="deleteDuplicatedData">
+        delete
+          from rcic.tb_data_provd_info
+         where data_provd_no in (
+            select a.data_provd_no
+            from (
+                     select data_provd_no
+                          , stdr_de
+                          , data_knd
+                          , row_number() over (partition by stdr_de, data_knd order by data_provd_no asc) rnum
+                     from rcic.tb_data_provd_info
+                     order by data_provd_no desc
+                 ) a
+            where a.rnum &gt; 1
+            )
+    </delete>
+
+</mapper>
+

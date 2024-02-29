@@ -1,0 +1,24 @@
+#coordRegMap.coordRegMap {
+POSITION: absolute;
+/*TOP: 273px;*/
+left: 18px;
+width: 838px;
+height: 522px;
+z-index: 9999999;}
+
+#coordRegMap.coordRegMap.on {
+    display:block;
+
+
+}
+
+.mapDivHeaderCls{
+    background-color:#4f8c07;
+    border-radius: 20px 20px 0px 0px;
+    height: 31px;
+}
+
+.coordRegMapCloseCls{
+    cursor:pointer;
+}
+

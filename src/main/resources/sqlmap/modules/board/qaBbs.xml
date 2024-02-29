@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.board.mapper.QaBbsMapper">
+
+    <resultMap id="qaBbsResultMap" type="kr.or.lx.rcic.modules.board.entity.QaBbs">
+        
+        <result property="id" column="bbsctt_no"/>
+        
+        <result property="qestnTy" column="qestn_ty"/>
+        <result property="qestnTyNm" column="qestn_ty_nm"/>
+
+        <result property="qestnSj" column="qestn_sj"/>
+        
+        <result property="qestnCn" column="qestn_cn"/>
+        
+        <result property="qestnDt" column="qestn_dt"/>
+        
+        <result property="answrCn" column="answr_cn"/>
+        
+        <result property="answrDt" column="answr_dt"/>
+        
+        <result property="delAt" column="del_at"/>
+        
+        <result property="userSeq" column="user_seq"/>
+        <result property="userNm" column="USER_NM"/>
+
+        <result property="registDt" column="regist_dt"/>
+        
+        <result property="updtDt" column="updt_dt"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+    	
+        <if test="bbscttNo != null and bbscttNo != ''">
+            AND bbsctt_no = #{bbscttNo}
+        </if>
+        <if test="qestnTy != null and qestnTy != ''">
+            AND qestn_ty = #{qestnTy}
+        </if>
+        <if test="qestnSj != null and qestnSj != ''">
+            AND qestn_sj = #{qestnSj}
+        </if>
+        <if test="qestnCn != null and qestnCn != ''">
+            AND qestn_cn = #{qestnCn}
+        </if>
+        
+        <if test="answrCn != null and answrCn != ''">
+            AND answr_cn = #{answrCn}
+        </if>
+       
+        <if test="delAt != null and delAt != ''">
+            AND del_at = #{delAt}
+        </if>
+        
+        <if test="userSeq != null and userSeq != ''">
+            AND user_seq = #{userSeq}
+        </if>
+
+        <if test='"A".equals(answer)'>
+        AND answr_dt IS NOT NULL
+        </if>
+        <if test='"W".equals(answer)'>
+        AND answr_dt IS NULL
+        </if>
+
+        <if test="keyword != null and keyword != '' ">
+            <choose>
+                <when test="searchType != null and searchType == 'sjcn'">
+                    AND ((qestn_sj LIKE CONCAT('%', #{keyword}, '%')) OR (qestn_cn LIKE CONCAT('%', #{keyword}, '%')))
+                </when>
+                <when test="searchType != null and searchType == 'sj'">
+                    AND qestn_sj LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <otherwise>
+                    AND qestn_sj LIKE CONCAT('%', #{keyword}, '%')
+                </otherwise>
+            </choose>
+        </if>
+       
+    </sql>
+
+    <select id="getQaBbs" resultMap="qaBbsResultMap">
+        /* kr.or.lx.rcic.modules.qaBbs.mapper.QaBbsMapper.getQaBbs */
+
+        SELECT
+            BBSCTT_NO as ID,
+			BBSCTT_NO,
+			QESTN_TY,
+			(SELECT CODE_NM FROM RCIC.TB_SYS_CMM_CODE_DTL CD  WHERE GROUP_CODE ='QESTN_TY' AND CODE = QESTN_TY) QESTN_TY_NM,
+			QESTN_SJ,
+			QESTN_CN,
+			TO_CHAR(QESTN_DT, 'YYYY-MM-DD' ) AS QESTN_DT,
+			ANSWR_CN,
+			TO_CHAR(ANSWR_DT, 'YYYY-MM-DD' ) AS ANSWR_DT,
+			DEL_AT,
+			USER_SEQ,
+            (SELECT U.USER_NM FROM RCIC.TB_USER U  WHERE U.USER_SEQ = TB_QA_BBS.USER_SEQ) USER_NM,
+			TO_CHAR(REGIST_DT, 'YYYY-MM-DD HH24:MI:SS' ) AS REGIST_DT,
+            TO_CHAR(REGIST_DT, 'YYYY-MM-DD' ) AS REGIST_DATE
+        FROM rcic.tb_qa_bbs
+        WHERE
+         bbsctt_no = #{id}
+	</select>
+
+    <select id="selectQaBbsCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM RCIC.TB_QA_BBS
+        <include refid="whereConditions" />
+    </select>
+
+    
+    <select id="selectQaBbsList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+		SELECT
+			BBSCTT_NO as ID,
+			BBSCTT_NO,
+			QESTN_TY,
+			(SELECT CODE_NM FROM RCIC.TB_SYS_CMM_CODE_DTL CD  WHERE GROUP_CODE ='QESTN_TY' AND CODE = QESTN_TY) QESTN_TY_NM,
+			QESTN_SJ, 
+			QESTN_CN, 
+			TO_CHAR(QESTN_DT, 'YYYY-MM-DD' ) AS QESTN_DT,  
+			ANSWR_CN, 
+			TO_CHAR(ANSWR_DT, 'YYYY-MM-DD' ) AS ANSWR_DT, 
+			DEL_AT,
+			USER_SEQ,
+            (SELECT U.USER_NM FROM RCIC.TB_USER U  WHERE U.USER_SEQ = TB_QA_BBS.USER_SEQ) USER_NM,
+			TO_CHAR(REGIST_DT, 'YYYY-MM-DD HH24:MI:SS' ) AS REGIST_DT,
+            TO_CHAR(REGIST_DT, 'YYYY-MM-DD' ) AS REGIST_DATE,
+            (SELECT COUNT(*) FROM TB_BBS_ATCH_FILE ATCH WHERE ATCH.REFRN_BBSCTT_TY = '3' AND REFRN_BBSCTT_NO = BBSCTT_NO) AS FILE_CNT
+		FROM RCIC.TB_QA_BBS
+        <include refid="whereConditions" />
+        ORDER BY BBSCTT_NO DESC
+        <include refid="common.footerRow"/>
+	</select>
+
+    <update id="updateQaBbs" parameterType="kr.or.lx.rcic.modules.board.entity.QaBbs">
+        /* kr.or.lx.rcic.modules.qaBbs.mapper.QaBbsMapper.updateQaBbs */
+
+        UPDATE rcic.tb_qa_bbs
+        SET
+               qestn_ty = #{qestnTy}
+                    , qestn_sj = #{qestnSj}
+                    , qestn_cn = #{qestnCn}
+                    , qestn_dt = #{qestnDt}
+                    , answr_cn = #{answrCn}
+                    , answr_dt = #{answrDt}
+                    , del_at = #{delAt}
+                    , user_seq = #{userSeq}
+                      , updt_dt = NOW()
+              WHERE
+             bbsctt_no = #{id}
+    </update>
+
+    <update id="answerQaBbs" parameterType="kr.or.lx.rcic.modules.board.entity.QaBbs">
+        /* kr.or.lx.rcic.modules.qaBbs.mapper.QaBbsMapper.answerQaBbs */
+        UPDATE rcic.tb_qa_bbs
+           SET answr_cn = #{answrCn}
+             , answr_dt = now()
+         WHERE bbsctt_no = #{id}
+    </update>
+
+    <delete id="deleteQaBbs" parameterType="kr.or.lx.rcic.modules.board.entity.QaBbs">
+        DELETE FROM RCIC.TB_QA_BBS
+        <include refid="whereConditions" />
+    </delete>
+
+    <insert id="insertQaBbs" parameterType="kr.or.lx.rcic.modules.board.entity.QaBbs">
+        <selectKey resultType="long" keyColumn="BBSCTT_NO" keyProperty="bbscttNo" order="BEFORE">
+            SELECT nextval('rcic.seq_tb_qa_bbs')
+        </selectKey>
+        INSERT INTO RCIC.TB_QA_BBS
+        (
+        	BBSCTT_NO, 
+        	QESTN_TY, 
+        	QESTN_SJ, 
+        	QESTN_CN, 
+        	QESTN_DT, 
+        	USER_SEQ,
+        	REGIST_DT 
+        )
+        VALUES (
+	        #{bbscttNo},
+	        #{qestnTy},
+	        #{qestnSj},
+	        #{qestnCn},
+	        NOW(),
+	        #{userSeq},
+	        NOW()
+        )
+	</insert>
+
+</mapper>
+

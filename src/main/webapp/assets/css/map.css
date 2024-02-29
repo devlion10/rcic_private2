@@ -1,0 +1,746 @@
+#rcicMap {
+		    width: 100%;
+		    height: 100%;
+		    position: fixed; 
+		    z-index: 0;  
+		}
+		
+.customizing {  
+	position: absolute;
+	bottom: 49%;
+	width: 100%;
+	z-index: 11;
+}
+input[type=range] {
+    display: block;
+    width: 100%;
+}
+
+input:focus {outline:none;}
+	input{
+	  border:none;
+	  hover:none;
+}
+
+.corDtlBox{
+	width:695px !important;
+}
+ 
+	#mapLegend{
+	    position: absolute;
+	    right: 3%;
+	    bottom: 6%;
+	    display: none;
+	}
+    .geostats-legend-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .geostats-legend-block {
+      border: 1px solid #555555;
+      display: block;
+      float: left;
+      height: 12px;
+      margin: 0 5px 0 20px; 
+      width: 20px;
+    }
+    .geostats-legend-counter {
+      font-size: 0.8em;
+      color: #666;
+      font-style: italic;
+	}
+
+/* zoom */
+.zoom_Control {
+    position: absolute;
+    top: 0px;
+    right: -2px;
+    width: 40px;  
+    height: 178px;
+    padding: 1px 5px 7px 1px;
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #70a11c;
+    box-shadow: 2px 2px 2px rgba(0,0,0,.2);
+}
+.zoom_Control .zoom_drag {
+    position: relative;
+    width: 16px;
+    height: 97px;
+    margin: 42px auto 0 10px;
+    padding: 2px 0;
+    background: url(/assets/images/map/zoom_drag_bg.gif) center top no-repeat;
+    cursor: pointer;
+}
+.zoom_Control .drag_process {
+    position: absolute;
+    top: -1px;
+    left: 36%;
+    width: 6px;
+    height: 100%;
+    padding: 2px 0;
+    margin-left: -3px;
+    background: #e3e3e5;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.zoom_Control .drag_process .p_bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #6fad21;
+}
+.zoom_Control .zoom_drag .bar {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    display: block;
+    width: 25px;
+    height: 10px;
+    margin-left: -11px;
+    margin-top: -9px;
+    background: url(/assets/images/map/bar.png) left top no-repeat;
+}
+.zoom_Control .zoom_pet {
+    position: absolute;
+    top: -50px;
+    left: -60px;
+	list-style-type: none;
+    display: none;
+}
+.zoom_Control .zoom_pet li {
+    position: absolute;
+    left: 0;
+    width: 56px;
+    height: 24px;
+    padding: 1px 10px 8px 1px;
+    font-size: 11px;
+    color: #fff;
+    line-height: 19px;
+    text-align: center;
+    background: url(/assets/images/map/zoom_info_bg.png) right top no-repeat;
+}
+.zoom_Control .btn_zoom {
+    display: block;
+    position: absolute;
+    left: 7px;
+    width: 26px;
+    height: 20px;
+    z-index: 10;
+	margin-top: 5px;
+}
+.zoom_Control .minus {
+    bottom: 12px;
+}
+.zoom_Control .zoom_pet li.pet01 {
+    top: 0px;
+}
+.zoom_Control .zoom_pet li.pet02 {
+    top: 20px;
+}
+.zoom_Control .zoom_pet li.pet03 {
+    top: 63px;
+}
+.zoom_Control .zoom_pet li.pet04 {
+    top: 95px;
+}
+.zoom_Control .zoom_pet li.pet05 {
+    top: 124px;
+}
+.zoom_Control .zoom_pet li.pet06 {  
+    top: 106px;
+}
+
+.mapTooltipStart { 
+    color:#fff;
+    font-size:10px;
+    font-weight:600;
+    padding:1px 3px;
+    background:#2096e2;
+    margin-right:5px;
+    border-radius:2px;
+}
+.mapTooltipEnd { 
+    color:#fff;
+    font-size:10px;
+    font-weight:600;
+    padding:1px 3px;
+    background:#2096e2;
+    margin-right:5px;
+    border-radius:2px;
+}
+		
+		
+    /* popup style */
+  .ol-popup {
+    max-width:300px;
+    min-width:100px;
+    min-height:1em;
+  }
+  /* Image on popup */
+  .ol-popup img {
+    float: left;
+    margin: 0 0.5em 0 0;
+    max-width: 100px;
+    max-height: 100px;
+  }
+  /* no image content tooltips */
+  .ol-popup.tooltips img {
+    display:none;
+  }
+  /* Custom red style (tips) */
+  .ol-popup.red > div {
+    background-color: red;
+  }
+  .ol-popup.red .anchor {
+    color: red;
+  }
+
+  /* Custom orange style (tips) */
+  .ol-popup.tips.orange > div {
+    border-color:#da7;
+    background-color:#eca;
+  }
+  .ol-popup.tips.orange .anchor {
+    color: #da7;
+  }
+
+  /* orange style (default) */
+  .ol-popup.default.orange > div {
+    border:4px solid #f96;
+  }
+  .ol-popup.default.orange .anchor {
+    margin: -10px 22px;
+  }
+  .ol-popup.default.orange .anchor::after {
+    margin: 5px -11px; 
+  }
+  .ol-popup-middle.default.orange .anchor::after {
+    margin: -10.5px -27px /*border:4 +2 px */; 
+    }
+    .ol-popup.default.orange .anchor {
+      color: #f96;
+    }
+    .closeBox {
+      display: none;
+    }  
+    .ttip {
+  position: relative;
+  display: inline-block;
+}
+.ttip .ttiptext {
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  width: 135px;
+  background-color: #4c83f3;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: 50%;
+  margin-left: -38px;
+  font-size: 12px;
+  font-weight: 300;
+}
+.ttip .ttiptext b {
+  font-size: 12px;
+}
+.ttip .ttiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 30%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #4c83f3 transparent;
+}
+.ttip:hover .ttiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.ttip .ttiptextL {
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  width: 135px;
+  background-color: #4c83f3;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: -24%;
+  margin-left: -38px;
+  font-size: 12px;
+  font-weight: 300;
+}
+.ttip .ttiptextL b {
+  font-size: 12px;
+}
+.ttip .ttiptextL::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 73%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #4c83f3 transparent;
+}
+.ttip:hover .ttiptextL {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tip {
+  position: relative;
+  display: inline-block;
+}
+.tip .tiptext {
+  /* opacity: 0;
+transition: opacity 1s;
+visibility: hidden;
+width: auto;
+background-color: #4c84f2;
+color: #fff;
+text-align: left;
+border-radius: 3px;
+padding: 5px 8px;
+position: absolute;
+z-index: 1;
+top: 10%;
+left: 30%;
+margin-left: -80px;
+font-size: 12px;
+font-weight: 300; */
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  width: auto;
+  background-color: #4c84f2;
+  color: #fff;
+  text-align: left;
+  border-radius: 3px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 2;
+  top: 126%;
+	right: -40%;
+  margin-left: -80px;
+  font-size: 12px;
+  font-weight: 300;
+}
+.tip .tiptext b {
+  font-size: 12px;
+}
+.tip .tiptext::after {
+   content: " ";
+   position: absolute;
+   left: 50%;
+   bottom: 100%;
+   margin-left: -10px;
+   border-width: 10px;
+   border-style: solid;
+   border-color: #4c83f3 transparent transparent transparent;
+   transform: rotate(180deg);
+  /* content: "";
+position: absolute;
+top: 50%;
+left: 100%;
+margin-top: -5px;
+border-width: 5px;
+border-style: solid;
+border-color: transparent transparent transparent #4c83f3; */
+}
+.tip:hover .tiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tlt {
+  position: relative;
+  display: inline-block;
+}
+.tlt .tlttext {
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  width: 120px;
+  background-color: #4c83f3;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: 50%;
+  margin-left: -38px;
+  font-size: 12px;
+  font-weight: 300;
+}
+.tlt .tlttext b {
+  font-size: 12px;
+}
+.tlt .tlttext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 30%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #4c83f3 transparent;
+}
+.tlt:hover .tlttext {
+  visibility: visible;
+  opacity: 1;
+}
+.tlt .tlttextL {
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  width: 120px;
+  background-color: #4c83f3;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: -5%;
+  margin-left: -38px;
+  font-size: 12px;
+  font-weight: 300;
+}
+.tlt .tlttextL b {
+  font-size: 12px;
+}
+.tlt .tlttextL::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 73%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #4c83f3 transparent;
+}
+.tlt:hover .tlttextL {
+  visibility: visible;
+  opacity: 1;
+}
+
+.simpleTooltip {
+  position: relative;
+  display: inline-block;
+}
+/* .simpleTooltip .simpleTooltiptxt {
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  background-color: #4d5056;
+  color: #fff;
+  text-align: left;
+  border-radius: 3px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 15px;
+  width: 100px;
+  font-size: 12px;
+  font-weight: 300;
+  box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+  -moz-box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+} */
+.simpleTooltip .simpleTooltiptxt {
+  opacity: 0;
+  transition: opacity 1s;
+  visibility: hidden;
+  background-color: #4d5056;
+  color: #fff;
+  text-align: left;
+  border-radius: 3px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 15px;
+  width: 230px;
+  font-size: 12px;
+  font-weight: 300;
+  box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+  -moz-box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+}
+
+.simpleTooltip .simpleTooltiptxt b {
+  font-size: 12px;
+}
+.simpleTooltip .simpleTooltiptxt::after {
+  content: "";
+  position: absolute;
+  top: 22%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #4d5056;
+}
+.simpleTooltip:hover .simpleTooltiptxt {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* measure */  
+.measure-tooltip {
+	position: relative;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 4px;  
+	color: white;
+	padding: 4px 8px;
+	opacity: 0.7;
+	white-space: nowrap;
+} 
+.tooltip-static {
+	background-color: red;
+	color: white;
+	font-weight:bold;
+	border: 1px solid white;
+}
+.tooltip-static:before {
+	border-top: 6px solid rgba(0, 0, 0, 0.5);
+	border-right: 6px solid transparent;
+	border-left: 6px solid transparent;
+	content: "";
+	position: absolute;
+	bottom: -6px;
+	margin-left: -7px; 
+	left: 50%;
+}
+.tooltip-static:before {
+	border-top-color: #ffcc33;
+}
+ 
+/* draw */
+.draw-tooltip {
+	position: relative;
+	border-radius: 4px;
+	padding: 20px 25px;
+	white-space: nowrap;
+	background-color: black;
+	color: white;
+	font-weight:bold;
+	border: 1px solid white;
+}
+
+
+
+.checkLayer input[type="checkbox"]#rcic\:bridge5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #074d2c;
+    background-color:#074d2c;
+    vertical-align: middle;
+}
+
+
+.checkLayer input[type="checkbox"]#rcic\:carOnlyRoad5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #ff0004;
+    background-color:#ff0004;
+    vertical-align: middle;
+}
+.checkLayer input[type="checkbox"]#rcic\:curRad5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #f507b6;
+    background-color:#f507b6;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:gulNoPrmsn5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #e94c0f;
+    background-color:#e94c0f;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:intersection5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #00ff84;
+    background-color:#00ff84;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:longitudinal_slope5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #3232fb;
+    background-color:#3232fb;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:stopstand5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #b607f5;
+    background-color:#b607f5;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:ternal5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #00ffff;
+    background-color:#00ffff;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:tb_cbnd_info3857{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #000000;
+    background-color:#000000;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:carBoundary5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #f6ff00;
+    background-color:#f6ff00;
+    vertical-align: middle;
+}
+
+.checkLayer input[type="checkbox"]#rcic\:roadBook5179{
+    -webkit-appearance: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #8da4a8;
+    background-color:#8da4a8;
+    vertical-align: middle;
+}
+
+
+
+
+
+
+.checkLayer input[type="checkbox"]::before {
+    content: "\2713";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    transform: scale(0) translate(-50%, -50%);
+    line-height: 1;
+}
+.checkLayer input[type="checkbox"]:checked {
+    /*background-color: #63aeff;*/
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+.checkLayer input[type="checkbox"]:checked::before {
+    border-radius: 4px;
+    transform: scale(1) translate(-50%, -50%)
+}
+
+.checkLayer label{
+    position: relative !important;
+    padding-left: 2px !important;
+    top:2px !important;
+
+}
+
+.checkLayer input[type="checkbox"] + label:before {
+   display:none !important;
+
+}
+
+
+.checkLayer input[type="checkbox"]:checked + label:after {
+   display:none !important;
+}

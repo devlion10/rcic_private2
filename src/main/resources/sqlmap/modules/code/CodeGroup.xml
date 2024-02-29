@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.code.mapper.CodeGroupMapper">
+
+    <resultMap id="sysCmmCodeResultMap" type="kr.or.lx.rcic.modules.code.entity.CodeGroup">
+        <!-- 그룹코드 -->
+        <result property="groupCode" column="group_code"/>
+        <!-- 그룹코드명 -->
+        <result property="groupNm" column="group_nm"/>
+        <!-- 코드설명 -->
+        <result property="codeDc" column="code_dc"/>
+        <!-- 사용여부 -->
+        <result property="useYn" column="use_yn"/>
+        <!-- 비고 -->
+        <result property="rm" column="rm"/>
+        <!-- 등록자아이디 -->
+        <result property="registId" column="regist_id"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="groupCode != null and groupCode != ''">
+            AND group_code = #{groupCode}
+        </if>
+        <if test="groupNm != null and groupNm != ''">
+            AND group_nm = #{groupNm}
+        </if>
+        <if test="codeDc != null and codeDc != ''">
+            AND code_dc = #{codeDc}
+        </if>
+        <if test="useYn != null and useYn != ''">
+            AND use_yn = #{useYn}
+        </if>
+        <if test="rm != null and rm != ''">
+            AND rm = #{rm}
+        </if>
+        <if test="registId != null and registId != ''">
+            AND regist_id = #{registId}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+
+        <if test="keyword != null and keyword != '' ">
+            <choose>
+                <when test="searchType != null and searchType == 'groupCode'">
+                    AND group_code LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType != null and searchType == 'groupNm'">
+                    AND group_nm LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <otherwise>
+                    AND group_code LIKE CONCAT('%', #{keyword}, '%')
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
+    <select id="getCodeGroup" resultMap="sysCmmCodeResultMap">
+        /* kr.or.lx.rcic.modules.codeGroup.mapper.CodeGroupMapper.getCodeGroup */
+
+        SELECT
+            group_code, group_nm, code_dc, use_yn, rm, regist_id,
+            TO_CHAR(regist_dt, 'YYYY-MM-DD') as regist_dt
+        FROM rcic.tb_sys_cmm_code
+        WHERE
+         group_code = #{groupCode}
+	</select>
+
+    <select id="selectCodeGroupCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.code.mapper.CodeGroupMapper.simpleListCodeGroupCnt */
+
+        SELECT COUNT(*)
+        FROM rcic.tb_sys_cmm_code
+        <include refid="whereConditions" />
+    </select>
+
+    
+    <select id="selectCodeGroupList" resultType="egovMap">
+        /* kr.or.lx.rcic.modules.code.mapper.CodeGroupMapper.selectCodeGroupList */
+
+        <include refid="common.headerRow"/>
+        SELECT
+            group_code, group_nm, code_dc, use_yn, rm, regist_id,
+            TO_CHAR(regist_dt, 'YYYY-MM-DD') as regist_dt
+        FROM rcic.tb_sys_cmm_code
+        <include refid="whereConditions" />
+        ORDER BY group_code ASC
+        <include refid="common.footerRow"/>
+	</select>
+
+    <update id="updateCodeGroup" parameterType="kr.or.lx.rcic.modules.code.entity.CodeGroup">
+        /* kr.or.lx.rcic.modules.codeGroup.mapper.CodeGroupMapper.updateCodeGroup */
+        UPDATE rcic.tb_sys_cmm_code
+        SET   group_nm = #{groupNm}
+            , code_dc = #{codeDc}
+            , use_yn = #{useYn}
+            , rm = #{rm}
+      WHERE group_code = #{groupCode}
+    </update>
+
+    <delete id="deleteCodeGroup" parameterType="kr.or.lx.rcic.modules.code.entity.CodeGroup">
+        /* kr.or.lx.rcic.modules.codeGroup.mapper.CodeGroupMapper.deleteCodeGroup */
+
+        DELETE FROM rcic.tb_sys_cmm_code
+        WHERE
+             group_code = #{groupCode}
+    </delete>
+
+    <delete id="deleteCodeGroupList">
+        /* kr.or.lx.rcic.modules.codeGroup.mapper.CodeGroupMapper.deleteCodeGroupList */
+
+        DELETE FROM rcic.tb_sys_cmm_code
+        WHERE
+             group_code IN <foreach collection="codeGroupList" item="codeGroup" separator="," open="(" close=")">#{codeGroup}</foreach>
+    </delete>
+
+
+    <insert id="insertCodeGroup">
+        /* kr.or.lx.rcic.modules.codeGroup.mapper.CodeGroupMapper.insertCodeGroup */
+        INSERT INTO rcic.tb_sys_cmm_code
+        (
+        group_code, group_nm, code_dc, use_yn, rm, regist_id, regist_dt
+        )
+        VALUES (
+        #{groupCode},
+        #{groupNm},
+        #{codeDc},
+        #{useYn},
+        #{rm},
+        #{registId},
+        NOW()
+        )
+	</insert>
+
+</mapper>
+

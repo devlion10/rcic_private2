@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.mlearning.mapper.MachineLearningMapper">
+
+
+    <select id="getLightLogList" resultType="egovMap">
+    <include refid="common.headerRow"/>
+        select lrn_result_no, modl_no, lrn_bgnde, lrn_endde, to_char(execut_dt, 'yyyy-MM-dd hh:mi:ss') as execut_dt, lrn_nm, lrn_result
+        from rcic.tb_ml_exe_result
+        where modl_no = 1
+        order by execut_dt desc
+    <include refid="common.footerRow"/>
+    </select>
+
+    <select id="getLightLogListCnt" resultType="java.lang.Integer">
+        select count(*)
+        from rcic.tb_ml_exe_result
+        where modl_no = 1
+    </select>
+
+
+    <select id="getLightResultOmissionList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        select diff.bidntceno, diff.bidntceord, g2b.bidntcenm, g2b.ntceinsttnm, g2b.bidntcedtlurl
+        from(
+                select bidntceno, bidntceord from rcic.tb_ml_result_kw
+                    except
+                select bidntceno, bidntceord from rcic.tb_analysis_info
+            ) as diff, rcic.tb_g2b_result_info as g2b
+        where diff.bidntceno = g2b.bidntceno and diff.bidntceord = g2b.bidntceord
+        <include refid="common.footerRow"/>
+    </select>
+
+    <select id="getLightResultOmissionListCnt" resultType="java.lang.Integer">
+        select count(*)
+        from(
+                select bidntceno, bidntceord from rcic.tb_ml_result_kw
+                    except
+                select bidntceno, bidntceord from rcic.tb_analysis_info
+            ) as diff, rcic.tb_g2b_result_info as g2b
+        where diff.bidntceno = g2b.bidntceno and diff.bidntceord = g2b.bidntceord
+    </select>
+
+    <select id="getLightResultWrongList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        select diff.bidntceno, diff.bidntceord, g2b.bidntcenm, g2b.ntceinsttnm, g2b.bidntcedtlurl
+        from(
+                select bidntceno, bidntceord from rcic.tb_analysis_info
+                    except
+                select bidntceno, bidntceord from rcic. tb_ml_result_kw
+            ) as diff, rcic.tb_g2b_result_info as g2b
+        where diff.bidntceno = g2b.bidntceno and diff.bidntceord = g2b.bidntceord
+        <include refid="common.footerRow"/>
+    </select>
+
+    <select id="getLightResultWrongListCnt" resultType="java.lang.Integer">
+        select count(*)
+        from(
+                select bidntceno, bidntceord from rcic.tb_analysis_info
+                    except
+                select bidntceno, bidntceord from rcic. tb_ml_result_kw
+            ) as diff, rcic.tb_g2b_result_info as g2b
+        where diff.bidntceno = g2b.bidntceno and diff.bidntceord = g2b.bidntceord
+    </select>
+
+    <select id="getLinearLogList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        select lrn_result_no
+             , modl_no
+             , lrn_bgnde
+             , lrn_endde
+             , to_char(execut_dt, 'yyyy-MM-dd hh:mi:ss') as execut_dt
+             , lrn_nm
+             , lrn_result
+          from rcic.tb_ml_exe_result
+         where modl_no = 2
+      order by execut_dt desc
+        <include refid="common.footerRow"/>
+    </select>
+    <select id="getLinearLogListCnt" resultType="java.lang.Integer">
+        select count(*)
+          from rcic.tb_ml_exe_result
+         where modl_no = 2
+    </select>
+
+
+    <select id="getLinearResultCaughtList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        select
+			anal.resultno ,
+			anal.bidntceord ,
+			anal.bidntcenm ,
+			anal.ntceinsttnm ,
+			round(resu.radius::numeric, 3) as radius
+		from
+			rcic.tb_g2b_result_info as anal,
+			rcic.tb_ml_result_rd as resu
+		where
+			anal.bidntceno = resu.bidntceno
+			and anal.bidntceord = resu.bidntceord
+        <include refid="common.footerRow"/>
+    </select>
+    <select id="getLinearResultCaughtListCnt" resultType="java.lang.Integer">
+        select
+			count(*)
+		from
+			rcic.tb_g2b_result_info as anal,
+			rcic.tb_ml_result_rd as resu
+		where
+			anal.bidntceno = resu.bidntceno
+			and anal.bidntceord = resu.bidntceord
+    </select>
+
+
+    <select id="getLinearResultMissedList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        select bidntceno, bidntceord, bidntcenm, ntceinsttnm
+        from rcic.tb_analysis_info_no_location
+        <include refid="common.footerRow"/>
+    </select>
+    <select id="getLinearResultMissedListCnt" resultType="java.lang.Integer">
+        select count(*)
+          from rcic.tb_analysis_info_no_location
+    </select>
+
+
+</mapper>
+

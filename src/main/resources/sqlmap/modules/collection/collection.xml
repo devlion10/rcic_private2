@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.collection.mapper.CollectionMapper">
+	
+	<select id="getKeywordCntList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        	SELECT
+				KEYWORD,
+				SUM(GETDATACNT) AS GETDATACNT
+			FROM
+				RCIC.TB_INTF_LOG_INFO
+			WHERE NOT KEYWORD IS NULL
+			AND START_DT BETWEEN #{fromDt} AND #{toDt}
+			GROUP BY KEYWORD
+			ORDER BY GETDATACNT DESC
+        <include refid="common.footerRow"/>
+	</select>
+
+	<select id="getKeywordCntListCnt" resultType="int">
+       SELECT COUNT(*) from (
+			SELECT
+				KEYWORD,
+				SUM(GETDATACNT) AS GETDATACNT
+			FROM
+				RCIC.TB_INTF_LOG_INFO
+			WHERE NOT KEYWORD IS NULL
+			AND START_DT BETWEEN #{fromDt} AND #{toDt}
+			GROUP BY KEYWORD
+		) AS DUAL
+    </select>
+    
+    
+    <select id="getCollectAtm" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select under_1_cnt                                                                    
+	       , ROUND(under_1_cnt / tot_num_cnt::numeric, 4) * 100 as under_1_rate               
+	       , under_5_cnt                                                                      
+	       , ROUND(under_5_cnt / tot_num_cnt::numeric, 4) * 100 as under_5_rate               
+	       , under_10_cnt                                                                     
+	       , ROUND(under_10_cnt / tot_num_cnt::numeric, 4) * 100 as under_10_rate             
+	       , under_50_cnt                                                                     
+	       , ROUND(under_50_cnt / tot_num_cnt::numeric, 4) * 100 as under_50_rate             
+	       , under_100_cnt                                                                    
+	       , ROUND(under_100_cnt / tot_num_cnt::numeric, 4) * 100 as under_100_rate           
+	       , under_500_cnt                                                                    
+	       , ROUND(under_500_cnt / tot_num_cnt::numeric, 4) * 100 as under_500_rate           
+	       , under_1000_cnt                                                                   
+	       , ROUND(under_1000_cnt / tot_num_cnt::numeric, 4) * 100 as under_1000_rate         
+	       , over_1000_cnt                                                                    
+	       , ROUND(over_1000_cnt / tot_num_cnt::numeric, 4) * 100 as over_1000_rate           
+	       , tot_num_cnt                                                                      
+	       , under_1_amt                                                                      
+	       , ROUND(under_1_amt / tot_num_amt::numeric, 4) * 100 as under_1_amt_rate           
+	       , under_5_amt                                                                      
+	       , ROUND(under_5_amt / tot_num_amt::numeric, 4) * 100 as under_5_amt_rate           
+	       , under_10_amt                                                                     
+	       , ROUND(under_10_amt / tot_num_amt::numeric, 4) * 100 as under_10_amt_rate         
+	       , under_50_amt                                                                     
+	       , ROUND(under_50_amt / tot_num_amt::numeric, 4) * 100 as under_50_amt_rate         
+	       , under_100_amt                                                                    
+	       , ROUND(under_100_amt / tot_num_amt::numeric, 4) * 100 as under_100_amt_rate       
+	       , under_500_amt                                                                    
+	       , ROUND(under_500_amt / tot_num_amt::numeric, 4) * 100 as under_500_amt_rate       
+	       , under_1000_amt                                                                   
+	       , ROUND(under_1000_amt / tot_num_amt::numeric, 4) * 100 as under_1000_amt_rate     
+	       , over_1000_amt                                                                    
+	       , ROUND(over_1000_amt / tot_num_amt::numeric, 4) * 100 as over_1000_amt_rate       
+	       , tot_num_amt                                                                      
+	  from (
+	 select sum(case when CAST(presmptprce as numeric)  <![CDATA[ < ]]> 100000000 then 1 else 0 end) as under_1_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 100000000    and CAST(presmptprce as numeric) <![CDATA[ < ]]> 500000000 then 1 else 0 end) as under_5_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 500000000    and CAST(presmptprce as numeric) <![CDATA[ < ]]> 1000000000 then 1 else 0 end) as under_10_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 1000000000   and CAST(presmptprce as numeric) <![CDATA[ < ]]> 5000000000 then 1 else 0 end) as under_50_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 5000000000   and CAST(presmptprce as numeric) <![CDATA[ < ]]> 10000000000 then 1 else 0 end) as under_100_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 10000000000  and CAST(presmptprce as numeric) <![CDATA[ < ]]> 50000000000 then 1 else 0 end) as under_500_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 50000000000  and CAST(presmptprce as numeric) <![CDATA[ < ]]> 100000000000 then 1 else 0 end) as under_1000_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 100000000000 then 1 else 0 end) as over_1000_cnt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ < ]]> 100000000 then CAST(presmptprce as numeric) else 0 end) as under_1_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 100000000    and CAST(presmptprce as numeric) <![CDATA[ < ]]> 500000000 then CAST(presmptprce as numeric) else 0 end) as under_5_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 500000000    and CAST(presmptprce as numeric) <![CDATA[ < ]]> 1000000000 then CAST(presmptprce as numeric) else 0 end) as under_10_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 1000000000   and CAST(presmptprce as numeric) <![CDATA[ < ]]> 5000000000 then CAST(presmptprce as numeric) else 0 end) as under_50_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 5000000000   and CAST(presmptprce as numeric) <![CDATA[ < ]]> 10000000000 then CAST(presmptprce as numeric) else 0 end) as under_100_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 10000000000  and CAST(presmptprce as numeric) <![CDATA[ < ]]> 50000000000 then CAST(presmptprce as numeric) else 0 end) as under_500_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 50000000000  and CAST(presmptprce as numeric) <![CDATA[ < ]]> 100000000000 then CAST(presmptprce as numeric) else 0 end) as under_1000_amt
+	       , sum(case when CAST(presmptprce as numeric) <![CDATA[ >= ]]> 100000000000 then CAST(presmptprce as numeric) else 0 end) as over_1000_amt     
+	       , sum(1) as tot_num_cnt
+	       , sum(CAST(presmptprce as numeric)) as tot_num_amt      
+	  from rcic.tb_g2b_result_info
+	 where 1=1
+	   	AND stdr_dt BETWEEN #{startDt} AND #{endDt}
+	   and is_numeric(presmptprce) = 't'
+	 ) tab
+	</select>	
+    
+</mapper>	 

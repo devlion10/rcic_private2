@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.chart.mapper.ChartMapper">
+ 
+ <!--도로개설수 -->
+	<select id="selectChart1" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select count(*), substr(stdr_dt,0,7) as stdr_dt
+		  from tb_analysis_info
+		  WHERE stdr_dt BETWEEN #{ fromDt } AND #{ toDt }  
+		  group by substr(stdr_dt,0,7)
+		  order by substr(stdr_dt,0,7)
+		
+	</select>
+	
+ <!--수집현황 -->
+	<select id="selectChart2" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select count(*), substr(stdr_dt,0,7) as stdr_dt
+		  from tb_g2b_result_info
+		  WHERE stdr_dt BETWEEN #{ fromDt } AND #{ toDt }  
+		  group by substr(stdr_dt,0,7)
+		  order by substr(stdr_dt,0,7) desc
+	</select>
+	
+	 <!--수집건에 대한 키워드 분석 -->
+	<select id="selectChart2_1" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		select count(*), substr(stdr_dt,0,7) as stdr_dt, search_word
+			from rcic.tb_g2b_result_info
+			WHERE substr(stdr_dt,0,7) = #{stdrDt}
+			group by substr(stdr_dt,0,7),search_word
+			order by count(*) desc 
+	</select>
+	
+	 <!--지역별 공사수 -->
+	<select id="selectChart3" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select *,(select sido_nm from rcic.tb_legaldong_sido s where s.sido_cd = a.sido_cd) as sido_nm
+		from (			 
+			select count(*), sido_cd
+				   from rcic.tb_analysis_info
+				  WHERE 1=1
+				    ANd stdr_dt BETWEEN #{ fromDt } AND #{ toDt } 
+				group by sido_cd
+				order by count(*) desc
+				LIMIT 5
+			)a
+	</select>	
+	
+	 <!--지역별 공사수 -->
+	<select id="selectChart3_1" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	
+		select *, (select signgu_nm from rcic.tb_legaldong_sgg s where s.signgu_code = a.sgg_cd) as sgg_nm
+		from (			 
+			 select count(*), sgg_cd 
+				   from rcic.tb_analysis_info
+				 where 1=1
+				  ANd stdr_dt BETWEEN #{ fromDt } AND #{ toDt } 
+				 and sgg_cd is not null 
+				 and sido_cd=#{sidoCd}
+				group by sgg_cd 
+				order by count(*) desc
+				LIMIT 10
+			)a
+	</select>	
+	
+</mapper>	 

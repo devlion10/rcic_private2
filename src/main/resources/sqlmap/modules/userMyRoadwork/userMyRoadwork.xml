@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.userMyRoadwork.mapper.UserMyRoadworkMapper">
+
+    <resultMap id="userMyRoadworkResultMap" type="kr.or.lx.rcic.modules.userMyRoadwork.entity.UserMyRoadwork">
+        <!-- 사용자번호 -->
+        <result property="userSeq" column="user_seq"/>
+        <!-- 시퀀스 -->
+        <result property="seq" column="seq"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 등록아이디 -->
+        <result property="registId" column="regist_id"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+        <!-- 수정아이디 -->
+        <result property="updtId" column="updt_id"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="userSeq != null and userSeq != ''">
+            AND user_seq = #{userSeq}
+        </if>
+        <if test="seq != null">
+            AND seq = #{seq}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtEq != null and registDtEq != ''">
+            AND regist_dt = STR_TO_DATE(#{registDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="registId != null and registId != ''">
+            AND regist_id = #{registId}
+        </if>
+        <if test="updtDt != null and updtDt.enabled == true">
+            
+            <if test="updtDtEq != null and updtDtEq != ''">
+            AND updt_dt = STR_TO_DATE(#{updtDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="updtDtFrom != null and updtDtFrom != ''">
+            AND updt_dt <![CDATA[ >= ]]> STR_TO_DATE(#{updtDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtTo != null and updtDtTo != ''">
+            AND updt_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{updtDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="updtId != null and updtId != ''">
+            AND updt_id = #{updtId}
+        </if>
+    </sql>
+
+    <select id="getUserMyRoadwork" resultMap="userMyRoadworkResultMap">
+        SELECT
+            user_seq, seq, regist_dt, regist_id, updt_dt, updt_id
+        FROM rcic.tb_user_my_roadwork
+        WHERE
+         user_seq = #{userSeq}
+         AND  seq = #{seq}
+	</select>
+
+    <select id="selectUserMyRoadworkCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM RCIC.TB_USER_MY_ROADWORK A, RCIC.TB_ANALYSIS_INFO B
+          WHERE 1=1   
+       	 AND A.SEQ = B.SEQ
+       	 AND A.USER_SEQ = #{userSeq}
+       	 <if test="sidoCd != null and sidoCd != ''">
+       		 AND B.SIDO_CD = #{sidoCd}
+       	 </if>  
+    </select>
+
+    
+    <select id="selectUserMyRoadworkList" resultType="egovMap">
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY A.REGIST_DT) AS RNUM,
+            A.USER_SEQ, 
+            A.SEQ, 
+            TO_CHAR(A.REGIST_DT, 'YYYY-MM-DD' ) AS REGIST_DT, 
+            A.REGIST_ID, 
+            A.UPDT_DT, 
+            A.UPDT_ID,
+            B.BIDNTCENM,
+            B.BIDNTCEDT,
+            B.CNSTRTSITERGNNM,
+            B.BIDNTCEDT,
+            B.FORECAST_END_DT,
+            B.NTCEINSTTNM,
+            B.RESULTNO, 
+            (SELECT ALIAS FROM RCIC.TB_LEGALDONG_SIDO S WHERE B.SIDO_CD = S.SIDO_CD) AS SIDO_NM,
+            TO_DATE(C.CHGDT,'YYYY-MM-DD') AS CHGDT,
+            C.TTALCCMPLTDATE as THTM_CCMPLT_DATE  
+            FROM RCIC.TB_USER_MY_ROADWORK A, RCIC.TB_ANALYSIS_INFO B LEFT OUTER JOIN  RCIC.TB_G2B_CONTRACT_INFO C ON C.NTCENO = CONCAT(B.bidntceno, B.BIDNTCEORD )
+       WHERE 1=1   
+         AND A.SEQ = B.SEQ
+       	 AND A.USER_SEQ = #{userSeq}
+       	 <if test="sidoCd != null and sidoCd != ''">
+       		 AND B.SIDO_CD = #{sidoCd}
+       	 </if>
+         <choose>
+	         <when test="sortGbn == 'ASC' and sortGbn == 'ASC'">
+	         	ORDER BY REGIST_DT ASC
+	         </when>
+	         <when test="sortGbn == 'DESC' and sortGbn == 'DESC'">
+	         	ORDER BY REGIST_DT DESC
+	         </when>
+	       <!--   <otherwise>
+	         	ORDER BY REGIST_DT DESC
+	         </otherwise> -->
+         </choose> 
+         LIMIT  #{listCnt} OFFSET (#{currPage} - 1) * #{listCnt}   
+	</select>
+
+    <update id="updateUserMyRoadwork" parameterType="kr.or.lx.rcic.modules.userMyRoadwork.entity.UserMyRoadwork">
+        UPDATE rcic.tb_user_my_roadwork
+        SET
+                   updt_dt = NOW()
+                    , updt_id = #{updtId}
+              WHERE
+             user_seq = #{userSeq}
+             AND  seq = #{seq}
+    </update>
+ 
+    <update id="updateUserMyRoadworkDynamic" parameterType="kr.or.lx.rcic.modules.userMyRoadwork.entity.UserMyRoadwork">
+        /* kr.or.lx.rcic.modules.userMyRoadwork.mapper.UserMyRoadworkMapper.updateUserMyRoadworkDynamic */
+
+        UPDATE rcic.tb_user_my_roadwork
+            <set>
+            <if test="registDt != null">
+                regist_dt = #{registDt},
+            </if>
+            <if test="registId != null and registId != ''">
+                regist_id = #{registId},
+            </if>
+            <if test="updtDt != null">
+                updt_dt = NOW(),
+            </if>
+            <if test="updtId != null and updtId != ''">
+                updt_id = #{updtId},
+            </if>
+            </set>
+        WHERE
+             user_seq = #{userSeq}
+             AND  seq = #{seq}
+    </update>
+
+    <delete id="deleteUserMyRoadwork" parameterType="kr.or.lx.rcic.modules.userMyRoadwork.entity.UserMyRoadwork">
+        DELETE FROM RCIC.TB_USER_MY_ROADWORK
+        WHERE
+             USER_SEQ = #{userSeq}
+             <if test="seq != null and seq != ''"> 
+             AND  SEQ = #{seq}
+             </if>
+              <!-- 
+             <if test="rnum != null and rnum != ''">
+             AND  RNUM = #{rnum}
+             </if>
+              -->
+    </delete>
+
+    <insert id="insertUserMyRoadwork" parameterType="kr.or.lx.rcic.modules.userMyRoadwork.entity.UserMyRoadwork">
+        INSERT INTO rcic.tb_user_my_roadwork
+        (
+        user_seq, seq, regist_dt, regist_id, updt_dt, updt_id
+        )
+        VALUES (
+        #{userSeq},
+        #{seq},
+        NOW(),
+        #{registId},
+        NOW(),
+        #{updtId}
+        )
+	</insert>
+	
+	<select id="selectFavorList" parameterType="map" resultType="egovMap">
+		SELECT user_seq
+			 , seq
+			 , regist_dt
+			 , regist_id
+			 , updt_dt
+			 , updt_id
+		FROM rcic.tb_user_my_roadwork
+		WHERE 1=1
+		<if test="seqList != null and seqList != ''">
+		AND seq in (<foreach collection="seqList" item="item" separator=",">#{item}</foreach>)
+		</if>
+	</select>
+
+</mapper>
+

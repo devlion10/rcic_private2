@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.lochist.mapper.LocHistMapper">
+
+
+
+<resultMap id="locHistResultMap" type="kr.or.lx.rcic.modules.lochist.entity.LocHistInfo">
+        <!-- 유저번호 -->
+        <result property="seq" column="seq"/>
+        <!-- 상태코드 -->
+        <result property="loc_ty" column="loc_ty"/>
+        <!-- 상태코드 -->
+        <result property="ser_no" column="ser_no"/>
+        <!-- 사용자이름 -->
+        <result property="chg_dt" column="chg_dt"/>
+        <!-- 사용자아이디 -->
+        <result property="chg_resn_cd" column="chg_resn_cd"/>
+        <!-- 비밀번호 -->
+        <result property="chg_resn_dc" column="chg_resn_dc"/>
+        <!-- 패스워드수정일시 -->
+        <result property="geom" column="geom"/>
+        <!-- 최종로그인IP -->
+        <result property="loc_prdt_reli_cd" column="loc_prdt_reli_cd"/>
+        <!-- 등록자아이디 -->
+        <result property="regist_dt" column="regist_dt"/>
+        <!-- 등록자아이디 -->
+        <result property="regist_id" column="regist_id"/>
+        <!-- 등록일시 -->
+        <result property="ref_dic_name_og" column="ref_dic_name_og"/>
+        <!-- 등록일시 -->
+        <result property="ref_dic_name" column="ref_dic_name"/>
+        <!-- 수정자아이디 -->
+        <result property="changereason" column="changereason"/>
+        <!-- 수정일시 -->
+        <result property="serword_og" column="serword_og"/>
+        <!-- 임시비밀번호 -->
+        <result property="serword" column="serword"/>
+    </resultMap>
+    <select id="selectLocHistCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.simpleListUserCnt */
+
+        SELECT COUNT(*)
+        FROM tb_analysis_loc_hist a 
+		INNER JOIN rcic.tb_analysis_info b ON a.seq = b.seq
+        WHERE 1=1
+         <if test="startDate != null and startDate != ''">
+            AND a.chg_dt <![CDATA[ >= ]]> #{startDate}::TIMESTAMP WITH TIME ZONE
+        </if>
+
+        <if test="endDate != null and endDate != ''">
+            AND a.chg_dt <![CDATA[ <= ]]> #{endDate}::TIMESTAMP WITH TIME ZONE
+        </if>
+        
+		<if test="keyword != null and keyword != ''">
+            and bidntcenm like concat('%', #{keyword},'%')
+            or ref_dic_name like concat('%', #{keyword},'%')
+            or ref_dic_name_og like concat('%', #{keyword},'%')
+            or serword like concat('%', #{keyword},'%')
+            or serword_og like concat('%', #{keyword},'%')
+            or changereason like concat('%', #{keyword},'%')
+        </if>
+        
+    </select>
+
+    
+    <select id="selectLocHistList" parameterType="java.util.HashMap" resultType="egovMap">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.selectUserList */
+
+        <include refid="common.headerRow"/>
+		select 
+			a.seq
+			,TO_CHAR(a.chg_dt, 'YYYY-MM-DD') as chg_dt 
+			, a.ref_dic_name_og
+			, a.ref_dic_name
+			, a.changereason
+			, a.serword_og
+			, a.serword
+			, b.bidntcedt as bidntcedt
+			, b.bidntcenm 
+		from rcic.tb_analysis_loc_hist a 
+		inner join rcic.tb_analysis_info b on a.seq = b.seq
+		where 1=1
+        <if test="startDate != null and startDate != ''">
+            AND a.chg_dt <![CDATA[ >= ]]> #{startDate}::TIMESTAMP WITH TIME ZONE
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND a.chg_dt <![CDATA[ <= ]]> #{endDate}::TIMESTAMP WITH TIME ZONE
+        </if>
+		<if test="keyword != null and keyword != ''">
+            and bidntcenm like concat('%', #{keyword},'%')
+            or ref_dic_name like concat('%', #{keyword},'%')
+            or ref_dic_name_og like concat('%', #{keyword},'%')
+            or serword like concat('%', #{keyword},'%')
+            or serword_og like concat('%', #{keyword},'%')
+            or changereason like concat('%', #{keyword},'%')
+        </if>
+        
+       order by
+			ser_no desc
+		<include refid="common.footerRow"/>
+	</select>
+
+ 
+
+  
+
+  
+	
+	
+
+
+   
+    
+    
+
+</mapper>
+

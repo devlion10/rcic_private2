@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper">
+
+    <resultMap id="userMyStatsResultMap" type="kr.or.lx.rcic.modules.userMyStats.entity.UserMyStats">
+        <!-- 사용자번호 -->
+        <result property="userSeq" column="user_seq"/>
+        <!-- 통계목록구분 -->
+        <result property="statsListSe" column="stats_list_se"/>
+        <!-- 통계차트구분 -->
+        <result property="statsChrtSe" column="stats_chrt_se"/>
+        <!-- 표시순서 -->
+        <result property="dispOrder" column="disp_order"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 등록아이디 -->
+        <result property="registId" column="regist_id"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+        <!-- 수정아이디 -->
+        <result property="updtId" column="updt_id"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="userSeq != null and userSeq != ''">
+            AND user_seq = #{userSeq}
+        </if>
+        <if test="statsListSe != null and statsListSe != ''">
+            AND stats_list_se = #{statsListSe}
+        </if>
+        <if test="statsChrtSe != null and statsChrtSe != ''">
+            AND stats_chrt_se = #{statsChrtSe}
+        </if>
+        <if test="dispOrder != null">
+            AND disp_order = #{dispOrder}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtEq != null and registDtEq != ''">
+            AND regist_dt = STR_TO_DATE(#{registDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="registId != null and registId != ''">
+            AND regist_id = #{registId}
+        </if>
+        <if test="updtDt != null and updtDt.enabled == true">
+            
+            <if test="updtDtEq != null and updtDtEq != ''">
+            AND updt_dt = STR_TO_DATE(#{updtDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="updtDtFrom != null and updtDtFrom != ''">
+            AND updt_dt <![CDATA[ >= ]]> STR_TO_DATE(#{updtDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtTo != null and updtDtTo != ''">
+            AND updt_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{updtDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="updtId != null and updtId != ''">
+            AND updt_id = #{updtId}
+        </if>
+    </sql>
+
+    <select id="getUserMyStats" resultMap="userMyStatsResultMap">
+        /* kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper.getUserMyStats */
+
+        SELECT
+            user_seq, stats_list_se, stats_chrt_se, disp_order, regist_dt, regist_id, updt_dt, updt_id
+        FROM rcic.tb_user_my_stats
+        WHERE
+         user_seq = #{userSeq}
+         AND  stats_list_se = #{statsListSe}
+         AND  stats_chrt_se = #{statsChrtSe}
+	</select>
+
+    <select id="selectUserMyStatsCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper.simpleListUserMyStatsCnt */
+
+        SELECT COUNT(*)
+        FROM rcic.tb_user_my_stats
+        <include refid="whereConditions" />
+    </select>
+
+    
+    <select id="selectUserMyStatsList" resultType="egovMap">
+        SELECT
+            user_seq, stats_list_se, stats_chrt_se, disp_order, regist_dt, regist_id, updt_dt, updt_id
+        FROM rcic.tb_user_my_stats
+        <include refid="whereConditions" />
+         ORDER BY regist_dt DESC
+	</select>
+
+    <update id="updateUserMyStats" parameterType="kr.or.lx.rcic.modules.userMyStats.entity.UserMyStats">
+        /* kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper.updateUserMyStats */
+
+        UPDATE rcic.tb_user_my_stats
+        SET
+               disp_order = #{dispOrder}
+                        , updt_dt = NOW()
+                    , updt_id = #{updtId}
+              WHERE
+             user_seq = #{userSeq}
+             AND  stats_list_se = #{statsListSe}
+             AND  stats_chrt_se = #{statsChrtSe}
+    </update>
+
+    <update id="updateUserMyStatsDynamic" parameterType="kr.or.lx.rcic.modules.userMyStats.entity.UserMyStats">
+        /* kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper.updateUserMyStatsDynamic */
+
+        UPDATE rcic.tb_user_my_stats
+            <set>
+            <if test="dispOrder != null">
+                disp_order = #{dispOrder},
+            </if>
+            <if test="registDt != null">
+                regist_dt = #{registDt},
+            </if>
+            <if test="registId != null and registId != ''">
+                regist_id = #{registId},
+            </if>
+            <if test="updtDt != null">
+                updt_dt = NOW(),
+            </if>
+            <if test="updtId != null and updtId != ''">
+                updt_id = #{updtId},
+            </if>
+            </set>
+        WHERE
+             user_seq = #{userSeq}
+             AND  stats_list_se = #{statsListSe}
+             AND  stats_chrt_se = #{statsChrtSe}
+    </update>
+
+    <delete id="deleteUserMyStats" parameterType="kr.or.lx.rcic.modules.userMyStats.entity.UserMyStats">
+        /* kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper.deleteUserMyStats */
+
+        DELETE FROM rcic.tb_user_my_stats
+        WHERE
+             user_seq = #{userSeq}
+             <!-- AND  stats_list_se = #{statsListSe}
+             AND  stats_chrt_se = #{statsChrtSe} -->
+    </delete>
+
+    <insert id="insertUserMyStats">
+        /* kr.or.lx.rcic.modules.userMyStats.mapper.UserMyStatsMapper.insertUserMyStats */
+        INSERT INTO rcic.tb_user_my_stats
+        (
+        user_seq, stats_list_se, stats_chrt_se, disp_order, regist_dt, regist_id, updt_dt, updt_id
+        )
+        VALUES (
+        #{userSeq},
+        #{statsListSe},
+        #{statsChrtSe},
+        #{dispOrder},
+        NOW(),
+        #{registId},
+        NOW(),
+        #{updtId}
+        )
+	</insert>
+
+</mapper>
+

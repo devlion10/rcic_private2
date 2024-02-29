@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.code.mapper.CodeMapper">
+
+	<sql id="headerRow">
+	   	SELECT
+	      *
+		  FROM (SELECT T2.*
+			   FROM (SELECT  ROW_NUMBER() OVER() RNUM, T1.* 
+					 FROM (
+    </sql>
+   	<sql id="footerRow">
+			         ) T1
+           ) T2
+        WHERE T2.RNUM <![CDATA[<=]]> #{currPage} * #{listCnt}
+         ) T3
+        WHERE T3.RNUM <![CDATA[>=]]> #{currPage} * #{listCnt} - (#{listCnt} - 1)
+    </sql>
+  
+  <!-- 수집현황 LIST -->	
+	<select id="selectCodeMasterList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		<include refid="headerRow" /> 
+		 SELECT *, REGIST_DT::DATE AS REGIST_DT2
+			FROM RCIC.TB_SYS_CMM_CODE
+			WHERE 1=1
+			<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(group_code)">
+			  AND GROUP_CODE = #{ group_code }
+		   </if>
+		   
+			<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+				  AND CODE_NM LIKE CONCAT('%',#{searchKeyword},'%')
+			   </if> 
+			 ORDER BY  GROUP_CODE 	 
+		<include refid="footerRow" /> 
+	</select>		
+	
+		<!-- 수집현황 LIST -->	
+	<select id="selectCodeMasterListCnt" parameterType="java.util.HashMap"  resultType="int">
+		SELECT COUNT(*) as cnt
+		FROM RCIC.TB_SYS_CMM_CODE
+		WHERE 1=1
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(group_code)">
+			  AND GROUP_CODE = #{ group_code }
+		   </if>
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+			  AND CODE_NM like CONCAT('%',#{searchKeyword},'%')
+		   </if> 
+	</select>	
+	
+ 
+	<!-- 수집현황 LIST -->	
+	<select id="selectCodeList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		<include refid="headerRow" /> 
+		 SELECT *, REGIST_DT::DATE AS REGIST_DT2
+			FROM RCIC.TB_SYS_CMM_CODE_DTL
+			WHERE 1=1
+			<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(group_code)">
+			  AND GROUP_CODE = #{ group_code }
+		   </if>
+		   
+			<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+				  AND CODE_NM LIKE CONCAT('%',#{searchKeyword},'%')
+			   </if> 
+			 ORDER BY  CODE_ORDR 	 
+		<include refid="footerRow" /> 
+	</select>		
+	
+		<!-- 수집현황 LIST -->	
+	<select id="selectCodeListCnt" parameterType="java.util.HashMap"  resultType="int">
+		SELECT COUNT(*) as cnt
+		FROM RCIC.TB_SYS_CMM_CODE_DTL
+		WHERE 1=1
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(group_code)">
+			  AND GROUP_CODE = #{ group_code }
+		   </if>
+		<if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+			  AND CODE_NM LIKE CONCAT('%',#{searchKeyword},'%')
+		   </if> 
+	</select>	
+	
+	<insert id="insertCode"  parameterType="java.util.HashMap">
+		INSERT INTO RCIC.TB_SYS_CMM_CODE_DTL("group_code", "code", "code_nm", "code_ordr", "code_dc", "use_at", "rm", "regist_id", "regist_dt") 
+					VALUES (#{group_code}, (select max(code::integer)+1 from tb_sys_cmm_code_dtl where group_code=#{group_code}) 
+						            ,  #{code_nm}, (select max(code::integer)+1 from tb_sys_cmm_code_dtl where group_code=#{group_code}), #{code_dc}, #{use_yn}, NULL, 'admin', now());
+	</insert> 
+	
+	<insert id="updateCode"  parameterType="java.util.HashMap">
+		UPDATE RCIC.TB_SYS_CMM_CODE_DTL
+			SET  CODE_NM=#{code_nm}, CODE_DC=#{code_dc}, USE_AT=#{use_yn} , REGIST_ID='admin', REGIST_DT=now()
+			WHERE GROUP_CODE = #{group_code} AND CODE  = #{group_seq};		
+	
+	</insert> 
+	
+	<!-- 코드Detail삭제 -->
+    <update id="deleteCode" parameterType="java.util.HashMap">
+        DELETE FROM RCIC.TB_SYS_CMM_CODE_DTL
+       	WHERE GROUP_CODE = #{group_code} 
+       	  AND CODE IN
+        <foreach collection="codesArry" item="type"  open="(" close=")" separator=",">
+            #{type.code}
+        </foreach>
+    </update>
+    
+    
+    <insert id="down_insertCode"  parameterType="java.util.HashMap">
+		INSERT INTO RCIC.TB_SYS_CMM_CODE_DTL("group_code", "code", "code_nm", "code_ordr", "code_dc", "use_at", "rm", "regist_id", "regist_dt") 
+					VALUES (#{group_code}, (select COALESCE(max(code::integer)+1,1) from tb_sys_cmm_code_dtl where group_code=#{group_code}) 
+						            ,  #{code_nm}, (select max(code::integer)+1 from tb_sys_cmm_code_dtl where group_code=#{group_code}), #{code_dc}, #{use_yn}, NULL, 'admin', now());
+	</insert> 
+	
+	<insert id="down_updateCode"  parameterType="java.util.HashMap">
+		UPDATE RCIC.TB_SYS_CMM_CODE_DTL
+			SET  CODE  = #{code_cd} , CODE_NM=#{code_nm}, CODE_DC=#{code_dc}, USE_AT=#{use_yn} , REGIST_ID='admin', REGIST_DT=now()
+			WHERE GROUP_CODE = #{group_code} AND CODE  = #{group_seq};		
+	</insert> 
+	
+	<!-- 코드Detail삭제 -->
+    <update id="down_deleteCode" parameterType="java.util.HashMap">
+        DELETE FROM RCIC.TB_SYS_CMM_CODE_DTL
+       	WHERE GROUP_CODE = #{group_code} 
+       	  AND CODE IN
+        <foreach collection="codesArry" item="type"  open="(" close=")" separator=",">
+            #{type.code}
+        </foreach>
+    </update>
+    
+    
+    
+    
+    <!-- 공통코드Master등록 -->
+    <insert id="common_insertCode" parameterType="java.util.HashMap" >
+	    INSERT INTO RCIC.TB_SYS_CMM_CODE(
+					GROUP_CODE ,  GROUP_NM,  CODE_DC, USE_AT, REGIST_ID, REGIST_DT)
+		VALUES ('CD'||nextval('rcic.sq_tb_sys_cmm_code'),#{code_nm}  , #{code_dc} ,#{use_yn}, 'admin', now() )
+	 
+	</insert>
+    
+    <!-- 공통코드Master수정 -->
+    <update id="common_updateCode">
+        UPDATE RCIC.TB_SYS_CMM_CODE
+           SET GROUP_NM = #{code_nm}
+           	 , CODE_DC = #{code_dc}
+             , USE_AT = #{use_yn}
+         WHERE GROUP_CODE = #{group_seq}
+    </update>
+    
+     <!-- 공통코드Master삭제 -->
+    <update id="common_deleteCode" parameterType="java.util.HashMap">
+        DELETE FROM RCIC.TB_SYS_CMM_CODE
+       	WHERE GROUP_CODE IN
+        <foreach collection="codesArry" item="type"  open="(" close=")" separator=",">
+            #{type.code}
+        </foreach>
+    </update>
+    
+    
+     <!-- 특정 공통코드 상세 목록 가져오기  -->
+    <select id="selectDetailCode" parameterType="java.util.HashMap"  resultType="egovMap">
+        SELECT CODE , CODE_NM, BYTE_ATTR1, base64_attr1, base64_attr2, attr1, rm
+        FROM RCIC.TB_SYS_CMM_CODE_DTL
+        WHERE GROUP_CODE = #{groupCode}
+          AND USE_YN = 'Y'
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND CODE_NM LIKE CONCAT('%', #{searchKeyword},'%')
+        </if>
+        ORDER BY CODE_NM
+    </select>
+    
+</mapper>	 

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.serviceinfo.mapper.ServiceInfoMapper">
+
+    <resultMap id="serviceInfoResultMap" type="kr.or.lx.rcic.modules.serviceinfo.entity.ServiceInfo">
+        <!-- 서비스번호 -->
+        <result property="serviceNo" column="service_no"/>
+        <!-- 서비스명 -->
+        <result property="serviceNm" column="service_nm"/>
+        <!-- 서비스URL -->
+        <result property="serviceUrl" column="service_url"/>
+        <!-- 사용여부 -->
+        <result property="useYn" column="use_yn"/>
+        <!-- 마지막 실행시간 -->
+        <result property="lastRunDate" column="last_run_date"/>
+        <!-- 세부 서비스 명 -->
+        <result property="detailServiceNm" column="detail_service_nm"/>
+        <!-- 세부 서비스 타입 -->
+        <result property="detailServiceTy" column="detail_service_ty"/>
+        <!-- 자동 실행 여부 -->
+        <result property="autoYn" column="auto_yn"/>
+        <!-- 컨슈머 키 -->
+        <result property="consumerKey" column="consumerKey"/>
+        <!-- 컨슈머 시크릿 키 -->
+        <result property="consumerSecret" column="consumerSecret"/>
+        <!-- 접근 토큰 -->
+        <result property="acessToken" column="acessToken"/>
+        <!-- 비밀 접근 토큰키 -->
+        <result property="acessTokenSecret" column="acessTokenSecret"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="serviceNo != null">
+            AND service_no = #{serviceNo}
+        </if>
+        <if test="serviceNm != null and serviceNm != ''">
+            AND service_nm = #{serviceNm}
+        </if>
+        <if test="serviceUrl != null and serviceUrl != ''">
+            AND service_url = #{serviceUrl}
+        </if>
+        <if test="useYn != null and useYn != ''">
+            AND use_yn = #{useYn}
+        </if>
+        <if test="lastRunDate != null and lastRunDate.enabled == true">
+            
+            <if test="lastRunDateEq != null and lastRunDateEq != ''">
+            AND last_run_date = STR_TO_DATE(#{lastRunDateEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="lastRunDateFrom != null and lastRunDateFrom != ''">
+            AND last_run_date <![CDATA[ >= ]]> STR_TO_DATE(#{lastRunDateFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="lastRunDateTo != null and lastRunDateTo != ''">
+            AND last_run_date <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{lastRunDateTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="detailServiceNm != null and detailServiceNm != ''">
+            AND detail_service_nm = #{detailServiceNm}
+        </if>
+        <if test="detailServiceTy != null and detailServiceTy != ''">
+            AND detail_service_ty = #{detailServiceTy}
+        </if>
+        <if test="autoYn != null and autoYn != ''">
+            AND auto_yn = #{autoYn}
+        </if>
+        <if test="consumerKey != null and consumerKey != ''">
+            AND consumerKey = #{consumerKey}
+        </if>
+        <if test="consumerSecret != null and consumerSecret != ''">
+            AND consumerSecret = #{consumerSecret}
+        </if>
+        <if test="acessToken != null and acessToken != ''">
+            AND acessToken = #{acessToken}
+        </if>
+        <if test="acessTokenSecret != null and acessTokenSecret != ''">
+            AND acessTokenSecret = #{acessTokenSecret}
+        </if>
+    </sql>
+
+    <select id="getServiceInfo" resultMap="serviceInfoResultMap">
+        /* kr.or.lx.rcic.modules.serviceInfo.mapper.ServiceInfoMapper.getServiceInfo */
+
+        SELECT
+            service_no, service_nm, service_url, use_yn, last_run_date, detail_service_nm, detail_service_ty, auto_yn, consumerKey, consumerSecret, acessToken, acessTokenSecret
+        FROM rcic.tb_service_info
+        WHERE
+         service_no = #{serviceNo}
+	</select>
+
+    <select id="selectServiceInfoCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.serviceInfo.mapper.ServiceInfoMapper.simpleListServiceInfoCnt */
+
+        SELECT COUNT(*)
+        FROM rcic.tb_service_info
+        <include refid="whereConditions" />
+    </select>
+
+    
+    <select id="selectServiceInfoList" resultType="egovMap">
+        /* kr.or.lx.rcic.modules.serviceInfo.mapper.ServiceInfoMapper.selectServiceInfoList */
+
+        <include refid="common.headerRow"/>
+        SELECT
+            service_no, service_nm, service_url, use_yn, last_run_date, detail_service_nm, detail_service_ty, auto_yn, consumerKey, consumerSecret, acessToken, acessTokenSecret
+        FROM rcic.tb_service_info
+        <include refid="whereConditions" />
+        ORDER BY service_no DESC
+        <include refid="common.footerRow"/>
+	</select>
+
+    <select id="getInsttList" resultType="java.lang.String">
+        SELECT distinct service_nm AS insttNm
+          FROM rcic.tb_service_info
+        ORDER BY service_nm ASC
+    </select>
+
+
+</mapper>
+

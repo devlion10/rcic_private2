@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.legaldong.mapper.LegaldongMapper">
+
+
+	<sql id="liCondition">
+		<if test="sidoCd not in {null, ''}">
+			AND emd.sido_cd = #{sidoCd}
+		</if>
+		<if test="sggCd not in {null, ''}">
+			AND emd.sgg_cd = #{sggCd}
+		</if>
+		<if test="emdCd not in {null, ''}">
+			AND emd.emd_cd = #{emdCd}
+		</if>
+		<if test="liCd not in {null, ''}">
+			AND li.li_cd = #{liCd}
+		</if>
+	</sql>
+
+
+	<select id="getLiListCnt" resultType="java.lang.Integer">
+		select count(*)
+		from rcic.tb_legaldong_li li
+		full join rcic.tb_legaldong_emd emd on li.emd_cd = emd.emd_cd
+		<where>
+			<include refid="liCondition"/>
+		</where>
+	</select>
+
+	<select id="getLiList" resultType="egovMap">
+		<include refid="common.headerRow"/>
+		select emd.sido_cd
+			 , emd.sido_nm
+			 , emd.sgg_cd
+			 , emd.sgg_nm
+			 , emd.emd_cd
+			 , emd.emd_nm
+			 , li.li_cd
+			 , li.li_nm
+			 , emd.regist_dt::date
+		from rcic.tb_legaldong_li li
+		full join rcic.tb_legaldong_emd emd on li.emd_cd = emd.emd_cd
+		<where>
+			<include refid="liCondition"/>
+		</where>
+			order by li_cd asc
+		<include refid="common.footerRow"/>
+	</select>
+</mapper>

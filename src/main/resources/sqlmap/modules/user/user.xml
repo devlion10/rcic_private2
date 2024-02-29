@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.user.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="kr.or.lx.rcic.modules.user.entity.User">
+        <!-- 유저번호 -->
+        <result property="userSeq" column="user_seq"/>
+        <!-- 상태코드 -->
+        <result property="status" column="status"/>
+        <!-- 상태코드 -->
+        <result property="sttus" column="sttus"/>
+        <!-- 사용자이름 -->
+        <result property="userNm" column="user_nm"/>
+        <!-- 사용자아이디 -->
+        <result property="userId" column="user_id"/>
+        <!-- 비밀번호 -->
+        <result property="password" column="password"/>
+        <!-- 패스워드수정일시 -->
+        <result property="lastLoginDt" column="last_login_dt"/>
+        <!-- 최종로그인IP -->
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <!-- 등록자아이디 -->
+        <result property="inptId" column="inpt_id"/>
+        <!-- 등록자아이디 -->
+        <result property="registId" column="regist_id"/>
+        <!-- 등록일시 -->
+        <result property="inptDt" column="inpt_dt"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 수정자아이디 -->
+        <result property="updtId" column="updt_id"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+        <!-- 임시비밀번호 -->
+        <result property="tmpPwd" column="tmp_pwd"/>
+        <!-- 시도횟수 -->
+        <result property="tryCnt" column="try_cnt"/>
+        <!-- ???? ?? null: ????, y: ???? -->
+        <result property="lockYn" column="lock_yn"/>
+        <!-- 접속IP -->
+        <result property="conectIp" column="conect_ip"/>
+        <!-- 연락전화번호 -->
+        <result property="contactTelno" column="contact_telno"/>
+        <!-- 기관구분 -->
+        <result property="insttSe" column="instt_se"/>
+        <!-- 기관명 -->
+        <result property="insttNm" column="instt_nm"/>
+        <!-- 이메일승인여부 -->
+        <result property="emailConfmAt" column="email_confm_at"/>
+        <!-- 이메일승인일시 -->
+        <result property="emailConfmDt" column="email_confm_dt"/>
+        <!-- 권한번호 -->
+        <result property="authNo" column="auth_no"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="userId != null and userId != ''">
+            USER_ID LIKE concat('%', #{userId}, '%')
+        </if>
+
+   		 <if test="userNm != null and userNm != ''">
+            AND USER_NM LIKE concat('%', #{userNm}, '%')
+        </if>
+
+        <if test="startDate != null and startDate != ''">
+            AND u.regist_dt <![CDATA[ >= ]]> #{startDate}::DATE
+        </if>
+
+        <if test="endDate != null and endDate != ''">
+            AND u.regist_dt <![CDATA[ <= ]]>  #{endDate}::DATE
+        </if>
+
+        <if test="insttSe != null and insttSe != ''">
+            AND instt_se = #{insttSe}
+        </if>
+        
+        <if test="insttNm != null and insttNm != ''">
+            AND INSTT_NM = #{insttNm}
+        </if>
+        
+        <if test=' contactTelno != null and contactTelno != "" '> 
+	 		 AND CONTACT_TELNO=#{contactTelno}
+	  	</if>
+	    
+	    <if test=' searchID != null and searchID != "" '> 
+	 		 AND USER_ID=#{searchID}
+	 	 </if>
+
+        <if test="sttus != null and sttus != ''">
+            AND u.sttus = #{sttus}
+        </if>
+    </sql>
+
+    <select id="getUser" parameterType="long" resultMap="userResultMap">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.getUser */
+
+        SELECT
+            user_seq, sttus, user_nm, user_id, password, last_login_dt, last_login_ip, regist_id, regist_dt, updt_id, updt_dt, tmp_pwd, try_cnt, lock_yn, conect_ip, contact_telno, instt_se, instt_nm, email_confm_at, email_confm_dt, auth_no
+        FROM tb_user
+        WHERE
+         user_seq = #{userSeq}
+	</select>
+
+    <select id="selectUserCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.simpleListUserCnt */
+
+        SELECT COUNT(*)
+        FROM tb_user u
+        <include refid="whereConditions" />
+    </select>
+
+    
+    <select id="selectUserList" resultType="egovMap">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.selectUserList */
+
+        <include refid="common.headerRow"/>
+        SELECT u.user_seq
+             , u.sttus
+             , sttus_cd.code_nm AS sttus_nm
+             , u.user_nm
+             , u.user_id
+             , u.last_login_dt
+             , u.last_login_ip
+             , u.regist_id
+             , to_char(u.regist_dt, 'YYYY.MM.DD') AS regist_dt
+             , u.updt_id
+             , u.updt_dt
+             , u.tmp_pwd
+             , u.try_cnt
+             , coalesce(u.lock_yn, 'N') AS lock_yn
+             , u.conect_ip
+             , u.contact_telno
+             , u.instt_se
+             , instt_se_cd.code_nm AS instt_se_nm
+             , u.instt_nm
+             , u.email_confm_at
+             , u.email_confm_dt
+             , u.auth_no
+             , ai.auth_nm
+        FROM tb_user u
+          JOIN tb_sys_cmm_code_dtl sttus_cd ON u.sttus = sttus_cd.code AND sttus_cd.group_code = 'STTUS'
+          JOIN tb_sys_cmm_code_dtl instt_se_cd ON u.instt_se = instt_se_cd.code AND instt_se_cd.group_code = 'INSTT_SE'
+          JOIN tb_auth_info ai ON u.auth_no = ai.auth_no
+        <include refid="whereConditions"/>
+        ORDER BY u.user_seq DESC
+        <include refid="common.footerRow"/>
+	</select>
+
+  <!-- 회원정보 수정  -->
+	<update id="updateUser" parameterType="kr.or.lx.rcic.modules.user.entity.User">
+	 UPDATE RCIC.TB_USER 
+	 	SET 
+	 		UPDT_ID = #{user_id}
+	 		,UPDT_DT = now()
+	 		<if test="sttus != null and sttus != ''">
+                , STTUS = #{sttus}
+            </if>
+	 		<if test="user_nm != null and user_nm != ''">
+	 			,USER_NM = #{user_nm}
+	 		</if>
+	 		<if test="instt_nm != null and instt_nm != ''">
+	 			,INSTT_NM = #{instt_nm}
+	 		</if>
+	 		<if test="instt_se != null and instt_se != ''">
+	 			,INSTT_SE = #{instt_se}
+	 		</if>
+	 		<if test="contact_telno != null and contact_telno != ''">
+	 			,CONTACT_TELNO = #{contact_telno}
+	 		</if>
+	 		<if test="conect_ip != null and conect_ip != ''">
+	 			,CONECT_IP = #{conect_ip}
+	 		</if>
+	 		<if test="auth_no != null and auth_no != ''">
+                , AUTH_NO = #{auth_no}
+            </if>
+	  WHERE USER_ID=#{user_id}
+	</update>
+
+    <update id="updateUserAuth">
+        UPDATE RCIC.TB_USER
+        SET updt_id = #{updtId}
+          , updt_dt = now()
+          , auth_no = #{authNo}::numeric
+          , sttus = '2'
+          , EMAIL_CONFM_AT = 'Y'
+    	  , EMAIL_CONFM_DT = now()
+        <where>
+            <choose>
+                <when test="userSeq != null">
+                    user_seq = #{userSeq}
+                </when>
+                <when test="userSeqList != null">
+                    user_seq IN <foreach item="userSeq" collection="userSeqList" open="(" separator=", " close=")">#{userSeq}</foreach>
+                </when>
+            </choose>
+        </where>
+    </update>
+	
+
+    <delete id="deleteUser" parameterType="kr.or.lx.rcic.modules.user.entity.User">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.deleteUser */
+
+        DELETE FROM tb_user
+        WHERE
+             user_seq = #{userSeq}
+    </delete>
+	
+	
+	<select id="getUserInfo" resultType="kr.or.lx.rcic.frmwrk.user.UserInfo" parameterType="string">
+	     SELECT user_seq as  userNo
+              , user_id as userId
+              , password as userPw
+              , user_nm as userNm
+              , auth_no as authNo
+              , sttus
+              , try_cnt as tryCnt
+              , last_login_dt as lstLoginDt
+              , auth_no as authNo
+              , email_confm_at as emailConfmAt
+		     , (select auth_nm
+			      from tb_auth_info
+			     where sttus = '01' and tb_auth_info.auth_no = tb_user.auth_no  ) as authNm
+	  FROM  RCIC.TB_USER
+	  WHERE USER_ID=#{userId}
+    </select>
+    
+    <!-- 사용자 정보 조회 -->
+	<select id="getUserInfoMap" parameterType="java.lang.String" resultType="java.util.Map">
+	  SELECT
+	  	USER_SEQ,
+		USER_ID,
+		PASSWORD,
+		USER_NM,
+		INSTT_SE,
+		INSTT_NM,
+		AUTH_NO,
+	 	(SELECT CODE_NM FROM RCIC.TB_SYS_CMM_CODE_DTL CD WHERE CD.GROUP_CODE='INSTT_SE' AND CD.CODE = INSTT_SE) AS INSTT_SE_NM,
+		CONECT_IP,
+		CONTACT_TELNO
+	  FROM
+		RCIC.TB_USER
+	  WHERE USER_ID=#{user_id}
+	</select>
+	
+	<select id="getUserAuthInfo" parameterType="java.lang.String" resultType="egovMap">
+	    SELECT c.auth_dtl_se , d.menu_nm , d.menu_cd 
+        FROM tb_user a , tb_auth_info b, tb_auth_dtl c, tb_menu d
+        WHERE a.auth_no  = b.auth_no 
+          AND c.auth_no  = b.auth_no
+          AND d.menu_no = c.menu_no 
+          AND a.USER_ID=#{user_id}
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="searchId"  parameterType="hashMap" resultType="hashMap">
+	  SELECT
+		USER_ID
+	  FROM
+		RCIC.TB_USER
+	   <include refid="whereConditions" />
+	   	AND STTUS = '2'
+	</select> 
+	
+	<!-- 비밀번호 찾기 - 비밀번호 변경  -->
+	<update id="updatePwd" parameterType="kr.or.lx.rcic.modules.user.entity.User">
+	 UPDATE RCIC.TB_USER 
+	 	SET PASSWORD = #{newPwd}    
+	   <include refid="whereConditions" />
+	   	AND STTUS = '2' 
+	</update>
+	
+	
+	<!-- 회원탈퇴 -->
+	<update id="updatetUserSttusWithd" parameterType="kr.or.lx.rcic.modules.user.entity.User">
+	 UPDATE RCIC.TB_USER 
+	 	SET 
+	 		STTUS = '3'
+	  WHERE USER_ID=#{user_id}
+	</update> 
+	
+	
+	<insert id="insertUser" parameterType="kr.or.lx.rcic.modules.user.entity.User">  
+		INSERT INTO RCIC.TB_USER (
+			USER_SEQ,
+			STTUS,
+			USER_NM,
+			USER_ID,
+			PASSWORD,
+			REGIST_ID,
+			REGIST_DT,
+			CONECT_IP,
+			CONTACT_TELNO,
+			INSTT_SE,
+			INSTT_NM,
+			AUTH_NO
+		)
+		VALUES(
+			nextval('rcic.seq_tb_user'),
+			'1',
+			#{userNm},
+			#{userId},
+			#{pwd},
+			#{userId},
+			now(),
+			#{conectIp},
+			#{contactTelno},
+			#{insttSe},
+			#{insttNm},
+			'3'
+		)
+	</insert>
+    
+    <select id="getIdCheck" parameterType="kr.or.lx.rcic.modules.user.entity.User" resultType="int">
+        SELECT COUNT(*) FROM RCIC.TB_USER
+	  	WHERE USER_ID = #{userId}
+    </select>
+    
+    
+    <update id="updateEmailConfim"  parameterType="java.util.Map">
+    	UPDATE RCIC.TB_USER
+    	SET 
+    		EMAIL_CONFM_AT = 'Y',
+    		EMAIL_CONFM_DT = now()
+    	WHERE USER_ID = #{user_id}
+    </update>
+
+	<update id="updateUserLastLogin">
+		UPDATE RCIC.TB_USER
+    	SET
+    		last_login_dt = now()
+    	WHERE USER_ID = #{userId}
+	</update>
+
+</mapper>
+

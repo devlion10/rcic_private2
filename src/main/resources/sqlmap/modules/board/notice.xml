@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.board.mapper.NoticeMapper">
+
+    <resultMap id="noticeResultMap" type="kr.or.lx.rcic.modules.board.entity.Notice">
+        <!-- 게시판번호 -->
+        <result property="noticeNo" column="notice_no"/>
+        <!-- 공지유형 -->
+        <result property="noticeTy" column="notice_ty"/>
+        <result property="noticeTyNm" column="notice_ty_nm"/>
+        <!-- 공지대상 -->
+        <result property="noticeTrget" column="notice_trget"/>
+        <!-- 제목 -->
+        <result property="sj" column="sj"/>
+        <!-- 내용 -->
+        <result property="cn" column="cn"/>
+        <!-- 첨부파일명 -->
+        <result property="atchFileNm" column="atch_file_nm"/>
+        <!-- 첨부파일 -->
+        <result property="atchFile" column="atch_file"/>
+        <!-- 조회수 -->
+        <result property="rdcnt" column="rdcnt"/>
+        <!-- 게시시작일자 -->
+        <result property="noticeBgnde" column="notice_bgnde"/>
+        <!-- 게시종료일자 -->
+        <result property="noticeEndde" column="notice_endde"/>
+        <!-- 등록자아이디 -->
+        <result property="registId" column="regist_id"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 수정자아이디 -->
+        <result property="updtId" column="updt_id"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="keyword != null and keyword != '' ">
+            <choose>
+                <when test="searchType != null and searchType == 'sjcn'">
+                    AND ((SJ LIKE CONCAT('%', #{keyword}, '%')) OR (CN LIKE CONCAT('%', #{keyword}, '%')))
+                </when>
+                <otherwise>
+                    AND SJ LIKE CONCAT('%', #{keyword}, '%')
+                </otherwise>
+            </choose>
+        </if>
+        <if test="noticeNo != null">
+            AND notice_no = #{noticeNo}
+        </if>
+        <if test="noticeTy != null and noticeTy != ''">
+            AND notice_ty = #{noticeTy}
+        </if>
+        <if test="noticeTrget != null and noticeTrget != ''">
+            AND notice_trget = #{noticeTrget}
+        </if>
+        <if test="sj != null and sj != ''">
+            AND sj = #{sj}
+        </if>
+        <if test="cn != null and cn != ''">
+            AND cn = #{cn}
+        </if>
+        <if test="atchFileNm != null and atchFileNm != ''">
+            AND atch_file_nm = #{atchFileNm}
+        </if>
+        <if test="atchFile != null and atchFile != ''">
+            AND atch_file = #{atchFile}
+        </if>
+        <if test="rdcnt != null">
+            AND rdcnt = #{rdcnt}
+        </if>
+        <if test="noticeBgnde != null and noticeBgnde != ''">
+            AND notice_bgnde = #{noticeBgnde}
+        </if>
+        <if test="noticeEndde != null and noticeEndde != ''">
+            AND notice_endde = #{noticeEndde}
+        </if>
+        <if test="registId != null and registId != ''">
+            AND regist_id = #{registId}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="updtId != null and updtId != ''">
+            AND updt_id = #{updtId}
+        </if>
+        <if test="updtDt != null and updtDt.enabled == true">
+            
+            <if test="updtDtFrom != null and updtDtFrom != ''">
+            AND updt_dt <![CDATA[ >= ]]> STR_TO_DATE(#{updtDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtTo != null and updtDtTo != ''">
+            AND updt_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{updtDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+    </sql>
+
+    <select id="getNoticeDetail" parameterType="hashMap" resultType="kr.or.lx.rcic.modules.board.entity.Notice">
+       SELECT  * FROM (
+			SELECT
+		        NOTICE_NO,
+				NOTICE_TY,
+				(SELECT CODE_NM FROM RCIC.TB_SYS_CMM_CODE_DTL WHERE GROUP_CODE = 'NOTICE_TY' AND USE_YN = 'Y' AND NOTICE_TY = CODE ) AS NOTICE_TY_NM,
+				NOTICE_TRGET,
+				SJ,
+				CN,
+				ATCH_FILE_NM,      
+				ATCH_FILE,
+				RDCNT,
+				NOTICE_BGNDE,
+				NOTICE_ENDDE,
+				REGIST_ID,
+				TO_CHAR(REGIST_DT, 'YYYY-MM-DD' ) AS REGIST_DT,
+				UPDT_ID,
+				TO_CHAR(UPDT_DT, 'YYYY-MM-DD HH24:MI:SS' ) AS UPDT_DT,
+		        LEAD(NOTICE_NO, 1) OVER (ORDER BY NOTICE_NO ) AS NEXT_NO,
+		        LEAD(SJ, 1, '게시글이 없습니다') OVER (ORDER BY NOTICE_NO ) AS NEXT_SJ,	
+		        LAG(NOTICE_NO, 1) OVER (ORDER BY NOTICE_NO ) AS PRE_NO,
+		        LAG(SJ, 1, '게시글이 없습니다') OVER (ORDER BY NOTICE_NO ) AS PRE_SJ
+		    FROM RCIC.TB_NOTICE
+	 	)A
+		WHERE A.NOTICE_NO = #{noticeNo}
+	</select>
+
+    <select id="selectNoticeCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM RCIC.TB_NOTICE
+         <include refid="whereConditions"/>
+    </select>
+
+    
+    <select id="selectNoticeList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        SELECT    
+		    NOTICE_NO,
+		    NOTICE_TY,
+		    (SELECT CODE_NM FROM RCIC.TB_SYS_CMM_CODE_DTL WHERE GROUP_CODE = 'NOTICE_TY' AND USE_YN = 'Y' AND NOTICE_TY = CODE ) AS NOTICE_TY_NM,
+		    NOTICE_TRGET,
+		    SJ,
+		    CN,
+		    RDCNT,
+		    REGIST_ID,
+		    (SELECT USER_NM FROM RCIC.TB_USER U WHERE N.REGIST_ID = U.USER_ID ) AS USER_NM, 
+		    TO_CHAR(REGIST_DT,'YYYY-MM-DD' ) AS REGIST_DT,
+		    (SELECT COUNT(*) FROM TB_BBS_ATCH_FILE ATCH WHERE ATCH.REFRN_BBSCTT_TY = '1' AND REFRN_BBSCTT_NO = NOTICE_NO) AS FILE_CNT
+		 FROM
+		    RCIC.TB_NOTICE N
+        <include refid="whereConditions"/>
+         ORDER BY NOTICE_NO DESC
+        <include refid="common.footerRow"/>
+	</select>
+
+    <update id="updateNotice" parameterType="kr.or.lx.rcic.modules.board.entity.Notice">
+        /* kr.or.lx.rcic.modules.notice.mapper.NoticeMapper.updateNotice */
+
+        UPDATE rcic.tb_notice
+        SET   notice_ty = #{noticeTy}
+            , sj = #{sj}
+            , cn = #{cn}
+            , notice_bgnde = #{noticeBgnde}
+            , notice_endde = #{noticeEndde}
+            , updt_id = #{updtId}
+            , updt_dt = NOW()
+      WHERE notice_no = #{noticeNo}
+    </update>
+
+    <delete id="deleteNotice" parameterType="kr.or.lx.rcic.modules.board.entity.Notice">
+        /* kr.or.lx.rcic.modules.notice.mapper.NoticeMapper.deleteNotice */
+
+        DELETE FROM rcic.tb_notice
+        WHERE
+             notice_no = #{noticeNo}
+    </delete>
+
+    <insert id="insertNotice">
+        <selectKey resultType="long" keyColumn="notice_no" keyProperty="noticeNo" order="BEFORE">
+            SELECT nextval('rcic.seq_tb_notice')
+        </selectKey>
+        /* kr.or.lx.rcic.modules.notice.mapper.NoticeMapper.insertNotice */
+        INSERT INTO rcic.tb_notice
+        (
+        notice_no, notice_ty, notice_trget, sj, cn, rdcnt, notice_bgnde, notice_endde, regist_id, regist_dt
+        )
+        VALUES (
+        #{noticeNo},
+        #{noticeTy},
+        #{noticeTrget},
+        #{sj},
+        #{cn},
+        0,
+        #{noticeBgnde},
+        #{noticeEndde},
+        #{registId},
+        NOW()
+        )
+	</insert>
+
+	<!-- 조회수 증가  -->
+    <update id="updateReadCnt">
+        UPDATE RCIC.TB_NOTICE
+        SET RDCNT =  RDCNT + 1
+        WHERE NOTICE_NO = #{noticeNo}
+    </update> 
+</mapper>
+

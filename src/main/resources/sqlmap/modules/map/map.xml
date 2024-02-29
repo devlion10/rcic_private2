@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.dashboard.mapper.DashboardMapper">
+	<!-- 수집현황 LIST -->	
+	<select id="searchWord" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		SELECT
+		      *
+		  FROM (SELECT T2.*
+			  FROM (SELECT  ROW_NUMBER () OVER () RNUM, T1.*
+				  FROM (
+				 select *
+					from tb_analysis_info
+					where 1=1
+					  <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+						  AND ntcekindnm like CONCAT('%',#{searchKeyword},'%')
+						  OR ntcekindnm like CONCAT('%',#{searchKeyword},'%')
+					   </if> 
+					 order by  resultno 	 
+				 ) T1
+		       ) T2
+		WHERE T2.RNUM <![CDATA[<=]]> #{currPage} * #{listCnt}
+	     ) T3
+	  WHERE T3.RNUM <![CDATA[>=]]> #{currPage} * #{listCnt} - (#{listCnt} - 1)
+	</select>		
+	
+		<!-- 수집현황 LIST -->	
+	<select id="searchWordCnt" parameterType="java.util.HashMap"  resultType="int">
+		select count(*) as cnt
+		from tb_analysis_info
+		WHERE 1=1
+		 <if test="@kr.or.lx.rcic.frmwrk.util.MybatisUtil@checkNull(searchKeyword)">
+			  AND ntcekindnm like CONCAT('%',#{searchKeyword},'%')
+			  OR ntcekindnm like CONCAT('%',#{searchKeyword},'%')
+		   </if> 
+	</select>	
+	
+</mapper>	 

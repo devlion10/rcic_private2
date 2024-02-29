@@ -1,0 +1,385 @@
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!doctype html>
+<html lang="ko">
+	<head>
+		<!-- meta -->
+		<meta charset="UTF-8" />
+	    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+	    <meta name="HandheldFriendly" content="true" />
+	    <meta name="format-detection" content="telephone=no" />
+	    <meta name="title" content="도로변경정보 수집시스템">
+	    <meta name="description" content="" />
+	    <meta name="keywords" content="" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	    <!-- meta -->
+
+	    <!-- Open Graph -->
+	    <meta property="og:title"       content="도로변경정보 수집시스템" />
+	    <meta property="og:type"        content="website" />
+	    <meta property="og:image"       content="" />
+	    <meta property="og:site_name"   content="도로변경정보 수집시스템" />
+	    <meta property="og:url"         content="" />
+	    <meta property="og:description" content="" />
+	    <!-- Open Graph -->
+
+		<title>도로변경정보 수집시스템</title>
+
+		<script src="/assets/js/common/lib/amcharts4/core.js"></script>
+		<script src="/assets/js/common/lib/amcharts4/charts.js"></script>
+		<script src="/assets/js/common/lib/amcharts4/lang/de_DE.js"></script>
+		<script src="/assets/js/common/lib/amcharts4/lang/ko_KR.js"></script>
+		<script src="/assets/js/common/lib/amcharts4/lang/es_ES.js"></script> 
+		<script src="/assets/js/common/lib/amcharts4/themes/animated.js"></script>
+		<script src="/assets/js/common/lib/amcharts4/themes/material.js"></script>
+		<script src="/assets/js/common/lib/amcharts4/themes/dataviz.js"></script>
+		<jsp:include page="/WEB-INF/jsp/views/include/htmlHead.jsp"></jsp:include>
+	</head>
+	<body>
+		<div class="containerWrap">
+			<div class="contentsWrap">
+				<div class="headerWrap">
+					<jsp:include page="/WEB-INF/jsp/views/include/header.jsp"></jsp:include>
+				</div>
+				<!-- //.headerWrap -->
+
+				<div class="mainSliderWrap">
+					<!-- Swiper -->
+					<div class="swiper-container">
+						<div class="slideTxtTbl">
+							<div class="slideTxtCell">
+								<div class="slideTxtBox">
+									<p class="mainTxt">도로변경정보 수집시스템</p>
+									<p class="subTxt">RCIC는 도로를 구성하고 있는 모든 요소의 신설·변경·철거사항에 대해 확보가능한 모든 정보를 수집하여 변동정보를 예측하는 시스템입니다.</p>
+									<p class="subTxt">전국 모든 도로공사에 대한 정보를 쉽고 편리하게 조회 해 보실 수 있습니다.</p>
+									<!-- 
+									<div class="goRcicBox">
+										<a href="#" onclick="$.chekPop();">
+											<span>RCIC 지도</span>
+										</a>
+									</div>
+									 -->
+								</div>
+							</div>
+						</div>
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<div class="mainBG mainBG1"></div> 
+							</div>
+							<div class="swiper-slide">
+								<div class="mainBG mainBG2"></div>
+							</div>
+							<div class="swiper-slide">
+								<div class="mainBG mainBG3"></div>
+							</div>
+						</div>
+						<div class="swiper-pagination"></div>
+						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev"></div>
+					</div>
+				</div>
+				<!-- //.mainSliderWrap -->
+
+				<div class="contentsBox">
+					<div class="corporationBox mainContents">
+						<p class="corMTxt">공사 현황</p>
+						<p class="corSTxt">
+							<span class="mr5">전국의 공사 건수를 나타냅니다.</span><span>아래 콤보박스를 이용하여 시/도를 선택 할 수 있습니다.</span>
+						</p>
+						<div class="areaSelectBox">
+							<select name ="sido" onchange="MainInfo.sidoChange();" >
+								<option value="0" selected="selected">전국</option>
+							</select>
+						</div>
+						<div class="corCounterBox">
+							<div class="leftCircleBox inline">
+								<div class="grayCircle inline">
+									<p class="circleMTxt">국도공사 수</p> 
+									<p class="circleCnt"  id="roadConstCnt">0</p>
+									<p class="circleSTxt">건</p>
+								</div>
+								<div class="grayCircle inline">
+									<p class="circleMTxt">도로개설 수</p>
+									<p class="circleCnt" id="roadMakeCnt">0</p>
+									<p class="circleSTxt">건</p>
+								</div>
+								<div class="grayCircle inline mr0">
+									<p class="circleMTxt">시설공사 수</p>
+									<p class="circleCnt" id="facConstCnt">0</p>  
+									<p class="circleSTxt">건</p>
+								</div>
+								<div class="grayBorder">
+									<p class="circleDateTxt">최근 3년 기준</p>
+								</div>
+							</div>
+							<div class="rightCircleBox inline">
+								<div class="purpleCircle inline">
+									<p class="circleMTxt">준공예정</p>
+									<p class="circleCnt" id="expectCnt">0</p>
+									<p class="circleSTxt">건</p>
+								</div>
+								<div class="purpleBorder">
+									<p class="circleDateTxt">1개월 내</p>
+								</div>
+							</div>
+						</div>
+						<!-- //.corCounterBox -->
+					</div>
+					<!-- //.corporationBox -->
+					
+					<div class="videoInfoBox mainContents">
+						<div class="videoInfo">
+							<div class="vTitleBox" data-aos="zoom-in" data-aos-duration="500"><p>“공사정보를 다양한 각도로 조회할 수 있습니다.”</p></div>
+							<div class="videoBox">
+								<div class="vLeftTxtBox inline" data-aos="fade-right" data-aos-duration="500">
+									<p class="vmTxt">공사 정보를 조회 할 수 있습니다.</p>
+									<p class="vsTxt">전국 모든 도로에 대한 공사정보를 수집하여</p>
+									<p class="vsTxt">원하는 지역 혹은 기간내 공사정보를 확인 할 수 있습니다.</p>
+								</div>
+								<div class="vRightVideoBox inline">
+									<video id="videoPlay1" src="/assets/video/video_01.mp4"  style="width:100%; max-width:770px;" playsinline controls="true"></video>     
+								</div>
+							</div>
+							<div class="videoBox">
+								<div class="vLeftTxtBox inline mo" data-aos="fade-right" data-aos-duration="500">
+									<p class="vmTxt">향후 공사 정보의 변화를 예측 할 수 있습니다.</p>
+									<p class="vsTxt">수집된 공사정보를 통해 도로의 신설·변경·철거 정보를 예측하여</p>
+									<p class="vsTxt">도로의 변동정보를 손쉽게 파악할 수 있습니다.</p>
+								</div>
+								<div class="vLeftVideoBox inline">
+									<video id="videoPlay2" src="/assets/video/video_02.mp4"  style="width:100%; max-width:770px;" playsinline controls="true"></video>
+								</div>
+								<div class="vRightTxtBox inline" data-aos="fade-left" data-aos-duration="500">
+									<p class="vmTxt">향후 공사 정보의 변화를 예측 할 수 있습니다.</p>
+									<p class="vsTxt">수집된 공사정보를 통해 도로의 신설·변경·철거 정보를 예측하여</p>
+									<p class="vsTxt">도로의 변동정보를 손쉽게 파악할 수 있습니다.</p>
+								</div>
+							</div>
+							<div class="videoBox">
+								<div class="vLeftTxtBox inline" data-aos="fade-right" data-aos-duration="500">
+									<p class="vmTxt">SNS를 통해 실시간 정보를 제공합니다.</p>
+									<p class="vsTxt">SNS정보를 취득하여 현재 공사가 이루어지는 지역, 시간 등의</p>
+									<p class="vsTxt">실시간 공사정보를 확인해 볼 수 있습니다.</p>
+								</div>
+								<div class="vRightVideoBox inline">
+									<video id="videoPlay3" src="/assets/video/video_03.mp4"  style="width:100%; max-width:770px;" playsinline controls=true""></video>
+								</div>
+							</div>
+							<div class="videoBox">
+								<div class="vLeftTxtBox inline mo" data-aos="fade-right" data-aos-duration="500">
+									<p class="vmTxt">나만의 관심공사를 설정할 수 있습니다.</p>
+									<p class="vsTxt">RCIC는 도로를 구성하고 있는 모든 요소의 신설·변경·철거사항에 대해 인터넷 등을</p>
+									<p class="vsTxt">통해 확보가능한ㅇ 모든 정보를 수집하여 변동정보를 예측하는 시스템 입니다.</p>
+								</div>
+								<div class="vLeftVideoBox inline">
+									<video id="videoPlay4" src="/assets/video/video_04.mp4"  style="width:100%; max-width:770px;" playsinline controls="true"></video>
+								</div>
+								<div class="vRightTxtBox inline" data-aos="fade-left" data-aos-duration="500">
+									<p class="vmTxt">나만의 관심공사를 설정할 수 있습니다.</p>
+									<p class="vsTxt">RCIC는 도로를 구성하고 있는 모든 요소의 신설·변경·철거사항에 대해 인터넷 등을</p>
+									<p class="vsTxt">통해 확보가능한 모든 정보를 수집하여 변동정보를 예측하는 시스템 입니다.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- //.videoInfoBox -->
+					<div class="deviceBox mainContents">
+						<div class="dTitleBox" data-aos="zoom-in" data-aos-duration="500"><p>“PC와 Mobile 모드를 지원합니다.”</p></div>
+						<div class="deviceInfo">
+							<div class="deviceTxtBox inline" data-aos="fade-right" data-aos-duration="500">
+								<p class="vmTxt">여러 디바이스에서 공사조회를 할 수 있습니다.</p>
+								<p class="vsTxt">컴퓨터 뿐만 아니라 스마트폰에서도 접속 가능하여</p>
+								<p class="vsTxt">언제 어디서나 쉽게 이용할 수 있습니다.</p> 
+							</div>
+						</div>
+					</div>
+					<!-- //.deviceBox -->
+					<div class="apiBox mainContents">
+						<div class="apiTxtBox">
+							<p class="aMTxt">API 를 제공합니다.</p>
+							<p class="aSTxt">도로변경정보 수집시스템 에서는 수집된 공사목록 데이터를 제공합니다.</p>
+							<div class="apiButtonBox">
+								<img src="/assets/images/main/button/apiBtn.png" alt="button" class="buttonImg" onclick="MainInfo.movePage('dataApi');return false;">
+							</div>
+						</div>
+					</div>
+					<!-- //.apiBox -->
+					<div class="boardBox mainContents">
+						<div class="bTitleBox"><p>도로변경정보 수집시스템에서 전달하는 <span>공지, 뉴스</span> 를 만나보세요.</p></div>
+						<div class="list">
+							<ul class="boardList" id="mainNotice"></ul>	 
+						</div>
+						<!-- //.list -->
+						<div class="bBtnBox">
+							<input type="button" value="게시판 바로가기" onclick="MainInfo.movePage('board');return false;">
+						</div>
+					</div>
+					<!-- //.boardBox -->
+				</div>
+				<!-- //.contentsBox -->
+		
+				<div id="quickMenu">
+					<ul class="qmBox">
+						<li class="useBr" id="moveTo moveToCorpor" onclick="moveCorpor()"><a><p>공사</p><p>현황</p></a></li>
+						<li id="moveTo" onclick="moveVideo()"><a>동영상</a></li>
+						<li class="useBr" onclick="moveMoPC()"><a><p>mobile</p><p>& PC지원</p></a></li>
+						<li onclick="moveAPI()"><a>API제공</a></li>
+						<li onclick="moveBoard()"><a>게시판</a></li>
+					</ul>
+					<div class="goTop" onclick="goTop()">▲</div>
+				</div>
+
+				<jsp:include page="/WEB-INF/jsp/views/include/footer.jsp"></jsp:include>
+				<!-- //.footer -->
+			</div>
+		</div>
+		<!-- //.container -->
+
+		<div class="popupWrap authCompWrap">
+			<div class="popupBox">
+				<div class="popup">
+					<div class="popupContents completeBox">
+						<div class="popupTxt">
+							<p>본인확인완료</p>
+							<div class="compCloseBox" onclick="location.href='/'"><img src="/assets/images/popup/closeBtn.png" alt="closeButton"></div>
+						</div>
+						<div class="popupBodyCom">
+							<div class="compTxtBox">
+								<p class="compGTxt">입력하신 이메일로 본인확인이</p>
+								<p class="compGTxt">정상적으로 완료 되었습니다.</p>
+								<div class="rsComp">
+									<p class="compBTxt">관리자 승인 후 사이트 이용 가능하시며,</p>
+									<p class="compBTxt">입력하신 이메일로 최종 승인 메일이 도착할</p>
+									<p class="compBTxt">예정입니다.(최대1~2일)</p>
+								</div>
+							</div>
+							<div class="popupBtnBox mt30">
+								<input type="button" value="확인" class="compButton" onclick="location.href='/'">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+		<script type="text/javascript">
+		
+			var _commonSearch = new CommonSearch({})
+			var aniYN  = false;
+			var emailConfirm = '${emailConfirm}';
+			var msg = '${msg}';
+
+			if(!$.isNullString(msg)){
+				alert(msg)
+			}
+			
+			$( document ).ready(function() {
+			    AOS.init();
+			    MainInfo.noticeList();
+			    MainInfo.getSido();
+			});   
+
+			
+			if(!$.isNullString(emailConfirm)){
+				if(emailConfirm == "N"){
+					$.swal("인증에 실패하였습니다.");
+				}else{
+					$('.authCompWrap').show();
+				}
+			} 
+			
+			// 메인 슬라이드
+			var swiper = new Swiper('.swiper-container', {
+				slidesPerView: 1,
+				loop: true,
+				pagination: { el: '.swiper-pagination', clickable: true, },
+				navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev', },
+				autoplay: { delay: 2500, disableOnInteraction: false, }
+			});
+			
+			 $(window).scroll(function() {
+				var hT = jQuery('.corporationBox').offset().top,
+		        hH = jQuery('.corporationBox').outerHeight(),
+		        wH = jQuery(window).height(); 
+
+		        if(!aniYN){
+				    if (jQuery(window).scrollTop() > (hT+hH-wH-$(".corMTxt").height()-$(".corSTxt").height()-$(".areaSelectBox").height())) {
+				    	aniYN = true;
+				    	MainInfo.roadConstCnt(); 	// 도로공사 수
+			        	MainInfo.roadMakeCnt(); 	// 도로개설 수
+			 			MainInfo.constFacCnt();		// 시설공사 수
+					    MainInfo.constExpectCnt(); 	// 준공예정 수
+	            	}
+	        	}
+            });
+			 // 플로팅메뉴_메인화면 컨텐츠 보여주기 위함
+			 const yCorpor = 840;
+			 function moveCorpor() { window.scroll({top: yCorpor, behavior: 'smooth'}) };
+			 const yVideo = 1601;
+			 function moveVideo() { window.scroll({top: yVideo, behavior: 'smooth'}) };
+			 const yMoPC = 3935;
+			 function moveMoPC() { window.scroll({top: yMoPC, behavior: 'smooth'}) };
+			 const yAPI = 4789;
+			 function moveAPI() { window.scroll({top: yAPI, behavior: 'smooth'}) };
+			 const yBoard = 5378;
+			 function moveBoard() { window.scroll({top: yBoard, behavior: 'smooth'}) };
+			 
+			 $(document).ready(function(){
+				 $('.goTop').hide();
+				 
+				 $(function(){
+					 $(window).scroll(function(){
+						 if($(this).scrollTop() > 100) {
+							 $('.goTop').fadeIn();
+						 } else {
+							 $('.goTop').fadeOut();
+						 };
+					 });
+				 });
+				 
+				 $('.goTop').click(function(){
+					 $('body,html').animate({
+						 scrollTop: 0
+					 }, 300);
+					 return false;
+				 });
+			 });
+			 
+			 //function goTop() { document.documentElement.scrollTop = 0; }
+			 
+			 /*
+			 const menu = document.querySelectorAll("li#moveTo");
+			 const contents = document.querySelectorAll("div.mainContents");
+			 const firstTop = contents[0].offsetTop;
+			 const secondTop = contents[1].offsetTop;
+			 const thirdTop = contents[2].offsetTop;
+			 const fourthTop = contents[3].offsetTop;
+			 const fifthTop = contents[4].offsetTop;
+			 
+			 console.log("firstTop")
+			 
+			 menu[0].onclick = () => {
+				 window.scrollTo({top:firstTop, behavior: 'smooth'})
+			 };
+			 menu[1].onclick = () => {
+				 window.scrollTo({top:secondTop, behavior: 'smooth'})
+			 };
+			 menu[2].onclick = () => {
+				 window.scrollTo({top:thirdTop, behavior: 'smooth'})
+			 };
+			 menu[3].onclick = () => {
+				 window.scrollTo({top:fourthTop, behavior: 'smooth'})
+			 };
+			 menu[4].onclick = () => {
+				 window.scrollTo({top:fifthTop, behavior: 'smooth'})
+			 };
+			 */
+			 
+			 
+			 
+			 
+			 
+			 
+
+		</script>
+	</body>
+</html>

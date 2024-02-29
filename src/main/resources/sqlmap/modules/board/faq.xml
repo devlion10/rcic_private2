@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.board.mapper.FaqMapper">
+
+    <resultMap id="faqResultMap" type="kr.or.lx.rcic.modules.board.entity.Faq">
+        <!-- FAQ번호 -->
+        <result property="id" column="faq_no"/>
+        <!-- FAQ제목 -->
+        <result property="faqSj" column="faq_sj"/>
+        <!-- FAQ내용 -->
+        <result property="faqCn" column="faq_cn"/>
+        <!-- FAQ유형 -->
+        <result property="faqTy" column="faq_ty"/>
+        <result property="faqTyNm" column="faq_ty_nm"/>
+        <!-- 사용여부 -->
+        <result property="useYn" column="use_yn"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="id != null">
+            AND faq_no = #{id}
+        </if>
+        <if test="faqSj != null and faqSj != ''">
+            AND faq_sj = #{faqSj}
+        </if>
+        <if test="faqKeyword != null and faqKeyword != '' ">
+            AND FAQ_SJ LIKE CONCAT('%', #{faqKeyword}, '%')
+        </if>
+        <if test="faqCn != null and faqCn != ''">
+            AND faq_cn = #{faqCn}
+        </if>
+        <if test="faqTy != null and faqTy != ''">
+            AND faq_ty = #{faqTy}
+        </if>
+        <if test="useYn != null and useYn != ''">
+            AND use_yn = #{useYn}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtEq != null and registDtEq != ''">
+            AND regist_dt = STR_TO_DATE(#{registDtEq}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="updtDt != null and updtDt.enabled == true">
+            
+            <if test="updtDtEq != null and updtDtEq != ''">
+            AND updt_dt = STR_TO_DATE(#{updtDtEq}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtFrom != null and updtDtFrom != ''">
+            AND updt_dt <![CDATA[ >= ]]> STR_TO_DATE(#{updtDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtTo != null and updtDtTo != ''">
+            AND updt_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{updtDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+    </sql>
+
+    <select id="getFaq" resultMap="faqResultMap">
+        /* kr.or.lx.rcic.modules.faq.mapper.FaqMapper.getFaq */
+
+        SELECT
+            faq_no, faq_sj, faq_cn, faq_ty, use_yn, regist_dt, updt_dt
+            , (select code_nm from rcic.tb_sys_cmm_code_dtl where group_code = 'FAQ_TY' and use_yn = 'Y' AND code = faq_ty) as FAQ_TY_NM
+        FROM rcic.tb_faq
+        WHERE
+         faq_no = #{id}
+    </select>
+
+    <select id="getFaqListCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM RCIC.TB_FAQ
+        <where>
+            AND USE_YN = 'Y'
+             <if test="faqType != null and faqType != ''">
+            AND FAQ_TY= #{faqType}
+            </if>
+            <include refid="conditions"/>
+        </where>
+    </select> 
+
+    
+    <select id="getFaqList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+        SELECT
+            faq_no as id,
+            faq_no, faq_sj, faq_cn, faq_ty, use_yn, regist_dt, updt_dt
+            , (select code_nm from rcic.tb_sys_cmm_code_dtl where group_code = 'FAQ_TY' and use_yn = 'Y' AND code = faq_ty) as FAQ_TY_NM
+            , (SELECT COUNT(*) FROM TB_BBS_ATCH_FILE ATCH WHERE ATCH.REFRN_BBSCTT_TY = '2' AND REFRN_BBSCTT_NO = faq_no) AS FILE_CNT
+        FROM RCIC.TB_FAQ
+        <where>
+         	 <if test="faqType != null and faqType != ''">
+            AND FAQ_TY= #{faqType}
+            </if>
+        	AND USE_YN = 'Y'
+            <include refid="conditions"/>
+        </where>
+		ORDER BY FAQ_NO DESC
+        <include refid="common.footerRow"/>
+    </select>
+
+    <update id="updateFaq" parameterType="kr.or.lx.rcic.modules.board.entity.Faq">
+        /* kr.or.lx.rcic.modules.faq.mapper.FaqMapper.updateFaq */
+
+        UPDATE rcic.tb_faq
+        SET
+              faq_sj = #{faqSj}
+            , faq_cn = #{faqCn}
+            , faq_ty = #{faqTy}
+            , use_yn = #{useYn}
+            , updt_dt = NOW()
+      WHERE
+             faq_no = #{id}
+    </update>
+
+
+    <delete id="deleteFaq" parameterType="kr.or.lx.rcic.modules.board.entity.Faq">
+        /* kr.or.lx.rcic.modules.faq.mapper.FaqMapper.deleteFaq */
+
+        DELETE FROM rcic.tb_faq
+        WHERE
+             faq_no = #{id}
+    </delete>
+
+    <insert id="insertFaq">
+        <selectKey resultType="long" keyColumn="faq_no" keyProperty="id" order="BEFORE">
+            SELECT nextval('rcic.sq_tb_faq')
+        </selectKey>
+        /* kr.or.lx.rcic.modules.faq.mapper.FaqMapper.insertFaq */
+        INSERT INTO rcic.tb_faq
+        (
+        faq_no,
+        faq_sj,
+        faq_cn,
+        faq_ty,
+        use_yn,
+        regist_dt,
+        updt_dt
+        )
+        VALUES (
+        #{id},
+        #{faqSj},
+        #{faqCn},
+        #{faqTy},
+        'Y',
+        NOW(),
+        NOW()
+        )
+    </insert>
+    
+    <select id="getFaqTypeCount" resultType="egovMap">
+    	SELECT 
+			FAQ_TY, 
+			COUNT(FAQ_TY) AS FAQ_CNT, 
+			(SELECT CODE_NM  FROM RCIC.TB_SYS_CMM_CODE_DTL TSCCD WHERE GROUP_CODE ='FAQ_TY' AND CODE = FAQ_TY) AS FAQ_TY_NM
+		FROM TB_FAQ
+		GROUP BY FAQ_TY
+    </select>
+    
+
+</mapper>

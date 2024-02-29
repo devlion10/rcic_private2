@@ -1,0 +1,54 @@
+@charset "utf-8";
+  
+@font-face {
+    font-family: 'Noto Sans Korean';
+    font-weight: 200;
+    font-style: normal;
+    src: url(../../fonts/dashboard/NotoSans-DemiLight.eot) format('eot'),
+    url(../../fonts/dashboard/NotoSans-DemiLight.otf) format('opentype'),
+    url(../../fonts/dashboard/NotoSans-DemiLight.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Noto Sans Korean';
+    font-weight: 400;
+    font-style: normal;
+    src: url(../../fonts/dashboard/NotoSans-Regular.eot) format('eot'),
+    url(../../fonts/dashboard/NotoSans-Regular.otf) format('opentype'),
+    url(../../fonts/dashboard/NotoSans-Regular.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Noto Sans Korean';
+    font-weight: 500;
+    font-style: normal;
+    src: url(../../fonts/dashboard/NotoSans-Medium.eot) format('eot'),
+    url(../../fonts/dashboard/NotoSans-Medium.otf) format('opentype'),
+    url(..././fonts/dashboard/NotoSans-Medium.woff) format('woff');
+}
+  
+html, body{height:100%;}
+body{margin:0; padding:0; font-family:'Noto Sans Korean', sans-serif; font-size:13px; font-weight:400; line-height:1.2; color:#222;}
+a{color:inherit; text-decoration:none;}
+hr, caption, legend{display:none;}
+h1, h2, h3, h4, h5, h6{font-size:100%; font-weight:400; line-height:1.2;}
+h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, form, fieldset, table, caption, tbody, tfoot, thead, tr, th, td, figure, figcaption, img{margin:0; padding:0; border:0;}
+ul, ol, li{list-style:none;}
+table{clear:both; width:100%; border-spacing:0; border:0;}
+p, div, th, td{font-size:100%;}
+dfn, address{font-style:normal;}
+img, input, select, textarea{vertical-align:middle;}
+input, select, button{font-family:'Noto Sans Korean', sans-serif; font-size:100%;}
+textarea{font-family:'Noto Sans Korean', sans-serif; font-size:100%; resize:none; border-radius:0; appearance:none;}
+input[type="submit"], button{cursor:pointer;}
+button{color: inherit; border:0; background:none;}
+button::-moz-focus-inner{padding:0; border:0;}
+input::-ms-clear, input::-ms-reveal{display:none;}
+input{outline: none;}
+textarea{box-sizing:border-box; padding: 20px; color: #222; border:1px solid #ddd;}
+textarea:focus{border: 1px solid #222; outline: none;}
+select{height: 50px; padding: 0 40px 0 20px; appearance: none; border:1px solid #ddd; background: #fff url(../assets/images/dashboard/select_arrow.png) no-repeat right 16px center;}
+select:focus{outline: none;}
+select::-ms-expand{display:none;}
+
+.blind{position:absolute; top:0; left:-9999px; width:0; height:0; overflow:hidden; margin:0; padding:0; font-size:0; line-height:0;}

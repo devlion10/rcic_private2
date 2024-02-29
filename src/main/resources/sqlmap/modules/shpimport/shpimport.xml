@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.shpimport.mapper.ShpImportMapper">
+
+
+    <insert id="insertDevelopInfo" parameterType='java.util.List'>
+        INSERT INTO rcic.tl_develop_info_import
+                (
+                  id
+                , sido_nm
+                , sido_cd
+                , sgg_nm
+                , sgg_cd
+                , emd_nm
+                , emd_cd
+                , li_nm
+                , li_cd
+                , bunji
+                , ref_nm
+                , addr
+                , pnu
+                , name
+                , area
+                , gu_nm
+                , object_id
+                , alias
+                , geom
+                )
+                VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            #{item.id}
+           ,#{item.sido_nm}
+           ,#{item.sido_cd}
+           ,#{item.sgg_nm}
+           ,#{item.sgg_cd}
+           ,#{item.emd_nm}
+           ,#{item.emd_cd}
+           ,#{item.li_nm}
+           ,#{item.li_cd}
+           ,#{item.bunji}
+           ,#{item.ref_nm}
+           ,#{item.addr}
+           ,#{item.pnu}
+           ,#{item.name}
+           ,#{item.area}
+           ,#{item.gu_nm}
+           ,#{item.object_id}
+           ,#{item.alias}
+           ,public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+            )
+        </foreach>
+    </insert>
+
+
+    <insert id="insertRoadPlanInfo" parameterType='java.util.List'>
+        INSERT INTO rcic.tl_road_plan_info_import
+                (
+                  geom
+                , object_id
+                , present_sn
+                , lclas_cl
+                , mlsfc_cl
+                , sclas_cl
+                , atrb_se
+                , wtnnc_sn
+                , ntfc_sn
+                , dgm_nm
+                , dgm_ar
+                , dgm_lt
+                , signgu_se
+                , grad_se
+                , road_ty
+                , road_no
+                , upis_rnm
+                , road_role
+                , drawing_no
+                , excut_se
+                , create_dat
+                , shape_leng
+                , shape_area
+                , alias
+                )
+                VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,#{item.object_id}
+           ,#{item.present_sn}
+           ,#{item.lclas_cl}
+           ,#{item.mlsfc_cl}
+           ,#{item.sclas_cl}
+           ,#{item.atrb_se}
+           ,#{item.wtnnc_sn}
+           ,#{item.ntfc_sn}
+           ,#{item.dgm_nm}
+           ,#{item.dgm_ar}
+           ,#{item.dgm_lt}
+           ,#{item.signgu_se}
+           ,#{item.grad_se}
+           ,#{item.road_ty}
+           ,#{item.road_no}
+           ,#{item.upis_rnm}
+           ,#{item.road_role}
+           ,#{item.drawing_no}
+           ,#{item.excut_se}
+           ,#{item.create_dat}
+           ,#{item.shape_leng}
+           ,#{item.shape_area}
+           ,#{item.alias}
+            )
+        </foreach>
+    </insert>
+
+
+    <insert id="insertMoctLinkLine" parameterType='java.util.List'>
+         INSERT INTO rcic.tl_moct_link_line_import
+            (
+              seq
+            , road_name
+            , pnu
+            , sido_nm
+            , sido_cd
+            , sgg_nm
+            , sgg_cd
+            , emd_nm
+            , emd_cd
+            , li_nm
+            , li_cd
+            , ref_nm
+            , geom
+            )
+            VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            #{item.seq}
+           ,#{item.road_name}
+           ,#{item.pnu}
+           ,#{item.sido_nm}
+           ,#{item.sido_cd}
+           ,#{item.sgg_nm}
+           ,#{item.sgg_cd}
+           ,#{item.emd_nm}
+           ,#{item.emd_cd}
+           ,#{item.li_nm}
+           ,#{item.li_cd}
+           ,#{item.ref_nm}
+           ,public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+            )
+        </foreach>
+    </insert>
+
+
+    <insert id="insertCdpntSgnalInfo" parameterType='java.util.List'>
+        INSERT INTO rcic.tl_cdpnt_sgnal_info_import
+        (
+          geom
+        , seq
+        , road_no
+        , road_nm
+        , sgnal_nm
+        , sido_nm
+        , sido_cd
+        , sgg_nm
+        , sgg_cd
+        , emd_nm
+        , emd_cd
+        , ri_nm
+        , ri_cd
+        )
+        VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,#{item.seq}
+           ,#{item.road_no}
+           ,#{item.road_nm}
+           ,#{item.sgnal_nm}
+           ,#{item.sido_nm}
+           ,#{item.sido_cd}
+           ,#{item.sgg_nm}
+           ,#{item.sgg_cd}
+           ,#{item.emd_nm}
+           ,#{item.emd_cd}
+           ,#{item.ri_nm}
+           ,#{item.ri_cd}
+            )
+        </foreach>
+    </insert>
+
+
+    <insert id="insertCenterLine" parameterType='java.util.List'>
+        INSERT INTO rcic.tl_center_line_import
+        (
+          geom
+        , objectid
+        , road_no
+        , sect_no
+        , sect_st
+        , sect_ed
+        , shape_leng
+        , area_unit
+        , hrdmline_f
+        , area_cd
+        , area_nm
+        , full_area_nm
+        , keyword
+        , area_eng_nm
+        )
+        VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,#{item.objectid}
+           ,#{item.road_no}
+           ,#{item.sect_no}
+           ,#{item.sect_st}
+           ,#{item.sect_ed}
+           ,#{item.shape_leng}
+           ,#{item.area_unit}
+           ,#{item.hrdmline_f}
+           ,#{item.area_cd}
+           ,#{item.area_nm}
+           ,#{item.full_area_nm}
+           ,#{item.keyword}
+           ,#{item.area_eng_nm}
+            )
+        </foreach>
+    </insert>
+
+    <update id="truncateDevelopInfo">
+        truncate table rcic.tl_develop_info_import
+    </update>
+
+    <update id="truncateRoadPlanInfo">
+        truncate table rcic.tl_road_plan_info_import
+    </update>
+
+    <update id="truncateMoctLinkLine">
+        truncate table rcic.tl_moct_link_line_import
+    </update>
+
+    <update id="truncateCdpntSgnalInfo">
+        truncate table rcic.tl_cdpnt_sgnal_info_import
+    </update>
+
+    <update id="truncateCenterLine">
+        truncate table rcic.tl_center_line_import
+    </update>
+
+
+    <insert id="insertDicUploadHist">
+        <selectKey resultType="long" keyColumn="seq" keyProperty="seq" order="BEFORE">
+            SELECT nextval('rcic.sq_tb_dic_upload_hist')
+        </selectKey>
+        INSERT INTO rcic.tb_dic_upload_hist (
+              seq
+            , dic_nm
+            , dic_tbl_nm
+            , stdr_dt
+            , crt_cnt
+            , regist_dt
+            , regist_id
+        ) VALUES (
+              #{seq}
+            , #{dicNm}
+            , #{dicTblNm}
+            , #{stdrDt}
+            , #{crtCnt}
+            , now()
+            , #{registId}
+        )
+    </insert>
+
+
+    <select id="getLastDicUploadHist" resultType="java.lang.String">
+        select to_char(to_date('20201015', 'yyyyMMdd'), 'yyyy-MM-DD') AS stdrdt
+          from tb_dic_upload_hist
+         where dic_tbl_nm = #{dicTblNm}
+      order by regist_dt desc
+         limit 1
+    </select>
+    
+    
+    <!-- 행정구역 데이터 삭제 / import -->
+    
+    <!-- 시도 -->
+    
+    <update id="truncateLegaldongSido">
+        truncate table rcic.tb_legaldong_sido
+    </update>
+    
+    <insert id="insertLegaldongSido" parameterType='java.util.List'>
+        INSERT INTO rcic.tb_legaldong_sido
+        (
+          geom
+        , sido_cd
+        , sido_nm
+        )
+        VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,#{item.CTPRVN_CD}
+           ,#{item.CTP_KOR_NM}
+            )
+        </foreach>
+    </insert>
+    
+    <!-- 시군구 -->
+    
+    <update id="truncateLegaldongSgg">
+        truncate table rcic.tb_legaldong_sgg;
+        ALTER SEQUENCE rcic.tb_legaldong_sgg_id_seq2 RESTART WITH 1;
+    </update>
+    
+    <insert id="insertLegaldongSgg" parameterType='java.util.List'>
+        INSERT INTO rcic.tb_legaldong_sgg
+        (
+          id
+        , geom
+        , sttus
+        , regist_id
+        , regist_dt
+        , updt_id
+        , updt_dt
+        , sgg_cd
+        , sido_cd
+        , sgg_nm
+        )
+        VALUES
+        <foreach collection='list' item='item' separator=','>
+            (
+            nextval('rcic.tb_legaldong_sgg_id_seq2') 
+           ,public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,''
+           ,''
+           ,now()
+           ,''
+           ,''
+           ,#{item.SIG_CD}
+           ,substring(#{item.SIG_CD}::varchar,1,2)
+           ,#{item.SIG_KOR_NM}
+            )
+        </foreach>
+    </insert>
+    
+    
+    <!-- 읍면동 -->
+    
+    <update id="truncateLegaldongEmd">
+        truncate table rcic.tb_legaldong_emd;
+        ALTER SEQUENCE rcic.tb_legaldong_emd_id_seq RESTART WITH 1;
+    </update>
+    
+    <insert id="insertLegaldongEmd" parameterType='java.util.List'>
+        INSERT INTO rcic.tb_legaldong_emd
+        (
+          id
+        , geom
+        , emd_nm
+        , regist_dt
+        , emd_cd
+        , sido_cd
+        , sido_nm
+        , sgg_cd
+        , sgg_nm
+        )
+		values
+        <foreach collection='list' item='item' separator=','>
+			(
+			nextval('rcic.tb_legaldong_emd_id_seq') 
+           ,public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,#{item.EMD_KOR_NM}
+           ,now()
+           ,#{item.EMD_CD}
+           ,substring(#{item.EMD_CD}::varchar,1,2)
+           ,''
+           ,substring(#{item.EMD_CD}::varchar,1,5)
+           ,''
+           	)
+        </foreach>
+    </insert>
+    
+    <update id="insertLegaldongEmdUdtSidoNm" >
+    	update rcic.tb_legaldong_emd as a
+		set sido_nm = b.sido_nm 
+		from rcic.tb_legaldong_sido as b
+		where a.sido_cd = b.sido_cd;
+    </update>
+    
+    <update id="insertLegaldongEmdUdtSggNm" >
+    	update rcic.tb_legaldong_emd as a
+		set sgg_nm = b.sgg_nm 
+		from rcic.tb_legaldong_sgg as b
+		where a.sgg_cd = b.sgg_cd;
+    </update>
+    
+   
+    
+        <!-- 리 -->
+    <update id="truncateLegaldongLi">
+        truncate table rcic.tb_legaldong_li;
+        ALTER SEQUENCE rcic.tb_legaldong_li_id_seq RESTART WITH 1;
+    </update>
+    
+    <insert id="insertLegaldongLi" parameterType='java.util.List'>
+        INSERT INTO rcic.tb_legaldong_li
+        (
+          id
+        , geom
+        , li_cd
+        , emd_cd
+        , li_nm
+        , seq
+        )
+		values
+        <foreach collection='list' item='item' separator=','>
+			(
+			nextval('rcic.tb_legaldong_li_id_seq') 
+           ,public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           ,#{item.LI_CD}
+           ,substring(#{item.LI_CD}::varchar,1,8)
+           ,#{item.LI_KOR_NM}
+           ,#{item.LI_CD}
+           	)
+        </foreach>
+    </insert>
+    
+    <!-- vacuum
+    <update id="vacuuming" parameterType="java.lang.String">
+    	vacuum full ${values}
+    </update> -->
+    
+    
+    <!-- 연속지적도 (All) -->
+     <update id="truncateCbndAll">
+        truncate table rcic.tb_cbnd_all;
+        ALTER SEQUENCE rcic.seq_tb_cbnd_all RESTART WITH 1;
+    </update>
+    
+    <insert id="insertCbndAll" parameterType='java.util.List'>
+        INSERT INTO rcic.tb_cbnd_all
+        (
+          seq
+        , pnu
+        , addr
+        , jibun
+        , sub_jibun
+        , stdr_dt
+        , sido_cd
+		, sgg_cd
+		, emd_cd
+		, ri_cd
+        , geom
+        )
+		values
+        <foreach collection='list' item='item' separator=','>
+			(
+			nextval('rcic.seq_tb_cbnd_all') 
+           ,#{item.A1}
+           ,#{item.A3}
+           ,#{item.A4}
+           ,#{item.A5}
+           ,#{item.A6}
+           ,substring(#{item.A1}::varchar,1,2) <!-- sido -->
+           ,substring(#{item.A1}::varchar,1,5) <!-- sgg -->
+           ,substring(#{item.A1}::varchar,1,8) <!-- emd -->
+           ,substring(#{item.A1}::varchar,1,10) <!-- ri -->
+           ,public.ST_Transform(public.ST_GeomFromText('${item.geom}',5179),3857)
+           	)
+        </foreach>
+    </insert>
+    
+     <!-- 연속지적도 (Change) -->
+     
+     
+    <update id="truncateCbndChange">
+        truncate table rcic.tb_cbnd_change;
+        ALTER SEQUENCE rcic.seq_tb_cbnd_change RESTART WITH 1;
+    </update>
+    
+   
+</mapper>
+

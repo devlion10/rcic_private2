@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.contract.mapper.ContractMapper">
+
+    <resultMap id="contractResultMap" type="kr.or.lx.rcic.modules.contract.entity.Contract">
+        
+        <!-- chchchch -->
+        <!-- 수집일자(등록일시) -->
+        <result property="rgstDt" column="rgstdt"/>
+        <!-- 계약일자 -->
+        <result property="cntrctCnclsDate" column="cntrctCnclsdate"/>
+        <!-- 계약업체 -->
+        <result property="corpList" column="corplist"/>
+        <!-- 계약금액 -->
+        <result property="totcntrctAmt" column="totcntrctamt"/>
+        <!-- 착공일자 -->
+        <result property="cbgnDate" column="cbgndate"/>
+        <!-- 준공일자 -->
+        <result property="ttalccmpltDate" column="ttalccmpltdate"/>
+		
+		
+        <!-- 시작일시 -->
+        <result property="startDt" column="start_dt"/>
+        <!-- 종료일시 -->
+        <result property="endDt" column="end_dt"/>
+        <!-- 수집키워드 -->
+        <result property="keyword" column="keyword"/>
+        <!-- 수집데이터건수 -->
+        <result property="getDataCnt" column="getdatacnt"/>
+        <!-- 변환데이터건수 -->
+        <result property="converterDataCnt" column="converterdatacnt"/>
+        <!-- 기준일시 -->
+        <result property="stdrDt" column="stdrdt"/>
+        <!-- 검색시작일시 -->
+        <result property="searchStartDt" column="search_start_dt"/>
+        <!-- 검색종료일시 -->
+        <result property="searchEndDt" column="search_end_dt"/>
+        <!-- 분석건수 -->
+        <result property="anaysisCnt" column="anaysiscnt"/>
+		
+    </resultMap>
+    
+	<sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="startDt != null and startDt != ''">
+            AND start_dt = #{startDt}
+        </if>
+        <if test="endDt != null and endDt != ''">
+            AND end_dt = #{endDt}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND keyword LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="getDataCnt != null and getDataCnt != ''">
+            AND getDataCnt = #{getDataCnt}
+        </if>
+        <if test="converterDataCnt != null and converterDataCnt != ''">
+            AND converterDataCnt = #{converterDataCnt}
+        </if>
+         <if test="stdrDt != null and stdrDt != ''">
+            AND stdrDt = #{stdrDt}
+        </if>
+        <if test="searchStartDt != null and searchStartDt != ''">
+            AND search_start_dt = #{searchStartDt}
+        </if>
+        <if test="searchEndDt != null and searchEndDt != ''">
+            AND search_end_dt = #{searchEndDt}
+        </if>
+        <if test="anaysisCnt != null and anaysisCnt != ''">
+            AND anaysisCnt = #{anaysisCnt}
+        </if>
+    </sql>
+
+
+   
+
+    <select id="selectContractList" resultType="egovMap">
+        <include refid="common.headerRow"/>
+       SELECT distinct 
+			cntrctcnclsdate, 														--계약일자
+			to_char(totcntrctamt, '999,999,999') as totcntrctamt, 					--계약금액
+			ntceno, 																--등록번호
+			split_part(corplist, '^', 4) as corplist, 								--계약업체
+			rgstdt::date, 															--수집일자
+			cbgndate as cbgn_date, 													--착공일자
+			ttalccmpltdate as ttalccmplt_date 										--준공일자
+		FROM rcic.tb_g2b_contract_info 
+        where not(rtrim(cntrctcnclsdate)='')
+        AND cntrctcnclsdate <![CDATA[>=]]> substring(#{startDate}::varchar,0,11)
+        AND cntrctcnclsdate <![CDATA[<=]]> substring(#{endDate}::varchar,0,11)
+
+        
+		<if test="keyword != null and keyword != ''">
+            and corplist like concat('%', #{keyword},'%')
+            or totcntrctamt like concat('%', #{keyword},'%')
+            or cbgndate like concat('%', #{keyword},'%')
+            or ttalccmpltdate like concat('%', #{keyword},'%')
+        </if>
+ 		order by rgstdt, cntrctcnclsdate desc
+        <include refid="common.footerRow"/>
+	</select>
+	
+	<select id="selectContractCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.user.mapper.UserMapper.simpleListUserCnt */
+
+        SELECT COUNT(*) 
+        FROM rcic.tb_g2b_contract_info 
+        WHERE 1=1
+        AND cntrctcnclsdate <![CDATA[>=]]> substring(#{startDate}::varchar,0,11)
+        AND cntrctcnclsdate <![CDATA[<=]]> substring(#{endDate}::varchar,0,11)
+        
+		<if test="keyword != null and keyword != ''">
+            and rgstdt like concat('%', #{keyword},'%')
+            or corplist like concat('%', #{keyword},'%')
+            or totcntrctamt like concat('%', #{keyword},'%')
+            or cbgndate like concat('%', #{keyword},'%')
+            or ttalccmpltdate like concat('%', #{keyword},'%')
+        </if>
+        
+    </select>
+	
+   
+</mapper>
+

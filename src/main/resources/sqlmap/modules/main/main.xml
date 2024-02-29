@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.main.mapper.MainMapper">
+
+
+	<select id="selectSidoList" resultType="java.util.HashMap">
+		SELECT sido_cd, sido_nm,  public.ST_AsText(public.st_centroid(geom)) as center
+		 FROM rcic.tb_legaldong_sido
+	</select>
+	 
+ 	<select id="selectSggList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		SELECT signgu_code as sgg_cd, brtc_code, signgu_nm as sgg_nm, sttus, regist_id, regist_dt, updt_id, updt_dt
+		FROM rcic.tb_legaldong_sgg
+		where brtc_code=#{sidoCd}
+	</select>
+	
+	<select id="selectEmdList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+		SELECT emd_code as emd_cd, signgu_code, emd_nm as emd_nm, sttus, regist_id, regist_dt, updt_id, updt_dt
+		FROM rcic.tb_legaldong_emd
+		where signgu_code=#{sggCd}
+	</select>
+	 
+
+	<!-- 메인 국도공사/도로개설/시설공사 수ㅡ -->
+	<select id="getConstCnt" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			COUNT(*) AS CNT  <!-- 국도공사 -->
+		FROM RCIC.TB_ANALYSIS_INFO
+		WHERE
+			STDR_DT BETWEEN #{fromDt} AND #{toDt}
+			<if test="sido != null and sido != '' ">
+		   		AND SIDO_CD = #{sido}
+		   </if>
+			AND RESULTNO IN ( SELECT RESULTNO FROM RCIC.TB_G2B_RESULT_INFO WHERE SEARCH_WORD = '국도')
+			AND GEOM IS NOT NULL
+		UNION ALL
+		SELECT
+			COUNT(*) AS CNT  <!-- 도로개설 -->
+		FROM RCIC.TB_ANALYSIS_INFO
+		WHERE
+			STDR_DT BETWEEN #{fromDt} AND #{toDt}
+			<if test="sido != null and sido != '' ">
+		   		AND SIDO_CD = #{sido}
+		   </if>
+			AND RESULTNO IN ( SELECT RESULTNO FROM RCIC.TB_ANALYSIS_ROAD_INFO WHERE ROAD_TY_CD IN ('30', '28', '7', '23', '8', '18', '37'))
+			AND GEOM IS NOT NULL
+		UNION ALL
+		SELECT
+			COUNT(*) AS CNT <!-- 시설공사 -->
+		FROM
+			RCIC.TB_ANALYSIS_INFO 
+		WHERE
+			STDR_DT BETWEEN #{fromDt} AND #{toDt}
+		   <if test="sido != null and sido != '' ">
+		   		AND SIDO_CD = #{sido}
+		   </if>
+			AND RESULTNO IN ( SELECT RESULTNO FROM RCIC.TB_ANALYSIS_ROAD_INFO WHERE ROAD_TY_CD IN ( SELECT CODE FROM RCIC.TB_SYS_CMM_CODE_DTL WHERE GROUP_CODE = 'CD0004' AND RM = '2'))
+	</select>
+	
+	<!-- 메인 준공예정 수 -->
+	<select id="getConstExpectCnt" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			count(*) 
+	 	FROM TB_ANALYSIS_INFO 
+		WHERE FORECAST_END_DT IS NOT NULL 
+		  AND FORECAST_END_DT BETWEEN #{fromDt} AND #{toDt}
+	      AND GEOM IS NOT NULL 
+	      <if test="sido != null and sido != '' ">
+	   		AND SIDO_CD = #{sido}
+	   </if>
+	</select>
+
+	<!-- 메인 온라인도움말 파일 정보 -->
+	<select id="getAtchHelpFileInfo" parameterType="String" resultType="java.util.HashMap">
+		/* MainMapper.getAtchHelpFileInfo */
+		SELECT ATCH_FILE_NO as atchFileNo
+			 , REFRN_BBSCTT_TY as refrnBbscttTy
+			 , REFRN_BBSCTT_NO as refrnBbscttNo
+			 , ATCH_FILE_LC as atchFileLc
+			 , ATCH_FILE_NM as atchFileNm
+			 , ORGINL_FILE_NM as originalFileNm
+			 , ATCH_FILE_SIZE as atchFileSize
+		  FROM RCIC.TB_BBS_ATCH_FILE
+		 WHERE ATCH_FILE_NO = #{fileId}
+	</select>
+</mapper>	 

@@ -1,0 +1,82 @@
+* 운영작업 필요항목
+----------------------------------------------------------------------------------------------------
+1. API 서비스 제공 (부장님)
+	-- 운영서버 스크립트
+	-- select * FROM RCIC.TB_API_PROVD_INFO : api 서비스 테이블
+	
+	-- 실제 운영서버에 추가할 insert문
+	-- 추가시 
+	-- select * FROM RCIC.TB_API_PROVD_INFO : api 서비스 테이블 조회 후 마지막 번호 이후로  api_provd_no 번호 변경할 것
+	INSERT INTO rcic.tb_api_provd_info(api_provd_no, api_info_nm, api_dc, api_provd__url, dmax_req_cnt, use_yn, regist_dt, updt_dt)
+	VALUES 
+	 ('5', '고속도로 다중위치현황','고속도로 공고건별 다중 위치현황 정보를 제공합니다.','https://rcic.lx.or.kr/api/getMultiExpresswayWorkList','10000', 'Y', now(), now() )
+	,('6', '국도 다중위치현황','국도공고건별 다중 위치현황 정보를 제공합니다.','https://rcic.lx.or.kr/api/getMultiHighwayWorkList','10000', 'Y', now(), now() )
+	,('7', '지방도/기타 다중위치현황','지방도/기타 공고건별 다중 위치현황 정보를 제공합니다.','https://rcic.lx.or.kr/api/getMultiLocalroadWorkList','10000', 'Y', now(), now() );
+	
+----------------------------------------------------------------------------------------------------	
+2. 새주소 도로명 연계 - 이관 시 작업사항(김건호 주임) 	 
+	* 기존 TL_ROAD_NAME 원본 테이블의 구조와 기존 전체 테이터를 RCIC.TL_ROAD_NAME_COPY으로 생성 후 복사(백업 진행) 
+	 -- create table  RCIC.TL_ROAD_NAME_COPY (like  RCIC.TL_ROAD_NAME including all);
+	 -- insert into  RCIC.TL_ROAD_NAME_COPY (select * from  RCIC.TL_ROAD_NAME);
+	
+	* TL_ROAD_NAME 테이블에 [등록일자,수정일자] 컬럼 2개 새로 추가
+	 -- ALTER TABLE RCIC.TL_ROAD_NAME ADD regist_dt TIMESTAMP WITH TIME ZONE
+	 -- ALTER TABLE RCIC.TL_ROAD_NAME ADD updt_dt TIMESTAMP WITH TIME ZONE
+	 
+	* 솔라에서 TL_ROAD_NAME 테이블에 [등록일자,수정일자] 컬럼 2개 새로 추가 - (솔라컬럼추가방법.txt 참고)
+	
+  	* TL_ROAD_NAME 테이블의  기존 geom 컬럼 타입을 5179로 변경
+  	 -- ALTER TABLE rcic.tl_road_name ALTER COLUMN geom type geometry(MultiLineString, 5179);
+	
+	* RCIC.TL_ROAD_NAME_ALL(전체분-TXT), RCIC.TL_ROAD_NAME_ALL_SHP(전체분-shp), 
+	  RCIC.TL_ROAD_NAME_CHANGE(변동분-TXT), RCIC.TL_ROAD_NAME_CHANGE_SHP(변동분-SHP)
+	 -- 상위 전체분 및 변동분 관련 테이블 4개 신규 생성.
+	 -- [RCIC.TL_ROAD_NAME_ALL, RCIC.TL_ROAD_NAME_ALL_SHP 2개 테이블의 전체 데이터는 전체 이관] - 해당 csv파일 임포트
+	
+	* context.properties에서 새주소도로명 관련 서비스 키 확인, 기존 윈도우 환경의 파일 다운로드 경로를 Linux 환경의 특정 경로로 수정
+	 -- ##새주소도로명_연계
+	    ##서비스_Key
+	    appKey=U01TX0FVVEgyMDIyMDcwNTE4NDMzOTExMjc2NjE=
+	    ##변동분_Path(Window)
+	    filePath=C:\\dev\\workspace\\rcic2\\src\\main\\webapp\\WEB-INF\\resource\\ <--- 리눅스서버 특정 경로로 치환 (맨끝 폴더명: resource)
+	    ##전체분_Path(Window)
+	    dataCntAllPath=C:\\dev\\workspace\\rcic2\\src\\main\\webapp\\WEB-INF\\resource\\all\\ <--- 리눅스서버 특정 경로로 치환 (맨끝 폴더명: resource/all)
+		
+	* 명칭사전관리 > 새주소도로명 페이지에서 전체분 기존테이블로 마이그레이션, 변동분 연계 작업을 진행하며 api정상 동작하는지 확인
+	 -- 주석처리된 "전체분을 기존테이블에 마이그레이션" 버튼과, "변동분 연계" 버튼을 주석 해제한다.
+	 -- 솔라에서  TL_ROAD_NAME 테이블을 새로운 필드 2개 추가
+	 -- "전체분을 기존테이블에 마이그레이션" 버튼을 눌러 진행. => TL_ROAD_NAME에 데이터가 90만건이상 쌓이는지 확인
+	 -- "변동분 연계" 버튼을 눌러 진행. => 리눅스 서버 내 변동분 Path(다운로드 경로)에 변동분 데이터가 다운로드 되는지 확인.
+	 -- 최종적으로 솔라에서  TL_ROAD_NAME 전체 카운트만큼 솔라에 수동 반영.
+	 -- 2개 버튼 다시 주석 처리.
+	 
+	* 관리자 : 명칭사전관리 > 새주소도로명 리스트, 사용자 : 위치변경 > 새주소도로명 리스트가 잘 표출되는지 최종확인
+	
+----------------------------------------------------------------------------------------------------	    	    
+3. 도로대장 49종 연계  - 이관 시 작업사항(김건호 주임) 	 
+	* [RCIC.N3A_A0010000 테이블 신규 생성 및 전체 데이터 이관] - csv파일 임포트
+	
+    * [RCIC.TL_ROAD_LAYER 테이블 신규 생성 및 전체 데이터 이관] - csv파일 임포트
+    
+    * RCIC지도에서 도로대장 버튼을 눌러 시설물들이 잘 표출되는지 확인 
+     -- krris쪽 시스템으로 api호출이 잘되는지도 확인 
+
+----------------------------------------------------------------------------------------------------
+4. 연속지적도 연계 - 이관 시 작업사항(김건호 주임) 	    
+	* 연속지적도 이관 전에 분석 스케줄러가 동작 못하게 임시 설정.
+	
+	* [rcic.tb_cbnd_info 테이블 전체분 테이터 전체 이관] - csv파일 임포트
+	
+	* 테스트 및 확인
+	 -- 관리자 : 명칭사전관리 > 연속지적 리스트에서 api테스트 버튼 주석 해제후 클릭
+	 -- vworld쪽 시스템으로 api호출이 잘되는지와 tb_cbnd_info 테이블에 적재되고 있는지 확인 
+	 -- 관리자 : 명칭사전관리 > 연속지적 리스트, 사용자 : 위치변경 > 연속지적도 리스트가 잘 표출되는지 최종확인
+	 -- 솔라에서  tb_cbnd_info 테이블 전체 데이터 풀 임포트하여 현행화
+	 
+----------------------------------------------------------------------------------------------------  
+5. tb_g2b_contract_info 테이블 컬럼 추가
+	- cbgndate		CHARACTER VARYING	18   --착공일자
+ 	- thtmccmpltdate	CHARACTER VARYING	18   --금차준공일자
+ 	
+----------------------------------------------------------------------------------------------------
+6. tb_menu 테이블 - regist_dt, updt_dt 컬럼 timestamptz로 타입변경 

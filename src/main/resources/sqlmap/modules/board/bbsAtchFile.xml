@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.lx.rcic.modules.board.mapper.BbsAtchFileMapper">
+
+    <resultMap id="bbsAtchFileResultMap" type="kr.or.lx.rcic.modules.board.entity.BbsAtchFile">
+        <!-- 첨부파일번호 -->
+        <result property="id" column="atch_file_no"/>
+        <!-- 참조게시글유형 -->
+        <result property="refrnBbscttTy" column="refrn_bbsctt_ty"/>
+        <!-- 참조게시글번호 -->
+        <result property="refrnBbscttNo" column="refrn_bbsctt_no"/>
+        <!-- 첨부파일위치 -->
+        <result property="atchFileLc" column="atch_file_lc"/>
+        <!-- 첨부파일명 -->
+        <result property="atchFileNm" column="atch_file_nm"/>
+        <!-- 원본파일명 -->
+        <result property="orginlFileNm" column="orginl_file_nm"/>
+        <!-- 첨부화일사이즈 -->
+        <result property="atchFileSize" column="atch_file_size"/>
+        <!-- 등록일시 -->
+        <result property="registDt" column="regist_dt"/>
+        <!-- 수정일시 -->
+        <result property="updtDt" column="updt_dt"/>
+    </resultMap>
+
+    <sql id="whereConditions">
+        <where>
+            <include refid="conditions" />
+        </where>
+    </sql>
+
+    <sql id="conditions">
+        <if test="id != null">
+            AND atch_file_no = #{id}
+        </if>
+        <if test="refrnBbscttTy != null and refrnBbscttTy != ''">
+            AND refrn_bbsctt_ty = #{refrnBbscttTy}
+        </if>
+        <if test="refrnBbscttNo != null">
+            AND refrn_bbsctt_no = #{refrnBbscttNo}
+        </if>
+        <if test="atchFileLc != null and atchFileLc != ''">
+            AND atch_file_lc = #{atchFileLc}
+        </if>
+        <if test="atchFileNm != null and atchFileNm != ''">
+            AND atch_file_nm = #{atchFileNm}
+        </if>
+        <if test="orginlFileNm != null and orginlFileNm != ''">
+            AND orginl_file_nm = #{orginlFileNm}
+        </if>
+        <if test="atchFileSize != null">
+            AND atch_file_size = #{atchFileSize}
+        </if>
+        <if test="registDt != null and registDt.enabled == true">
+            
+            <if test="registDtEq != null and registDtEq != ''">
+            AND regist_dt = STR_TO_DATE(#{registDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="registDtFrom != null and registDtFrom != ''">
+            AND regist_dt <![CDATA[ >= ]]> STR_TO_DATE(#{registDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="registDtTo != null and registDtTo != ''">
+            AND regist_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{registDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+        <if test="updtDt != null and updtDt.enabled == true">
+            
+            <if test="updtDtEq != null and updtDtEq != ''">
+            AND updt_dt = STR_TO_DATE(#{updtDtEq}, '%Y.%m.%d')
+            </if>
+            
+            <if test="updtDtFrom != null and updtDtFrom != ''">
+            AND updt_dt <![CDATA[ >= ]]> STR_TO_DATE(#{updtDtFrom}, '%Y.%m.%d')
+            </if>
+
+            <if test="updtDtTo != null and updtDtTo != ''">
+            AND updt_dt <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{updtDtTo}, '%Y.%m.%d'), INTERVAL 1 DAY)
+            </if>
+        </if>
+    </sql>
+
+    <select id="getBbsAtchFile" resultMap="bbsAtchFileResultMap">
+        /* kr.or.lx.rcic.modules.bbsAtchFile.mapper.BbsAtchFileMapper.getBbsAtchFile */
+        SELECT
+            atch_file_no, refrn_bbsctt_ty, refrn_bbsctt_no, atch_file_lc, atch_file_nm, orginl_file_nm, atch_file_size, regist_dt, updt_dt
+        FROM rcic.tb_bbs_atch_file
+        WHERE
+         atch_file_no = #{id}
+	</select>
+
+    <select id="selectBbsAtchFileCnt" resultType="int">
+        /* kr.or.lx.rcic.modules.board.mapper.BbsAtchFileMapper.simpleListBbsAtchFileCnt */
+
+        SELECT COUNT(*)
+        FROM rcic.tb_bbs_atch_file
+        <include refid="whereConditions" />
+    </select>
+
+    
+    <select id="selectBbsAtchFileList" resultType="egovMap">
+        /* kr.or.lx.rcic.modules.board.mapper.BbsAtchFileMapper.selectBbsAtchFileList */
+
+        <include refid="common.headerRow"/>
+        SELECT
+            atch_file_no as id,
+            atch_file_no, refrn_bbsctt_ty, refrn_bbsctt_no, atch_file_lc, atch_file_nm, orginl_file_nm, atch_file_size, regist_dt, updt_dt
+        FROM rcic.tb_bbs_atch_file
+        <include refid="whereConditions" />
+        <include refid="common.footerRow"/>
+	</select>
+
+    <update id="updateBbsAtchFile" parameterType="kr.or.lx.rcic.modules.board.entity.BbsAtchFile">
+        /* kr.or.lx.rcic.modules.bbsAtchFile.mapper.BbsAtchFileMapper.updateBbsAtchFile */
+
+        UPDATE rcic.tb_bbs_atch_file
+        SET
+               refrn_bbsctt_ty = #{refrnBbscttTy}
+                    , refrn_bbsctt_no = #{refrnBbscttNo}
+                    , atch_file_lc = #{atchFileLc}
+                    , atch_file_nm = #{atchFileNm}
+                    , orginl_file_nm = #{orginlFileNm}
+                    , atch_file_size = #{atchFileSize}
+                      , updt_dt = NOW()
+              WHERE
+             atch_file_no = #{id}
+    </update>
+
+    <update id="updateBbsAtchFileDynamic" parameterType="kr.or.lx.rcic.modules.board.entity.BbsAtchFile">
+        /* kr.or.lx.rcic.modules.board.mapper.BbsAtchFileMapper.updateBbsAtchFileDynamic */
+
+        UPDATE rcic.tb_bbs_atch_file
+            <set>
+            <if test="refrnBbscttTy != null and refrnBbscttTy != ''">
+                refrn_bbsctt_ty = #{refrnBbscttTy},
+            </if>
+            <if test="refrnBbscttNo != null">
+                refrn_bbsctt_no = #{refrnBbscttNo},
+            </if>
+            <if test="atchFileLc != null and atchFileLc != ''">
+                atch_file_lc = #{atchFileLc},
+            </if>
+            <if test="atchFileNm != null and atchFileNm != ''">
+                atch_file_nm = #{atchFileNm},
+            </if>
+            <if test="orginlFileNm != null and orginlFileNm != ''">
+                orginl_file_nm = #{orginlFileNm},
+            </if>
+            <if test="atchFileSize != null">
+                atch_file_size = #{atchFileSize},
+            </if>
+            <if test="registDt != null">
+                regist_dt = #{registDt},
+            </if>
+            <if test="updtDt != null">
+                updt_dt = NOW(),
+            </if>
+            </set>
+        WHERE
+             atch_file_no = #{id}
+    </update>
+
+    <delete id="deleteBbsAtchFile" parameterType="kr.or.lx.rcic.modules.board.entity.BbsAtchFile">
+        /* kr.or.lx.rcic.modules.bbsAtchFile.mapper.BbsAtchFileMapper.deleteBbsAtchFile */
+
+        DELETE FROM rcic.tb_bbs_atch_file
+        WHERE atch_file_no = #{id}
+    </delete>
+
+    <insert id="insertBbsAtchFile">
+        /* kr.or.lx.rcic.modules.bbsAtchFile.mapper.BbsAtchFileMapper.insertBbsAtchFile */
+        INSERT INTO rcic.tb_bbs_atch_file
+        (
+        refrn_bbsctt_ty, refrn_bbsctt_no, atch_file_lc, atch_file_nm, orginl_file_nm, atch_file_size, regist_dt, updt_dt
+        )
+        VALUES (
+        #{refrnBbscttTy},
+        #{refrnBbscttNo},
+        #{atchFileLc},
+        #{atchFileNm},
+        #{orginlFileNm},
+        #{atchFileSize},
+        NOW(),
+        NOW()
+        )
+	</insert>
+
+</mapper>
+
