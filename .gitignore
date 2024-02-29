@@ -9,6 +9,7 @@ rcic.iml
  
 # 특정 폴더안의 파일 전부 제외
 .svn
+target
  
 # 해당 확장자 파일 전체 제외
 *.txt

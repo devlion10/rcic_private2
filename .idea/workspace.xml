@@ -83,24 +83,6 @@
     <configuration>C:\Users\itp-001\AppData\Roaming\Subversion</configuration>
     <supportedVersion>125</supportedVersion>
   </component>
-  <component name="SvnFileUrlMappingImpl">
-    <option name="myMappingRoots">
-      <list>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="C:\rcic_source\rcic2" />
-          <option name="myCopyRoot" value="C:\rcic_source\rcic2" />
-        </SvnCopyRootSimple>
-      </list>
-    </option>
-    <option name="myMoreRealMappingRoots">
-      <list>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="C:\rcic_source\rcic2" />
-          <option name="myCopyRoot" value="C:\rcic_source\rcic2" />
-        </SvnCopyRootSimple>
-      </list>
-    </option>
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="8934c6fd-86fc-483d-8bb4-bc3e01545389" name="Changes" comment="" />
