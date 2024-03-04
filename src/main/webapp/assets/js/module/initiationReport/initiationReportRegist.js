@@ -574,6 +574,9 @@ function bidntcenoynChange(){
             $('#workDivisionInfoUpt').removeAttr("disabled");
         } else {
 
+
+
+            
             $('#bidntceno').removeAttr("disabled");
             $('#workDivisionInfo').attr("disabled", "disabled");
             $('#bidntcenoUpt').removeAttr("disabled");
