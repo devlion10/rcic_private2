@@ -577,8 +577,6 @@ function bidntcenoynChange(){
             $('#workDivisionInfo').attr("disabled", "disabled");
             $('#bidntcenoUpt').removeAttr("disabled");
             $('#workDivisionInfoUpt').attr("disabled", "disabled");
-
-            
         }
     // } else {
     //     // bidntcenoyn = $("#bidntcenoUpt :checked").val();
