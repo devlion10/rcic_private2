@@ -64,6 +64,7 @@
 					}
 				}
 			},
+
 			ImageMap : {
 				name : "ImageMap",
 				korName: "ImageMap",

@@ -1,71 +1,13 @@
 $(document).ready(function(){
     // 공사시행위치 selectBox
-    // InitiationReportRegist.getSido();
+    InitiationReportRegist.getSido();
 });
 
 
 var InitiationReportRegist = {
-    setSearchInitiationReport : function() {
-        let type = "post";
-        let url = "/rcic/initiationReport/getInitiationReportList";
-        let formData = JSON.stringify($("#initiationReportSearchForm").serializeObject());
-        // let formData = $("#initiationReportSearchForm").serializeObject();
-        // let form = document.getElementById('initiationReportSearchForm');
-        // let formData = new FormData(form);
-        let contentType = "application/json";
-        ajaxCall(type, url, formData, contentType,function (result){
-            let str;
-            let totCnt = result.length;
-            for (let i = 0; i < result.length; i++) {
-                str += "<tr><td><input type='checkbox' id='choice" + i + "'><label for='choice" + i + "'></label></td>";
-                str += "<td>" + result[i].rn + "</td>";
-                // str += "<td>" + parseInt(i+1) + "</td>";
-                str += "<td>" + result[i].bidntceno + "</td>";
-                str += "<td>" + result[i].constRoadNm + "</td>";
-                str += "<td>" + result[i].routeNm + "</td>";
-                str += "<td>" + result[i].facTyNm + "</td>";
-                str += "<td>" + result[i].bidntcenm + "</td>";
-                str += "<td>" + result[i].detailCstrnCnt + "</td>";
-                str += "<td>" + result[i].forecastDt + "</td></tr>";
-            }
-            $("#initiationReportList").html(str);
-            $("#totCnt").html("Total : " + totCnt + "건");
-            // initiationReportList
-        });
-
-        // InitiationReport.setSearchInitiationReportListEvt(); //목록보기
-        //
-        // if(tabGbn == "1"){
-        //     //초기화 버튼 일 경우
-        //     if(gbn == "reset"){
-        //         Collection.selPeriod('3month');
-        //     }
-        //
-        // }else{
-        //     $(".topDateBtn img").each(function(index, item){
-        //         var name   = $(this).attr("data-fileName");
-        //         if(name == "btn_week"){
-        //             $(this).trigger('click');
-        //             return;
-        //         }
-        //     });
-        //
-        //     $(".btmDateBtn img").each(function(index, item){
-        //         var name   = $(this).attr("data-fileName");
-        //         if(name == "btn_week"){
-        //             $(this).trigger('click');
-        //             return;
-        //         }
-        //     });
-        //     Collection.setSearchCollectionCountEvt(); //통계보기
-        //     Collection.keywordCntList();
-        //     setSearchCollectionListEvt();
-        // }
-
-    },
     getAnalysisBidntceno : function (param) {
         let bidntceno;
-        let formData;
+        let formData = new FormData($("#initiationReportRegistForm")[0]);
         let bidntcenoyn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
         if ( bidntcenoyn == 'N') {
          return alert("입찰공고번호 유무가 '무'일 경우 조회할 수 없습니다.");
@@ -73,7 +15,7 @@ var InitiationReportRegist = {
         if (param != "update"){
             // 입찰공고번호 조회 셋팅
             bidntceno = $("#bidntceno").val();
-            formData = $("#initiationReportRegistForm").serializeObject();
+            // formData = $("#initiationReportRegistForm").serializeObject();
             if ( bidntceno == '' ) {
                 return alert("입찰공고번호를 입력 후 다시 조회해주세요.");
             }
@@ -491,9 +433,9 @@ function displayFileList(fileList) {
 }
 
 
-	
+
 function validateForm() {
-	
+
 	var vailiFlag = true;
 	const forms = document.querySelectorAll('.needs-validation');
 	const bidYn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
@@ -588,8 +530,23 @@ function initiationReportRegist() {
     }
     // $("#initiationReportRegistForm").submit; 안돼
     // $("#initiationReportRegistForm").submit(); 안돼
+
     if ($("input[name=brno]").val().length < 10) { return alert("사업자등록번호 또는 주민번호는 10자리 이상 입력해주세요.");}
-	if(validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
+	// if (validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
+
+    let formData = new FormData($("#initiationReportRegistForm")[0]);
+    $("#initiationReportRegistForm").serializeObject();
+    formData.currPage = '';
+    formData.listCnt = 0;
+    formData.url = "/rcic/initiationReport/initiationReportRegist";
+    let dataList = setDefault(formData);
+
+    if (validateForm()){
+        $.commonAjax(dataList,'', function(response, status, headers, config) {
+            console.log("넵");
+            console.log(response);
+        });
+    }
 }
 
 // 수정 버튼 클릭 -> 착수신고서 수정
@@ -599,8 +556,7 @@ function initiationReportUpdate() {
         $('#bidntceno').val('');
         $('#bidntceno').attr("disabled", "disabled");
     }
-    // $("#initiationReportRegistForm").submit; 안돼
-    // $("#initiationReportRegistForm").submit(); 안돼
+
     if(validateForm()){document.getElementById("initiationReportUpdateForm").submit();} // 돼 왜?
 }
 
@@ -750,9 +706,10 @@ function ajaxCall(url, type, param, contentType, callback) {
     $.ajax({
         url: url,
         type: type,
-        datatype: "json",
         data: param,
-        contentType: contentType,
+        datatype: "json",
+        contentType: false,
+        processData: false,
         success: function(result) {
             console.log(result);
             return callback(result);
