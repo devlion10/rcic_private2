@@ -573,7 +573,7 @@ function bidntcenoynChange(){
             $('#bidntcenoUpt').attr("disabled", "disabled");
             $('#workDivisionInfoUpt').removeAttr("disabled");
         } else {
-            
+
             $('#bidntceno').removeAttr("disabled");
             $('#workDivisionInfo').attr("disabled", "disabled");
             $('#bidntcenoUpt').removeAttr("disabled");
