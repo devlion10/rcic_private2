@@ -128,6 +128,137 @@ public class InitiationReportController  extends BaseController {
         return mv;
     }
 
+//    @RequestMapping(value="/initiationReport/initiationReportRegist")
+//    @ResponseBody
+//    public String initiationReportRegist(HttpServletRequest request, @ModelAttribute(value="InitiationReportDTO") InitiationReportDTO dto) throws Exception {
+//        logger.debug("initiationReportRegist__");
+//        SimpleData simpleData = getSimpleData(request);
+////        log.info("simpleData = " + simpleData);
+//
+//        if (simpleData.getString("bidntceno") != null){
+//            dto.setBidntceno(simpleData.getString("bidntceno"));
+//        }
+//        dto.setBidntcenoyn(simpleData.getString("bidntcenoyn"));
+//        if (simpleData.getString("workDivisionInfo") != null){
+//            dto.setWorkDivisionInfo(simpleData.getString("workDivisionInfo"));
+//        }
+//        dto.setDclNm(simpleData.getString("dclNm"));
+//        dto.setBrno(simpleData.getString("brno"));
+//        dto.setRoadTypeCd(simpleData.getString("roadTypeCd"));
+//        dto.setRoadTypeNm(simpleData.getString("roadTypeNm"));
+//        dto.setCstrnTypeCd(simpleData.getString("cstrnTypeCd"));
+//        dto.setCstrnTypeNm(simpleData.getString("cstrnTypeNm"));
+//        dto.setRoadRteNo(simpleData.getString("roadRteNo"));
+//        dto.setNtnltyLandMngOfcCd(simpleData.getString("ntnltyLandMngOfcCd"));
+//        dto.setNtnltyLandMngOfcNm(simpleData.getString("ntnltyLandMngOfcNm"));
+//        dto.setCstrnNm(simpleData.getString("cstrnNm"));
+//        dto.setCstrnStDt(simpleData.getString("cstrnStDt"));
+//        dto.setCstrnEndDt(simpleData.getString("cstrnEndDt"));
+//        dto.setSido(simpleData.getString("sido"));
+//        dto.setSidoNm(simpleData.getString("sidoNm"));
+//        dto.setSgg(simpleData.getString("sgg"));
+//        dto.setSggNm(simpleData.getString("sggNm"));
+//        dto.setEmd(simpleData.getString("emd"));
+//        dto.setEmdNm(simpleData.getString("emdNm"));
+//        dto.setEarthMountainCd(simpleData.getString("earthMountainCd"));
+//        dto.setEarthMountainNm(simpleData.getString("earthMountainNm"));
+//        dto.setBon(simpleData.getString("bon"));
+//        dto.setBu(simpleData.getString("bu"));
+//
+//        String initRptSubSeqStr = simpleData.get("initRptSubSeq").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnNmStr = simpleData.get("subCstrnNm").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnStLocAddrStr = simpleData.get("subCstrnStLocAddr").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnStCoodLatitudeStr = simpleData.get("subCstrnStCoodLatitude").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnStCoodLongitudeStr = simpleData.get("subCstrnStCoodLongitude").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnStDirStr = simpleData.get("subCstrnStDt").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnStDtStr = simpleData.get("initRptSubSeq").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnEndDtStr = simpleData.get("subCstrnEndDt").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnEndLocAddrStr = simpleData.get("subCstrnEndLocAddr").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnEndCoodLatitudeStr = simpleData.get("subCstrnEndCoodLatitude").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnEndCoodLongitudeStr = simpleData.get("subCstrnEndCoodLongitude").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//        String subCstrnEndDirStr = simpleData.get("subCstrnEndDir").toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+//
+//        if (!initRptSubSeqStr.equals("1")){
+//            log.info("들어왔냐 11111111111111");
+//            String[] initRptSubSeqArr = initRptSubSeqStr.split(",");
+//            String[] subCstrnNmArr = subCstrnNmStr.split(",");
+//            String[] subCstrnStLocAddrArr = subCstrnStLocAddrStr.split(",");
+//            String[] subCstrnStCoodLatitudeArr = subCstrnStCoodLatitudeStr.split(",");
+//            String[] subCstrnStCoodLongitudeArr = subCstrnStCoodLongitudeStr.split(",");
+//            String[] subCstrnStDirArr = subCstrnStDirStr.split(",");
+//            String[] subCstrnStDtArr = subCstrnStDtStr.split(",");
+//            String[] subCstrnEndDtArr = subCstrnEndDtStr.split(",");
+//            String[] subCstrnEndLocAddrArr = subCstrnEndLocAddrStr.split(",");
+//            String[] subCstrnEndCoodLatitudeArr = subCstrnEndCoodLatitudeStr.split(",");
+//            String[] subCstrnEndCoodLongitudeArr = subCstrnEndCoodLongitudeStr.split(",");
+//            String[] subCstrnEndDirArr = subCstrnEndDirStr.split(",");
+//
+//            for (int i = initRptSubSeqArr.length; i >= 0; i--) {
+//                log.info("들어왔냐 2222222222222");
+//                log.info("subCstrnNmArr["+i+"] = " + subCstrnNmArr[i]);
+//                log.info("subCstrnStLocAddrArr["+i+"] = " + subCstrnStLocAddrArr[i]);
+//                log.info("subCstrnStCoodLatitudeArr["+i+"] = " + subCstrnStCoodLatitudeArr[i]);
+//                log.info("subCstrnStCoodLongitudeArr["+i+"] = " + subCstrnStCoodLongitudeArr[i]);
+//                log.info("subCstrnStDirArr["+i+"] = " + subCstrnStDirArr[i]);
+//                log.info("subCstrnStDtArr["+i+"] = " + subCstrnStDtArr[i]);
+//                log.info("subCstrnEndDtArr["+i+"] = " + subCstrnEndDtArr[i]);
+//                log.info("subCstrnEndLocAddrArr["+i+"] = " + subCstrnEndLocAddrArr[i]);
+//                log.info("subCstrnEndCoodLatitudeArr["+i+"] = " + subCstrnEndCoodLatitudeArr[i]);
+//                log.info("subCstrnEndCoodLongitudeArr["+i+"] = " + subCstrnEndCoodLongitudeArr[i]);
+//                log.info("subCstrnEndDirArr["+i+"] = " + subCstrnEndDirArr[i]);
+//
+//                dto.getSubFormList().get(i).setInitRptSubSeq(initRptSubSeqArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnNm(subCstrnNmArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnStLocAddr(subCstrnStLocAddrArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnStCoodLatitude(subCstrnStCoodLatitudeArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnStCoodLongitude(subCstrnStCoodLongitudeArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnStDir(subCstrnStDirArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnStDt(subCstrnStDtArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnEndDt(subCstrnEndDtArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnEndLocAddr(subCstrnEndLocAddrArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnEndCoodLatitude(subCstrnEndCoodLatitudeArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnEndCoodLongitude(subCstrnEndCoodLongitudeArr[i]);
+//                dto.getSubFormList().get(i).setSubCstrnEndDir(subCstrnEndDirArr[i]);
+//
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getInitRptSubSeq());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnNm());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnStLocAddr());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnStCoodLatitude());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnStCoodLongitude());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnStDir());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnStDt());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnEndDt());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnEndLocAddr());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnEndCoodLatitude());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnEndCoodLongitude());
+//                log.info(initRptSubSeqArr.length + " = " + dto.getSubFormList().get(i).getSubCstrnEndDir());
+//            }
+//        } else {
+//            dto.setInitRptSubSeq(initRptSubSeqStr);
+//            dto.setSubCstrnNm(subCstrnNmStr);
+//            dto.setSubCstrnStLocAddr(subCstrnStLocAddrStr);
+//            dto.setSubCstrnStCoodLatitude(subCstrnStCoodLatitudeStr);
+//            dto.setSubCstrnStCoodLongitude(subCstrnStCoodLongitudeStr);
+//            dto.setSubCstrnStDir(subCstrnStDirStr);
+//            dto.setSubCstrnStDt(subCstrnStDtStr);
+//            dto.setSubCstrnEndDt(subCstrnEndDtStr);
+//            dto.setSubCstrnEndLocAddr(subCstrnEndLocAddrStr);
+//            dto.setSubCstrnEndCoodLatitude(subCstrnEndCoodLatitudeStr);
+//            dto.setSubCstrnEndCoodLongitude(subCstrnEndCoodLongitudeStr);
+//            dto.setSubCstrnEndDir(subCstrnEndDirStr);
+//        }
+//
+//
+//        // User ID 삽입
+//        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
+//        dto.setRegId(currentUserId);
+//
+//        // 착수신고서 등록
+//        initiationReportService.insertInitiationReportRegist(dto);
+//
+//        return "redirect:/rcic/movePage?menuId=initiationReport";
+//    }
+
     @RequestMapping(value="/initiationReport/initiationReportRegist")
     public String initiationReportRegist(ModelAndView mv, @ModelAttribute(value="InitiationReportDTO") InitiationReportDTO dto) throws Exception {
         logger.debug("initiationReportRegist__");
