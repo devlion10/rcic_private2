@@ -11,6 +11,7 @@ rcic.iml
 .svn
 target
 .idea
+.settings
 # 해당 확장자 파일 전체 제외
 *.txt
  
