@@ -182,7 +182,7 @@ var InitiationReportRegist = {
 let i = 0;
 // 세부 공사정보 div 추가
 function subConstInfoDivAdd() {
-    const checkVal = document.querySelector('input[name="subFormList[0].initRptSubSeq"]');
+    const checkVal = document.querySelector('input[name="initRptSubSeq"]');
 
     if (checkVal != null) {
         i++;
@@ -220,8 +220,8 @@ function subConstInfoDivAdd() {
                 <!-- 2-1행 -->
                 <div class="row row-tr border-end-0" style="height: 52px;">
                     <div class="col">
-                        <input type="hidden" name="subFormList[`+i+`].initRptSubSeq" value="`+ (i+1) +`"/>
-                        <input type="text" name="subFormList[`+i+`].subCstrnNm" class="form-control form-control-sm" placeholder="세부공사명 입력"/>
+                        <input type="hidden" name="initRptSubSeq" value="`+ (i+1) +`"/>
+                        <input type="text" name="subCstrnNm" class="form-control form-control-sm" placeholder="세부공사명 입력"/>
                         <p class="invalid-feedback">※ 계약서 상에 기재된공사명을 입력해주세요.</p>
                     </div>
                 </div>
@@ -233,7 +233,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">주소 :</span>
                                 </label>
-                                <input type="text" name="subFormList[`+i+`].subCstrnStLocAddr" class="form-control-sm" placeholder="공사 시점 위치를 입력하세요." style="width: 433px;"/>
+                                <input type="text" name="subCstrnStLocAddr" class="form-control-sm" placeholder="공사 시점 위치를 입력하세요." style="width: 433px;"/>
                             </div>
                         </div>
                         <div class="row row-tr border-end-0">
@@ -241,8 +241,8 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">좌표 :</span>
                                 </label>
-                                <input type="text" name="subFormList[`+i+`].subCstrnStCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;"/>
-                                <input type="text" name="subFormList[`+i+`].subCstrnStCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;"/>
+                                <input type="text" name="subCstrnStCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;"/>
+                                <input type="text" name="subCstrnStCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;"/>
                                 <input type="button" id='startCoordBtn' value="지도에서찾기" class="searchBtn w-auto" style="font-size: 12px;" onclick="CoordRegMap.createMapClass(this);">
                             </div>
                         </div>
@@ -251,7 +251,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">노선방향 :</span>
                                 </label>
-                                <input type="text" name="subFormList[`+i+`].subCstrnStDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
+                                <input type="text" name="subCstrnStDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
                             </div>
                         </div>
                     </div>
@@ -327,9 +327,9 @@ function subConstInfoDivAdd() {
                 <!-- 4-1행 -->
                 <div class="row row-tr border-end-0" style="height: 52px;">
                     <div class="col">
-                        <input type="date" max="9999-12-31" name="subFormList[`+i+`].subCstrnStDt" class="form-control form-control-sm d-inline-block wid30">
+                        <input type="date" max="9999-12-31" name="subCstrnStDt" class="form-control form-control-sm d-inline-block wid30">
                         <span> ~ </span>
-                        <input type="date" max="9999-12-31" name="subFormList[`+i+`].subCstrnEndDt" class="form-control form-control-sm d-inline-block wid30">
+                        <input type="date" max="9999-12-31" name="subCstrnEndDt" class="form-control form-control-sm d-inline-block wid30">
                         <p class="invalid-feedback">※ 세부 공사기간을 입력해주세요.</p>
                     </div>
                 </div>
@@ -341,7 +341,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">주소 :</span>
                                 </label>
-                                <input type="text" name="subFormList[`+i+`].subCstrnEndLocAddr" class="form-control-sm" placeholder="공사 종점 위치를 입력하세요." style="width: 433px;"/>
+                                <input type="text" name="subCstrnEndLocAddr" class="form-control-sm" placeholder="공사 종점 위치를 입력하세요." style="width: 433px;"/>
                             </div>
                         </div>
                         <div class="row row-tr border-end-0">
@@ -349,8 +349,8 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">좌표 :</span>
                                 </label>
-                                <input type="text" name="subFormList[`+i+`].subCstrnEndCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;">
-                                <input type="text" name="subFormList[`+i+`].subCstrnEndCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;">
+                                <input type="text" name="subCstrnEndCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;">
+                                <input type="text" name="subCstrnEndCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;">
                                 <input type="button" id='endCoordBtn' value="지도에서찾기" class="searchBtn w-auto" style="font-size: 12px;" onclick="CoordRegMap.createMapClass(this);">
                             </div>
                         </div>
@@ -360,7 +360,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">노선방향 :</span>
                                 </label>
-                                <input type="text" name="subFormList[`+i+`].subCstrnEndDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
+                                <input type="text" name="subCstrnEndDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
                             </div>
                         </div>
 
@@ -522,6 +522,79 @@ function validateForm() {
 }
 
 // 제출 버튼 클릭 -> 착수신고서 등록
+// function initiationReportRegist() {
+//     let bidntcenoyn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
+//     if (bidntcenoyn === "N"){
+//         $('#bidntceno').val('');
+//         $('#bidntceno').attr("disabled", "disabled");
+//     }
+//     // $("#initiationReportRegistForm").submit; 안돼
+//     // $("#initiationReportRegistForm").submit(); 안돼
+//     let subCstrnLength = $("input[name=initRptSubSeq]").length;
+//     // let subCstrnLength = document.getElement("input[name=initRptSubSeq]").length;
+//
+//     console.log("subCstrnLength = ", subCstrnLength);
+//
+//     let initRptSubSeqArr = new Array(subCstrnLength);
+//     let subCstrnNmArr = new Array(subCstrnLength);
+//     let subCstrnStLocAddrArr = new Array(subCstrnLength);
+//     let subCstrnStCoodLatitudeArr = new Array(subCstrnLength);
+//     let subCstrnStCoodLongitudeArr = new Array(subCstrnLength);
+//     let subCstrnStDirArr = new Array(subCstrnLength);
+//     let subCstrnStDtArr = new Array(subCstrnLength);
+//     let subCstrnEndDtArr = new Array(subCstrnLength);
+//     let subCstrnEndLocAddrArr = new Array(subCstrnLength);
+//     let subCstrnEndCoodLatitudeArr = new Array(subCstrnLength);
+//     let subCstrnEndCoodLongitudeArr = new Array(subCstrnLength);
+//     let subCstrnEndDirArr = new Array(subCstrnLength);
+//
+//     for (let j=0; j < subCstrnLength; j++) {
+//         initRptSubSeqArr[j] = $("input[name=initRptSubSeq]").eq(j).val();
+//         subCstrnNmArr[j] = $("input[name=subCstrnNm]").eq(j).val();
+//         subCstrnStLocAddrArr[j] = $("input[name=subCstrnStLocAddr]").eq(j).val();
+//         subCstrnStCoodLatitudeArr[j] = $("input[name=subCstrnStCoodLatitude]").eq(j).val();
+//         subCstrnStCoodLongitudeArr[j] = $("input[name=subCstrnStCoodLongitude]").eq(j).val();
+//         subCstrnStDirArr[j] = $("input[name=subCstrnStDir]").eq(j).val();
+//         subCstrnStDtArr[j] = $("input[name=subCstrnStDt]").eq(j).val();
+//         subCstrnEndDtArr[j] = $("input[name=subCstrnEndDt]").eq(j).val();
+//         subCstrnEndLocAddrArr[j] = $("input[name=subCstrnEndLocAddr]").eq(j).val();
+//         subCstrnEndCoodLatitudeArr[j] = $("input[name=subCstrnEndCoodLatitude]").eq(j).val();
+//         subCstrnEndCoodLongitudeArr[j] = $("input[name=subCstrnEndCoodLongitude]").eq(j).val();
+//         subCstrnEndDirArr[j] = $("input[name=subCstrnEndDir]").eq(j).val();
+//
+//         console.log(initRptSubSeqArr[j]);
+//         console.log(subCstrnNmArr[j]);
+//         console.log(subCstrnStLocAddrArr[j]);
+//         console.log(subCstrnStCoodLatitudeArr[j]);
+//         console.log(subCstrnStCoodLongitudeArr[j]);
+//         console.log(subCstrnStDirArr[j]);
+//         console.log(subCstrnStDtArr[j]);
+//         console.log(subCstrnEndDtArr[j]);
+//         console.log(subCstrnEndLocAddrArr[j]);
+//         console.log(subCstrnEndCoodLatitudeArr[j]);
+//         console.log(subCstrnEndCoodLongitudeArr[j]);
+//         console.log(subCstrnEndDirArr[j]);
+//     }
+//
+//     if ($("input[name=brno]").val().length < 10) { return alert("사업자등록번호 또는 주민번호는 10자리 이상 입력해주세요.");}
+// 	// if (validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
+//
+//     let formData = new FormData($("#initiationReportRegistForm")[0]);
+//     formData = $("#initiationReportRegistForm").serializeObject();
+//     formData.currPage = '';
+//     formData.listCnt = 0;
+//     formData.url = "/rcic/initiationReport/initiationReportRegist";
+//     let dataList = setDefault(formData);
+//
+//     if (validateForm()){
+//         $.commonAjax(dataList,'', function(response, status, headers, config) {
+//             console.log("넵");
+//             console.log(response);
+//         });
+//     }
+// }
+
+// 제출 버튼 클릭 -> 착수신고서 등록
 function initiationReportRegist() {
     let bidntcenoyn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
     if (bidntcenoyn === "N"){
@@ -530,23 +603,8 @@ function initiationReportRegist() {
     }
     // $("#initiationReportRegistForm").submit; 안돼
     // $("#initiationReportRegistForm").submit(); 안돼
-
     if ($("input[name=brno]").val().length < 10) { return alert("사업자등록번호 또는 주민번호는 10자리 이상 입력해주세요.");}
-	// if (validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
-
-    let formData = new FormData($("#initiationReportRegistForm")[0]);
-    $("#initiationReportRegistForm").serializeObject();
-    formData.currPage = '';
-    formData.listCnt = 0;
-    formData.url = "/rcic/initiationReport/initiationReportRegist";
-    let dataList = setDefault(formData);
-
-    if (validateForm()){
-        $.commonAjax(dataList,'', function(response, status, headers, config) {
-            console.log("넵");
-            console.log(response);
-        });
-    }
+    if(validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
 }
 
 // 수정 버튼 클릭 -> 착수신고서 수정

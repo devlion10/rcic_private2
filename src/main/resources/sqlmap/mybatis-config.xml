@@ -5,7 +5,8 @@
 	<settings>
 	    <setting name="mapUnderscoreToCamelCase" value="true"/>
 	 </settings> 
-	 
+
+    
     <typeAliases>
         <!-- 사용자 -->
         <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>

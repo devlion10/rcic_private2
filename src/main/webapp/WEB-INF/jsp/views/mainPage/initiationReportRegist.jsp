@@ -398,8 +398,8 @@
                                         <!-- 2-1행 -->
                                         <div class="row row-tr border-end-0" style="height: 52px;">
                                             <div class="col">
-                                                <input type="hidden" name="subFormList[0].initRptSubSeq" value="1"/>
-                                                <input type="text" name="subFormList[0].subCstrnNm" class="form-control form-control-sm" placeholder="세부공사명 입력"/>
+                                                <input type="hidden" name="initRptSubSeq" value="1"/>
+                                                <input type="text" name="subCstrnNm" class="form-control form-control-sm" placeholder="세부공사명 입력"/>
                                                 <p class="invalid-feedback">※ 계약서 상에 기재된공사명을 입력해주세요.</p>
                                             </div>
                                         </div>
@@ -411,7 +411,7 @@
                                                         <label class="col-form-label-sm">
                                                             <span class="sub_th">주소 :</span>
                                                         </label>
-                                                        <input type="text" name="subFormList[0].subCstrnStLocAddr" class="form-control-sm" placeholder="공사 시점 위치를 입력하세요." style="width: 433px;"/>
+                                                        <input type="text" name="subCstrnStLocAddr" class="form-control-sm" placeholder="공사 시점 위치를 입력하세요." style="width: 433px;"/>
                                                     </div>
                                                 </div>
                                                 <div class="row row-tr border-end-0">
@@ -419,8 +419,8 @@
                                                         <label class="col-form-label-sm">
                                                             <span class="sub_th">좌표 :</span>
                                                         </label>
-                                                        <input type="text" name="subFormList[0].subCstrnStCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;"/>
-                                                        <input type="text" name="subFormList[0].subCstrnStCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;"/>
+                                                        <input type="text" name="subCstrnStCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;"/>
+                                                        <input type="text" name="subCstrnStCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;"/>
                                                         <input type="button" id='startCoordBtn' value="지도에서찾기" class="searchBtn w-auto" style="font-size: 12px;" onclick="CoordRegMap.createMapClass(this);">
                                                     </div>
                                                 </div>
@@ -429,7 +429,7 @@
                                                         <label class="col-form-label-sm">
                                                             <span class="sub_th">노선방향 :</span>
                                                         </label>
-                                                        <input type="text" name="subFormList[0].subCstrnStDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
+                                                        <input type="text" name="subCstrnStDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
                                                     </div>
                                                 </div>
                                             </div>
@@ -505,9 +505,9 @@
                                         <!-- 4-1행 -->
                                         <div class="row row-tr border-end-0" style="height: 52px;">
                                             <div class="col">
-                                                <input type="date" max="9999-12-31" name="subFormList[0].subCstrnStDt" class="form-control form-control-sm d-inline-block wid30">
+                                                <input type="date" max="9999-12-31" name="subCstrnStDt" class="form-control form-control-sm d-inline-block wid30">
                                                 <span> ~ </span>
-                                                <input type="date" max="9999-12-31" name="subFormList[0].subCstrnEndDt" class="form-control form-control-sm d-inline-block wid30">
+                                                <input type="date" max="9999-12-31" name="subCstrnEndDt" class="form-control form-control-sm d-inline-block wid30">
                                                 <p class="invalid-feedback">※ 세부 공사기간을 입력해주세요.</p>
                                             </div>
                                         </div>
@@ -519,7 +519,7 @@
                                                         <label class="col-form-label-sm">
                                                             <span class="sub_th">주소 :</span>
                                                         </label>
-                                                        <input type="text" name="subFormList[0].subCstrnEndLocAddr" class="form-control-sm" placeholder="공사 종점 위치를 입력하세요." style="width: 433px;"/>
+                                                        <input type="text" name="subCstrnEndLocAddr" class="form-control-sm" placeholder="공사 종점 위치를 입력하세요." style="width: 433px;"/>
                                                     </div>
                                                 </div>
                                                 <div class="row row-tr border-end-0">
@@ -527,8 +527,8 @@
                                                         <label class="col-form-label-sm">
                                                             <span class="sub_th">좌표 :</span>
                                                         </label>
-                                                        <input type="text" name="subFormList[0].subCstrnEndCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;">
-                                                        <input type="text" name="subFormList[0].subCstrnEndCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;">
+                                                        <input type="text" name="subCstrnEndCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;">
+                                                        <input type="text" name="subCstrnEndCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;">
                                                         <input type="button" id='endCoordBtn' value="지도에서찾기" class="searchBtn w-auto" style="font-size: 12px;" onclick="CoordRegMap.createMapClass(this);">
                                                     </div>
                                                 </div>
@@ -538,7 +538,7 @@
                                                         <label class="col-form-label-sm">
                                                             <span class="sub_th">노선방향 :</span>
                                                         </label>
-                                                        <input type="text" name="subFormList[0].subCstrnEndDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
+                                                        <input type="text" name="subCstrnEndDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
                                                     </div>
                                                 </div>
 
@@ -557,7 +557,7 @@
                                                         <label for="subCstrnLocMapFileBtn0" style="width: 84px; height: 34px;">
                                                             <div class="fileBtn">파일찾기</div>
                                                         </label>
-                                                        <input type="file" name="subFormList[0].subCstrnLocMapFile" id="subCstrnLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
+                                                        <input type="file" name="subCstrnLocMapFile" id="subCstrnLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
                                                     </div>
                                                 </div>
                                                 <div class="row row-tr border-end-0 text-right">
@@ -570,7 +570,7 @@
                                                         <label for="subCstrnStLocMapFileBtn0" style="width: 84px; height: 34px;">
                                                             <div class="fileBtn">파일찾기</div>
                                                         </label>
-                                                        <input type="file" name="subFormList[0].subCstrnStLocMapFile" id="subCstrnStLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
+                                                        <input type="file" name="subCstrnStLocMapFile" id="subCstrnStLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
                                                     </div>
                                                 </div>
                                                 <div class="row row-tr border-end-0 text-right">
@@ -583,7 +583,7 @@
                                                         <label for="subCstrnEndLocMapFileBtn0" style="width: 84px; height: 34px;">
                                                             <div class="fileBtn">파일찾기</div>
                                                         </label>
-                                                        <input type="file" name="subFormList[0].subCstrnEndLocMapFile" id="subCstrnEndLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
+                                                        <input type="file" name="subCstrnEndLocMapFile" id="subCstrnEndLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
                                                     </div>
                                                 </div>
                                                 <div class="row row-tr border-end-0 text-right">
@@ -596,7 +596,7 @@
                                                         <label for="subCstrnRepsLocMapFileBtn0" style="width: 84px; height: 34px;">
                                                             <div class="fileBtn">파일찾기</div>
                                                         </label>
-                                                        <input type="file" name="subFormList[0].subCstrnRepsLocMapFile" id="subCstrnRepsLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
+                                                        <input type="file" name="subCstrnRepsLocMapFile" id="subCstrnRepsLocMapFileBtn0" onchange="fileCheckUpt(this, 0)" class="file" accept="image/jpeg, image/jpg, image/png"/>
                                                     </div>
                                                 </div>
                                             </div>
