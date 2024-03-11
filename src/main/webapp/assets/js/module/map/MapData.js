@@ -880,17 +880,6 @@
            console.info("__paramObj");
            console.info(JSON.stringify(paramObj));
 
-           var calsdata="{"+
-                            "\"data\":"+
-                                "["+
-                                    "{\"sidoNm\":\"\",\"sggNm\":\"화순군\",\"emdNm\":\"능주면\",\"liNm\":\"만수리\",\"jibun\":\"565-34\",\"mountainChk\":1,\"jibunPnu\":\"05650034\",\"mjPnu\":\"105650034\",\"siExChk\":\"N\",\"siTbExChk\":\"N\",\"prmsnNo\":\"광주2024-0003\"},"+
-                                    "{\"sidoNm\":\"\",\"sggNm\":\"화순군\",\"emdNm\":\"능주면\",\"liNm\":\"만수리\",\"jibun\":\"565-34\",\"mountainChk\":1,\"jibunPnu\":\"05650034\",\"mjPnu\":\"105650034\",\"siExChk\":\"N\",\"siTbExChk\":\"N\",\"prmsnNo\":\"광주2024-0003\"},"+
-                                    "{\"sidoNm\":\"\",\"sggNm\":\"화순군\",\"emdNm\":\"능주면\",\"liNm\":\"만수리\",\"jibun\":\"565-34\",\"mountainChk\":1,\"jibunPnu\":\"05650034\",\"mjPnu\":\"105650034\",\"siExChk\":\"N\",\"siTbExChk\":\"N\",\"prmsnNo\":\"광주2024-0003\"}"+
-                                 "]"+
-                          "}"
-
-
-
             var strParam=JSON.stringify(paramObj);
             if(rnChk==='Y'){//새주소도로명인지 아닌에 따라 url 분리
              var fetchUrl = "/searchBmngGeoFromOcpyLocRn";
@@ -909,11 +898,26 @@
                        })
                          .then((response) => response.json())
                          .then(function(data) {
-                            console.info(data);
-                            var geoGeom = data.cnbdList[0].geoGeom;
-                            console.info(geoGeom);
-                            var feature = (new ol.format.GeoJSON({})).readFeature(geoGeom);
-                            console.info(feature);
+                                  console.info(data);
+                           if(rnChk==='Y'){//새주소도로명인지 아닌에 따라 url 분리'
+                                    var entrX = data.rnAddrGeomList[0].entrX;
+                                    var entrY = data.rnAddrGeomList[0].entrY;
+                                    var coorArr=[entrX,entrY];
+
+                                    console.info(coorArr);
+                                    var coorArr3857=ol.proj.transform(coorArr,'EPSG:5179','EPSG:3857');
+                                    mapInit.map.getView().setCenter(coorArr3857);
+                                    mapInit.map.getView().setZoom(parseInt(10));
+
+
+
+                           }else{
+
+                                   var geoGeom = data.cnbdList[0].geoGeom;
+                                   console.info(geoGeom);
+                                   var feature = (new ol.format.GeoJSON({})).readFeature(geoGeom);
+                                   console.info(feature);
+                           }
 
                             var extent = feature.getGeometry().getExtent();
 

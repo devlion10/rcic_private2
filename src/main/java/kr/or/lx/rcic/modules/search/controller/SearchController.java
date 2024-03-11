@@ -197,6 +197,8 @@ public class SearchController extends BaseController{
 
 
 
+
+
 	/**********************************************
 	 *  1. 개요 : 비관리청 검색
 	 *	2. 처리내용 :
