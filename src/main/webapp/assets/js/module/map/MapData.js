@@ -675,6 +675,76 @@
             var workEnDt=fulladdr.getElementsByClassName('workEnDt_InputHidden')[0].defaultValue;
             var workStDt=fulladdr.getElementsByClassName('workStDt_InputHidden')[0].defaultValue;
             //항목 요소 클릭 시 해당하는 DATA모두 파라미터 셋팅
+            var html=''
+           html += "<div class='mapPopupWrap corInfoBox ui-draggable' style='display: block; left: 38px; top: -27px;' id='corInfoDiv'>"
+           html +="<div class='mapPopupBox'>"
+           html +="<div class='mapHeader ui-draggable-handle'>"
+           html +="<div class='inline wid50 alginLeft'>"
+                           html +="<img src='/assets/images/icon/wDelp_icon.png' alt='delp' class='mr5'>"
+                           html +="<span>비관리청공사정보</span>"
+                       html +="</div>"
+                       html +="<div class='inline wid50 alginRight'>"
+                        html += '<div class="inline wid50 alginRight"><img src="/assets/images/button/wCloseBtn.png" alt="closeButton" name= "corInfoBox" onclick="MapData.btnClickEvent(\'corInfoBox\');return false;"></div>';                                       html +="</div>"
+                  html +=" </div>"
+                   html +="<div class='mapBody'>"
+                       html +="<div class='corName mMarkBox'>"
+                           html +="<span class='gyMark'>"+mngrNm.substring(0, 2)+"</span>"
+                           html +="<div class='inline listDot'>"
+                               html +="<span class='active'></span>"
+                               html +="<span class='active'></span>"
+                               html +="<span class='active'></span>"
+                           html +="</div><span class='business'>"+ocpyLoc+"</span>"
+                       html +="</div>"
+                       html +="<div class='addrName'>"
+                           html +="<span>"+prmsnNo+"</span>"
+                       html +="</div>"
+                       html +="<div class='AnnoDtl mt20'>"
+                           html +="<div class='corCont inline'>"
+                               html +="<table>"
+                                   html +="<colgroup>"
+                                       html +="<col width=''>"
+                                       html +="<col width=''>"
+                                   html +="</colgroup>"
+                                   html +="<tbody>"
+
+                                       html +="<tr>"
+                                           html +="<td>허가일</td>"
+                                           html +="<td>"+$.setDateStrUnderBar(prmsnDt)+"</td>"
+                                       html +="</tr>"
+                                       html +="<tr>"
+                                           html +="<td>도로종류</td>"
+                                           html +="<td>"+roadType+"</td>"
+                                       html +="</tr>"
+                                       html +="<tr>"
+                                           html +="<td>노선명</td>"
+                                           html +="<td>"+roadNm+"</td>"
+                                       html +="</tr>"
+                                       html +="<tr>"
+                                          html +="<td>점용면적</td>"
+                                          html +="<td>"+ocpyArea+"</td>"
+                                       html +="</tr>"
+                                       html +="<tr>"
+                                         html +="<td>점용기간</td>"
+                                         html +="<td>"+$.setDateStrUnderBar(ocpyDurStr)+"~"+$.setDateStrUnderBar(ocpyDurEnd)+"</td>"
+                                       html +="</tr>"
+                                       html +="<tr>"
+                                        html +="<td>공사기간</td>"
+                                        html +="<td>"+$.setDateStrUnderBar(workStDt)+"~"+$.setDateStrUnderBar(workEnDt)+"</td>"
+                                       html +="</tr>"
+                                       html +="<tr>"
+                                           html +="<td>점용자주소/성명</td>"
+                                           html +="<td>"+ocpyPerInfo+"</td>"
+                                       html +="</tr>"
+                                   html +="</tbody>"
+                               html +="</table>"
+                           html +="</div>"
+                       html +="</div>"
+                    /*   html +="<div class='mapBtn mt20'>"
+                           html +="<input type='button' value='상세정보' class='funBtn mr5' id='constDetailBtn' onclick='MapData.constDetail(998070);return false;'><input type='button' value='도로대장' class='funBtn mr5' id='layBtn' onclick='MapData.getLayer(998070);return false;'>"
+                       html +="</div>"*/
+                   html +="</div>"
+               html +="</div>"
+           html +="</div>"
 
             console.info(prmsnNo);
 
@@ -896,10 +966,17 @@
                          body: strParam,
 
                        })
-                         .then((response) => response.json())
-                         .then(function(data) {
-                                  console.info(data);
+                        .then((response) => response.json())
+                        .then(function(data) {
+                           console.info(data);
                            if(rnChk==='Y'){//새주소도로명인지 아닌에 따라 url 분리'
+                                    //포인트 레이어 존재하면 맵객체에존재하는 레이어 들 중 삭제
+                                    for(let i = 0; i < mapInit.map.getLayers().getArray().length; i++) {
+                                      if( mapInit.map.getLayers().getArray()[i].values_.name === 'coordDrawVector')  {
+                                        mapInit.map.getLayers().getArray().splice(i, 1);
+                                        i--;
+                                      }
+                                    };
                                     var entrX = data.rnAddrGeomList[0].entrX;
                                     var entrY = data.rnAddrGeomList[0].entrY;
                                     var coorArr=[entrX,entrY];
@@ -909,6 +986,45 @@
                                     mapInit.map.getView().setCenter(coorArr3857);
                                     mapInit.map.getView().setZoom(parseInt(10));
 
+                                      var feature = new ol.Feature({
+                                                geometry: new ol.geom.Point(coorArr3857)
+                                          });
+                                      console.info(feature);
+                                      var img ='/assets/images/map/cor_mark_on.png';
+                                      var anchor =  [0.5, 46];
+                                      var style = new ol.style.Style({
+                                                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+                                                                        anchor: anchor,
+                                                                        anchorXUnits: 'fraction',
+                                                                        anchorYUnits: 'pixels',
+                                                                        scale : 1,
+                                                                        src: img//"acc" ?'/assets/images/map/cor_mark_off.png' :'/assets/images/map/marker-icon.png'
+                                                                    }))
+                                                                });
+                                      feature.setStyle(style);
+                                      var features=[];
+                                      features.push(feature);//피쳐 어레이에 피쳐 하나만 추가
+
+                                      var layer = new ol.layer.Vector({
+                                                    name : "coordDrawVector",
+                                                    id	: "coordDraw",
+                                                    minResolution: '0',
+                                                    maxResolution: '1025',
+                                                            source: new ol.source.Vector({
+                                                            }),
+                                                });
+
+
+                                      console.info(layer.getSource())
+                                      layer.getSource().addFeatures(features);
+
+
+                                      mapInit.map.addLayer(layer);
+                                      MapData.makeInfoWindow( html, coorArr3857);
+
+
+
+
 
 
                            }else{
@@ -917,108 +1033,24 @@
                                    console.info(geoGeom);
                                    var feature = (new ol.format.GeoJSON({})).readFeature(geoGeom);
                                    console.info(feature);
+                                   var extent = feature.getGeometry().getExtent();
+
+                                   mapInit.map.getView().fit(extent);
+                                   mapInit.map.getView().setZoom(10);
+
+                                   var obj = new Object();
+                                   obj.type = "analysisDetailBmng";
+                                   var features= new Array();
+                                   features.push(feature)
+                                   mapInit.mapLayerMng.addTempLayer("analysisDetailBmngLayer", features, obj);
+                                   MapData.makeInfoWindow( html, ol.extent.getCenter(extent));
                            }
-
-                            var extent = feature.getGeometry().getExtent();
-
-                            mapInit.map.getView().fit(extent);
-                            mapInit.map.getView().setZoom(10);
-
-                            var obj = new Object();
-                            obj.type = "analysisDetailBmng";
-                            var features= new Array();
-                            features.push(feature)
-                            mapInit.mapLayerMng.addTempLayer("analysisDetailBmngLayer", features, obj);
-
-
-
-
-                           var html=''
-                           html += "<div class='mapPopupWrap corInfoBox ui-draggable' style='display: block; left: 38px; top: -27px;' id='corInfoDiv'>"
-                           html +="<div class='mapPopupBox'>"
-                           html +="<div class='mapHeader ui-draggable-handle'>"
-                           html +="<div class='inline wid50 alginLeft'>"
-                                           html +="<img src='/assets/images/icon/wDelp_icon.png' alt='delp' class='mr5'>"
-                                           html +="<span>비관리청공사정보</span>"
-                                       html +="</div>"
-                                       html +="<div class='inline wid50 alginRight'>"
-                                        html += '<div class="inline wid50 alginRight"><img src="/assets/images/button/wCloseBtn.png" alt="closeButton" name= "corInfoBox" onclick="MapData.btnClickEvent(\'corInfoBox\');return false;"></div>';                                       html +="</div>"
-                                  html +=" </div>"
-                                   html +="<div class='mapBody'>"
-                                       html +="<div class='corName mMarkBox'>"
-                                           html +="<span class='gyMark'>"+mngrNm.substring(0, 2)+"</span>"
-                                           html +="<div class='inline listDot'>"
-                                               html +="<span class='active'></span>"
-                                               html +="<span class='active'></span>"
-                                               html +="<span class='active'></span>"
-                                           html +="</div><span class='business'>"+ocpyLoc+"</span>"
-                                       html +="</div>"
-                                       html +="<div class='addrName'>"
-                                           html +="<span>"+prmsnNo+"</span>"
-                                       html +="</div>"
-                                       html +="<div class='AnnoDtl mt20'>"
-                                           html +="<div class='corCont inline'>"
-                                               html +="<table>"
-                                                   html +="<colgroup>"
-                                                       html +="<col width=''>"
-                                                       html +="<col width=''>"
-                                                   html +="</colgroup>"
-                                                   html +="<tbody>"
-
-                                                       html +="<tr>"
-                                                           html +="<td>허가일</td>"
-                                                           html +="<td>"+$.setDateStrUnderBar(prmsnDt)+"</td>"
-                                                       html +="</tr>"
-                                                       html +="<tr>"
-                                                           html +="<td>도로종류</td>"
-                                                           html +="<td>"+roadType+"</td>"
-                                                       html +="</tr>"
-                                                       html +="<tr>"
-                                                           html +="<td>노선명</td>"
-                                                           html +="<td>"+roadNm+"</td>"
-                                                       html +="</tr>"
-                                                       html +="<tr>"
-                                                          html +="<td>점용면적</td>"
-                                                          html +="<td>"+ocpyArea+"</td>"
-                                                       html +="</tr>"
-                                                       html +="<tr>"
-                                                         html +="<td>점용기간</td>"
-                                                         html +="<td>"+$.setDateStrUnderBar(ocpyDurStr)+"~"+$.setDateStrUnderBar(ocpyDurEnd)+"</td>"
-                                                       html +="</tr>"
-                                                       html +="<tr>"
-                                                        html +="<td>공사기간</td>"
-                                                        html +="<td>"+$.setDateStrUnderBar(workStDt)+"~"+$.setDateStrUnderBar(workEnDt)+"</td>"
-                                                       html +="</tr>"
-                                                       html +="<tr>"
-                                                           html +="<td>점용자주소/성명</td>"
-                                                           html +="<td>"+ocpyPerInfo+"</td>"
-                                                       html +="</tr>"
-                                                   html +="</tbody>"
-                                               html +="</table>"
-                                           html +="</div>"
-                                       html +="</div>"
-                                    /*   html +="<div class='mapBtn mt20'>"
-                                           html +="<input type='button' value='상세정보' class='funBtn mr5' id='constDetailBtn' onclick='MapData.constDetail(998070);return false;'><input type='button' value='도로대장' class='funBtn mr5' id='layBtn' onclick='MapData.getLayer(998070);return false;'>"
-                                       html +="</div>"*/
-                                   html +="</div>"
-                               html +="</div>"
-                           html +="</div>"
-
-                            //var _self=this;
-                            MapData.makeInfoWindow( html, ol.extent.getCenter(extent));
 
 
                             /* 공사정보 drag */
                             $('.corInfoBox').draggable({
                                 handle : '.mapHeader'
                             });
-
-
-
-
-
-
-
 
                          });//fetch reponse end
 
