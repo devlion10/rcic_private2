@@ -754,7 +754,7 @@
             console.info("stringToArray")
             console.info(stringToArray)
 
-            var rnChk='N';//도로명주소여부 판단
+            var schType='jibun';//도로명주소여부 판단//jibun, road, poi// default 지번검색
             var sidoNm='';
             var sggNm='';
             var emdNm='';
@@ -823,104 +823,98 @@
                   }//시군구 분기처리
 
 
-                  if(str.charAt(str.length - 1)==='길'||str.charAt(str.length - 1)==='로'){
-                        var rn=str;
-                        rnChk='Y';
-                  }
-                  if(str.charAt(str.length - 1)==='읍'||str.charAt(str.length - 1)==='면'||str.charAt(str.length - 1)==='동'){
-                        var emdNm=str;
-                  }
-                  if(str.charAt(str.length - 1)==='리'){
-                        var liNm=str;
-                  }
+                  if(str.charAt(str.length - 1)==='길'||str.charAt(str.length - 1)==='로'){//도로명, 지번, poi 분기처리
+                      var rn=str;
+                      schType='road';
+                      if(!isNaN(str)  || str.includes('-')){//숫자를 포함하는 경우 건물번호를 판별하기위함
+                           var buldNo=str;
+                           var buldNoArr=buldNo.split('-');
+                           if(buldNoArr.length==1){
+                              var buldMainNo=buldNoArr[0];
+                              var buldSubNo='0';
+                           }else{
+                             var buldMainNo=buldNoArr[0];
+                             var buldSubNo=buldNoArr[1];
+                           }
+                      }
+                      break;//도로명일 경우 한번에 처리 가능하여 처리 후 for문 탈출
+                  }else if(schType==='jibun'){
 
-
-                  if(rnChk==='Y'){//도로명주소인 경우
-                      if(!isNaN(str)  || str.includes('-'))  {//숫자를 포함하는 경우 건물번호를 판별하기위함
-                         var buldNo=str;
-                         var buldNoArr=buldNo.split('-');
-                         if(buldNoArr.length==1){
-                            var buldMainNo=buldNoArr[0];
-                            var buldSubNo='0';
-                         }else{
-                           var buldMainNo=buldNoArr[0];
-                           var buldSubNo=buldNoArr[1];
-                         }
-
-
+                      if(str.charAt(str.length - 1)==='읍'||str.charAt(str.length - 1)==='면'||str.charAt(str.length - 1)==='동'){
+                            var emdNm=str;
+                      }
+                      if(str.charAt(str.length - 1)==='리'){
+                            var liNm=str;
                       }
 
-
-                  }else{
                       if(str.charAt(str.length - 1)==='번지' || str.includes("번지") || str.includes('-')){
-                          var jibun=str;
-                          if(jibun.includes('산')){//산인경우
-                              mountainChk=2
-                          }else{
-                              mountainChk=1
-                          }
-                          var jibunRmvKor=jibun.replace( /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '' ) ;//지번에서 한글제거
-                          var finalJibun=jibunRmvKor.replace( ')', '' ).replace( '(', '' );//지번에서 괄호제거
+                        var jibun=str;
+                        if(jibun.includes('산')){//산인경우
+                            mountainChk=2
+                        }else{
+                            mountainChk=1
+                        }
+                        var jibunRmvKor=jibun.replace( /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '' ) ;//지번에서 한글제거
+                        var finalJibun=jibunRmvKor.replace( ')', '' ).replace( '(', '' );//지번에서 괄호제거
                       }
+
+                      //pnu추출을 위해 지번 본번 부번으로 분리
+                        var jibunArray = finalJibun.split("-");
+
+                        console.info(jibunArray);
+                        if(jibunArray.length===1){//본번만있는경우
+                            if(jibunArray[0].length===1){
+                                jibunPnu='000'+jibunArray[0]+'0000';
+                            }
+                            if(jibunArray[0].length===2){
+                                jibunPnu='00'+jibunArray[0]+'0000';
+                            }
+                            if(jibunArray[0].length===3){
+                                jibunPnu='0'+jibunArray[0]+'0000';
+                            }
+                            if(jibunArray[0].length===4){
+                                jibunPnu=jibunArray[0]+'0000';
+                            }
+
+                        }//본번만있는경우
+                        if(jibunArray.length===2){//본번q부번모두 있는경우
+                            var bon='';
+                            var bu='';
+                             if(jibunArray[0].length===1){
+                                 bon='000'+jibunArray[0];
+                             }
+                             if(jibunArray[0].length===2){
+                                 bon='00'+jibunArray[0]
+                             }
+                             if(jibunArray[0].length===3){
+                                 bon='0'+jibunArray[0];
+                             }
+                             if(jibunArray[0].length===4){
+                                 bon=jibunArray[0];
+                             }//pnu 본번부분정제
+
+                             if(jibunArray[1].length===1){
+                                  bu='000'+jibunArray[1];
+                              }
+                              if(jibunArray[1].length===2){
+                                  bu='00'+jibunArray[1];
+                              }
+                              if(jibunArray[1].length===3){
+                                  bu='0'+jibunArray[1];
+                              }
+                              if(jibunArray[1].length===4){
+                                  bu=jibunArray[1];
+                              }//pnu 부번부분정제
+
+                              jibunPnu=bon+bu;
+
+                        }//본번q부번모두 있는경우
+                        console.info(jibunPnu);
                   }
+
 
 
             }
-
-            //pnu추출을 위해 지번 본번 부번으로 분리
-            var jibunArray = finalJibun.split("-");
-
-            console.info(jibunArray);
-            if(jibunArray.length===1){//본번만있는경우
-                if(jibunArray[0].length===1){
-                    jibunPnu='000'+jibunArray[0]+'0000';
-                }
-                if(jibunArray[0].length===2){
-                    jibunPnu='00'+jibunArray[0]+'0000';
-                }
-                if(jibunArray[0].length===3){
-                    jibunPnu='0'+jibunArray[0]+'0000';
-                }
-                if(jibunArray[0].length===4){
-                    jibunPnu=jibunArray[0]+'0000';
-                }
-
-            }//본번만있는경우
-            if(jibunArray.length===2){//본번q부번모두 있는경우
-                var bon='';
-                var bu='';
-                 if(jibunArray[0].length===1){
-                     bon='000'+jibunArray[0];
-                 }
-                 if(jibunArray[0].length===2){
-                     bon='00'+jibunArray[0]
-                 }
-                 if(jibunArray[0].length===3){
-                     bon='0'+jibunArray[0];
-                 }
-                 if(jibunArray[0].length===4){
-                     bon=jibunArray[0];
-                 }//pnu 본번부분정제
-
-                 if(jibunArray[1].length===1){
-                      bu='000'+jibunArray[1];
-                  }
-                  if(jibunArray[1].length===2){
-                      bu='00'+jibunArray[1];
-                  }
-                  if(jibunArray[1].length===3){
-                      bu='0'+jibunArray[1];
-                  }
-                  if(jibunArray[1].length===4){
-                      bu=jibunArray[1];
-                  }//pnu 부번부분정제
-
-                  jibunPnu=bon+bu;
-
-            }//본번q부번모두 있는경우
-
-
-            console.info(jibunPnu);
 
 
 
@@ -928,7 +922,7 @@
            var paramObj={};
            var paramArr=[];
 
-           paramObj.rnChk=rnChk;//도로명주소인지 아닌지 체크
+           paramObj.schType=schType;//도로명주소인지 아닌지 체크
            paramObj.sidoNm=sidoNm;
            paramObj.sggNm=sggNm;
            paramObj.emdNm=emdNm;
@@ -951,10 +945,12 @@
            console.info(JSON.stringify(paramObj));
 
             var strParam=JSON.stringify(paramObj);
-            if(rnChk==='Y'){//새주소도로명인지 아닌에 따라 url 분리
-             var fetchUrl = "/searchBmngGeoFromOcpyLocRn";
-            }else{
-             var fetchUrl = "/searchBmngGeoFromOcpyLoc";
+            if(schType==='road'){//새주소도로명인지 아닌에 따라 url 분리
+                 var fetchUrl = "/searchBmngGeoFromOcpyLocRn";
+            }else if(schType==='poi'){//지명
+                 var fetchUrl = "/searchBmngGeoFromPoi";
+            }else{//지번
+                 var fetchUrl = "/searchBmngGeoFromOcpyLoc";
             }
 
             //var fetchUrl = "/api/calsdata";
@@ -969,7 +965,7 @@
                         .then((response) => response.json())
                         .then(function(data) {
                            console.info(data);
-                           if(rnChk==='Y'){//새주소도로명인지 아닌에 따라 url 분리'
+                           if(schType==='road'){//새주소도로명인지 아닌에 따라 url 분리'
                                     //포인트 레이어 존재하면 맵객체에존재하는 레이어 들 중 삭제
                                     for(let i = 0; i < mapInit.map.getLayers().getArray().length; i++) {
                                       if( mapInit.map.getLayers().getArray()[i].values_.name === 'coordDrawVector')  {
@@ -1024,6 +1020,10 @@
 
 
 
+
+
+
+                           }else if(schType==='poi'){
 
 
 
