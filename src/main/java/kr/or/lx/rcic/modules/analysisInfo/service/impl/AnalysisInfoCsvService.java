@@ -44,7 +44,7 @@ public class AnalysisInfoCsvService implements AnalysisInfoFileService {
 
         CsvWriter csvWriter = new CsvWriter();
         csvWriter.setFieldSeparator('|');
-        try (CsvAppender csvAppender = csvWriter.append(saveFile, StandardCharsets.UTF_8))  {
+        try (CsvAppender csvAppender = csvWriter.append(saveFile, StandardCharsets.ISO_8859_1))  {
 
 
             int listCnt = 100;
