@@ -174,6 +174,7 @@
 				}  
 			};
 			_self.mapEvt.moveend = function(evt) {
+			    console.info("moveend_original");
 				evt.preventDefault();
 				//if(_search == null ||  $.isNullString(_search)) return;
 				_self._mapInit.mapAction.reSizeZoomBar();
