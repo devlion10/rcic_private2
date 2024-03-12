@@ -92,7 +92,7 @@ var proj = new Proj();
 			noProxyWfs : "/wfs",
 			noProxyWmts : "gwc/service/wmts",
 			proxyBackground : "",
-			workspace : "RCIC",
+			workspace : "rcic",
 			initBaseMap : "VWorld", 
 			baseCrsCode : "EPSG:3857",
 			arrOlDefaultCtrl : [ new ol.control.ScaleLine(), new ol.control.ZoomSlider() ],

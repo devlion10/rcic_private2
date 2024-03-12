@@ -137,6 +137,7 @@ String userName = authentication.getName();
 	    
 	    <script type='text/javascript' src="/assets/js/module/corporation/corporation.js"></script>   
 	    <script type="text/javascript" src="/assets/js/module/map/init/MapGeoStats.js"></script>
+	    <script type="text/javascript" src="/assets/js/module/map/MapMove.js"></script>
 	    
 	    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapApiKey}"></script>
          
@@ -450,6 +451,7 @@ String userName = authentication.getName();
                                         <li ><label><input id='rcic:roadBook5179' type="checkbox"  onclick="MapData.showWmsLayer(this)"><span>도로중심선</span></label></li>
                                         <li ><label><input id='rcic:longitudinal_slope5179' type="checkbox"  onclick="MapData.showWmsLayer(this)"><span>종단기울기</span></label></li>
                                         <li ><label><input id='rcic:tb_cbnd_info3857' type="checkbox"  onclick="MapData.showWmsLayer(this)"><span>지적경계</span></label></li>
+                                        <!--<li ><label><input id='rcic:tb_legaldong_emd3857' type="checkbox"  onclick="MapData.showWmsLayer(this)"><span>읍면동</span></label></li>-->
                                 </div>
                                 </li>
                             </div>
@@ -1951,10 +1953,6 @@ String userName = authentication.getName();
                     MapData.addWmsImgLayer(layerNm,false);
         }
 
-
-
-		
-        
         </script>
     </body>
 </html>
