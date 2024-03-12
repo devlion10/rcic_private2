@@ -181,18 +181,32 @@ public class SearchController extends BaseController{
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
 		resultMap.put("rnAddrGeomList",rnAddrList);
-		///////////////공간정보 겟/////////////
-
-		///////////상세정보 겟
-
-
-
-
-
-
-
 		return resultMap;
 	}
+
+	/**********************************************
+	 *  1. 개요 : 비관리청 검색
+	 *	2. 처리내용 :POI 주소 POI 레이어를 이요하여 지오메트리 획득
+	 *  3. 설명 : 검색
+	 * 	@Method searchBmng
+	 *  @param res
+	 *  @return List<SolrDocument>
+	 **********************************************/
+	@SuppressWarnings("unused")
+	@RequestMapping(value = "/searchBmngGeoFromPoi")
+	@ResponseBody
+	public HashMap<String, Object> searchBmngGeoFromPoi(@RequestBody String data, HttpServletRequest request, HttpServletResponse res)
+			throws Exception {
+		logger.debug("searchBmngGeoFromPoi");
+
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+
+		//resultMap.put("poiGeomList",poiGeomList);
+		return resultMap;
+
+	}
+
+
 
 
 
