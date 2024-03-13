@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AnalysisInfoCsvService implements AnalysisInfoFileService {
 
         CsvWriter csvWriter = new CsvWriter();
         csvWriter.setFieldSeparator('|');
-        try (CsvAppender csvAppender = csvWriter.append(saveFile, StandardCharsets.UTF_8))  {
+        try (CsvAppender csvAppender = csvWriter.append(saveFile, Charset.forName("EUC-KR"))) {
 
 
             int listCnt = 100;
