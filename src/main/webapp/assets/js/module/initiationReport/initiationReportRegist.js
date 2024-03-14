@@ -473,6 +473,7 @@ function initiationReportRegist() {
             contentType: false,
             processData: false,
             success: function(result) {
+/*
                 // console.log("result = ", result);
                 // console.log("result.initRptInfo = ", result.initRptInfo);
                 // console.log("result.initRptSubInfoList = ", result.initRptSubInfoList);
@@ -565,9 +566,9 @@ function initiationReportRegist() {
                 $.ajax(settings).done(function (response) {
                     console.log("response = ", response);
                 }); // ajax
-
-                // alert("등록되었습니다.");
-                // MainInfo.movePage('initiationReport');
+*/
+                alert("등록되었습니다.");
+                MainInfo.movePage('initiationReport');
             } // ajax success
         }); // ajax
     } // validate check
@@ -716,9 +717,11 @@ function initiationReportUpdate() {
             contentType: false,
             processData: false,
             success: function(result) {
+/*
                 console.log("result = ", result);
                 console.log("result.initRptInfo = ", result.initRptInfo);
                 console.log("result.initRptSubInfoList = ", result.initRptSubInfoList);
+
                 let initRptInfo = result.initRptInfo;
                 let initRptSubList = result.initRptSubInfoList;
 
@@ -777,9 +780,9 @@ function initiationReportUpdate() {
                 $.ajax(settings).done(function (response) {
                     console.log("response = ", response);
                 }); // ajax
-
-                // alert("수정되었습니다.");
-                // location.href="/rcic/initiationReport/movePageInitiationReportDetail?seq="+initRptInfo.seq;
+*/
+                alert("수정되었습니다.");
+                location.href="/rcic/initiationReport/movePageInitiationReportDetail?seq="+initRptInfo.seq;
             } // ajax success
         }); // ajax
     } // validate check
