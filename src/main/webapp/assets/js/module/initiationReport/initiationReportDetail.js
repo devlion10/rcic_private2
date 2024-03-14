@@ -26,10 +26,10 @@ var InitiationReportDetail = {
 			datatype: "json",
 			contentType: contentType,
 			success: function(result) {
-				console.log("result = ", result);
+				// console.log("result = ", result);
 
 				alert('승인되었습니다.');
-				// location.href = "/rcic/initiationReport/movePageInitiationReportDetail?seq="+parseInt(document.getElementById("seq").value);
+				location.href = "/rcic/initiationReport/movePageInitiationReportDetail?seq="+parseInt(document.getElementById("seq").value);
 			},
 			error: function (jqXHR, textStatus) {
 				alert("에러가 발생했습니다. 관리자에게 문의하세요");
