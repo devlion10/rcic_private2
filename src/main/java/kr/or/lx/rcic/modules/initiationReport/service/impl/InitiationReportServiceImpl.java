@@ -38,7 +38,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
 
     @Override
     public InitiationReportDTO getAnalysisBidntceno(InitiationReportDTO dto) throws Exception {
-        if ( mapper.getAnalysisBidntceno(dto) != null ){
+        if (mapper.getAnalysisBidntceno(dto) != null) {
             return mapper.getAnalysisBidntceno(dto);
         } else {
             dto.setBidntceno("");
@@ -91,6 +91,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
     @Override
     @Transactional
     public void insertInitiationReportRegist(InitiationReportDTO dto) throws Exception {
+//    public void insertInitiationReportRegist(InitiationReportDTO dto) throws Exception {
         // 전체 공사기간 "-" 제거
         String cstrnStDt = dto.getCstrnStDt().replaceAll("-", "");
         String cstrnEnDt = dto.getCstrnEndDt().replaceAll("-", "");
@@ -102,14 +103,14 @@ public class InitiationReportServiceImpl implements InitiationReportService {
         String num3 = "";
         String brno = "";
         // 주민번호 앞/뒷자리 합치기
-        if (dto.getBrno().length() > 10){
+        if (dto.getBrno().length() > 10) {
             num1 = dto.getBrno().substring(0, 6);
             num2 = dto.getBrno().substring(6);
             brno = num1 + '-' + num2;
             dto.setBrno(brno);
         } else {
-            num1 = dto.getBrno().substring(0,3);
-            num2 = dto.getBrno().substring(3,5);
+            num1 = dto.getBrno().substring(0, 3);
+            num2 = dto.getBrno().substring(3, 5);
             num3 = dto.getBrno().substring(5);
             brno = num1 + '-' + num2 + '-' + num3;
             dto.setBrno(brno);
@@ -122,7 +123,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
         String rootFilePath_linux = prop.getProperty("rootFilePath_linux");
         String osName = System.getProperty("os.name");
         String filePath;
-        if (osName.contains("Windows") || osName.contains("windows") || osName.contains("Mac")){
+        if (osName.contains("Windows") || osName.contains("windows") || osName.contains("Mac")) {
             log.info("OS Name: {}", osName);
             // 파일경로
 //            filePath = "file:" + rootFilePath_window + "/" + userId + "/" + fileCreateDate + "/";
@@ -135,11 +136,10 @@ public class InitiationReportServiceImpl implements InitiationReportService {
 
         File Folder = new File(filePath);
         if (!Folder.exists()) {
-            try{
+            try {
                 Folder.mkdirs(); //폴더 생성합니다.
                 System.out.println("폴더가 생성되었습니다.");
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 e.getStackTrace();
             }
         }
@@ -149,9 +149,12 @@ public class InitiationReportServiceImpl implements InitiationReportService {
         // 파일명원본
         String originalFilename = dto.getCstrnLocMapFile().getOriginalFilename();
         String fileFullName[] = originalFilename.split("\\.");
+        log.info("fileFullName["+0+"] = "+ fileFullName[0]);
+        log.info("fileFullName["+1+"] = "+ fileFullName[1]);
         String ext = fileFullName[1];
+        log.info("ext = " + ext);
         // 파일명
-        String filename = uuid.toString()+"."+ext;
+        String filename = uuid.toString() + "." + ext;
         // 파일크기
         Long fileSize = dto.getCstrnLocMapFile().getSize();
         // 파일타입
@@ -197,7 +200,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
                     String subCstrnLocMapFileOriName = dto.getSubFormList().get(i).getSubCstrnLocMapFile().getOriginalFilename();
                     String subCstrnLocMapFileFullName[] = subCstrnLocMapFileOriName.split("\\.");
                     String subCstrnLocMapFileExt = subCstrnLocMapFileFullName[1];
-                    String subCstrnLocMapFileName = subCstrnLocMapFileUuid.toString()+"."+subCstrnLocMapFileExt;
+                    String subCstrnLocMapFileName = subCstrnLocMapFileUuid.toString() + "." + subCstrnLocMapFileExt;
                     Long subCstrnLocMapFileSize = dto.getSubFormList().get(i).getSubCstrnLocMapFile().getSize();
                     String subCstrnLocMapFileType = dto.getSubFormList().get(i).getSubCstrnLocMapFile().getContentType();
                     String subCstrnLocMapFileSavedFileName = subCstrnLocMapFileName;
@@ -214,7 +217,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
                     String subCstrnStLocMapFileOriName = dto.getSubFormList().get(i).getSubCstrnStLocMapFile().getOriginalFilename();
                     String subCstrnStLocMapFileFullName[] = subCstrnStLocMapFileOriName.split("\\.");
                     String subCstrnStLocMapFileExt = subCstrnStLocMapFileFullName[1];
-                    String subCstrnStLocMapFileName = subCstrnStLocMapFileUuid.toString()+"."+subCstrnStLocMapFileExt;
+                    String subCstrnStLocMapFileName = subCstrnStLocMapFileUuid.toString() + "." + subCstrnStLocMapFileExt;
                     Long subCstrnStLocMapFileSize = dto.getSubFormList().get(i).getSubCstrnStLocMapFile().getSize();
                     String subCstrnStLocMapFileType = dto.getSubFormList().get(i).getSubCstrnStLocMapFile().getContentType();
                     String subCstrnStLocMapFileSavedFileName = subCstrnStLocMapFileName;
@@ -231,7 +234,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
                     String subCstrnEndLocMapFileOriName = dto.getSubFormList().get(i).getSubCstrnEndLocMapFile().getOriginalFilename();
                     String subCstrnEndLocMapFileFullName[] = subCstrnEndLocMapFileOriName.split("\\.");
                     String subCstrnEndLocMapFileExt = subCstrnEndLocMapFileFullName[1];
-                    String subCstrnEndLocMapFileName = subCstrnEndLocMapFileUuid.toString()+"."+subCstrnEndLocMapFileExt;
+                    String subCstrnEndLocMapFileName = subCstrnEndLocMapFileUuid.toString() + "." + subCstrnEndLocMapFileExt;
                     Long subCstrnEndLocMapFileSize = dto.getSubFormList().get(i).getSubCstrnEndLocMapFile().getSize();
                     String subCstrnEndLocMapFileType = dto.getSubFormList().get(i).getSubCstrnEndLocMapFile().getContentType();
                     String subCstrnEndLocMapFileSavedFileName = subCstrnEndLocMapFileName;
@@ -248,7 +251,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
                     String subCstrnRepsLocMapFileOriName = dto.getSubFormList().get(i).getSubCstrnRepsLocMapFile().getOriginalFilename();
                     String subCstrnRepsLocMapFileFullName[] = subCstrnRepsLocMapFileOriName.split("\\.");
                     String subCstrnRepsLocMapFileExt = subCstrnRepsLocMapFileFullName[1];
-                    String subCstrnRepsLocMapFileName = subCstrnRepsLocMapFileUuid.toString()+"."+subCstrnRepsLocMapFileExt;
+                    String subCstrnRepsLocMapFileName = subCstrnRepsLocMapFileUuid.toString() + "." + subCstrnRepsLocMapFileExt;
                     Long subCstrnRepsLocMapFileSize = dto.getSubFormList().get(i).getSubCstrnRepsLocMapFile().getSize();
                     String subCstrnRepsLocMapFileType = dto.getSubFormList().get(i).getSubCstrnRepsLocMapFile().getContentType();
                     String subCstrnRepsLocMapFileSavedFileName = subCstrnRepsLocMapFileName;
@@ -298,7 +301,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
             String subCstrnLocMapFileOriName = dto.getSubFormList().get(0).getSubCstrnLocMapFile().getOriginalFilename();
             String subCstrnLocMapFileFullName[] = subCstrnLocMapFileOriName.split("\\.");
             String subCstrnLocMapFileExt = subCstrnLocMapFileFullName[1];
-            String subCstrnLocMapFileName = subCstrnLocMapFileUuid.toString()+"."+subCstrnLocMapFileExt;
+            String subCstrnLocMapFileName = subCstrnLocMapFileUuid.toString() + "." + subCstrnLocMapFileExt;
             Long subCstrnLocMapFileSize = dto.getSubFormList().get(0).getSubCstrnLocMapFile().getSize();
             String subCstrnLocMapFileType = dto.getSubFormList().get(0).getSubCstrnLocMapFile().getContentType();
             String subCstrnLocMapFileSavedFileName = subCstrnLocMapFileName;
@@ -315,7 +318,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
             String subCstrnStLocMapFileOriName = dto.getSubFormList().get(0).getSubCstrnStLocMapFile().getOriginalFilename();
             String subCstrnStLocMapFileFullName[] = subCstrnStLocMapFileOriName.split("\\.");
             String subCstrnStLocMapFileExt = subCstrnStLocMapFileFullName[1];
-            String subCstrnStLocMapFileName = subCstrnStLocMapFileUuid.toString()+"."+subCstrnStLocMapFileExt;
+            String subCstrnStLocMapFileName = subCstrnStLocMapFileUuid.toString() + "." + subCstrnStLocMapFileExt;
             Long subCstrnStLocMapFileSize = dto.getSubFormList().get(0).getSubCstrnStLocMapFile().getSize();
             String subCstrnStLocMapFileType = dto.getSubFormList().get(0).getSubCstrnStLocMapFile().getContentType();
             String subCstrnStLocMapFileSavedFileName = subCstrnStLocMapFileName;
@@ -332,7 +335,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
             String subCstrnEndLocMapFileOriName = dto.getSubFormList().get(0).getSubCstrnEndLocMapFile().getOriginalFilename();
             String subCstrnEndLocMapFileFullName[] = subCstrnEndLocMapFileOriName.split("\\.");
             String subCstrnEndLocMapFileExt = subCstrnEndLocMapFileFullName[1];
-            String subCstrnEndLocMapFileName = subCstrnEndLocMapFileUuid.toString()+"."+subCstrnEndLocMapFileExt;
+            String subCstrnEndLocMapFileName = subCstrnEndLocMapFileUuid.toString() + "." + subCstrnEndLocMapFileExt;
             Long subCstrnEndLocMapFileSize = dto.getSubFormList().get(0).getSubCstrnEndLocMapFile().getSize();
             String subCstrnEndLocMapFileType = dto.getSubFormList().get(0).getSubCstrnEndLocMapFile().getContentType();
             String subCstrnEndLocMapFileSavedFileName = subCstrnEndLocMapFileName;
@@ -349,7 +352,7 @@ public class InitiationReportServiceImpl implements InitiationReportService {
             String subCstrnRepsLocMapFileOriName = dto.getSubFormList().get(0).getSubCstrnRepsLocMapFile().getOriginalFilename();
             String subCstrnRepsLocMapFileFullName[] = subCstrnRepsLocMapFileOriName.split("\\.");
             String subCstrnRepsLocMapFileExt = subCstrnRepsLocMapFileFullName[1];
-            String subCstrnRepsLocMapFileName = subCstrnRepsLocMapFileUuid.toString()+"."+subCstrnRepsLocMapFileExt;
+            String subCstrnRepsLocMapFileName = subCstrnRepsLocMapFileUuid.toString() + "." + subCstrnRepsLocMapFileExt;
             Long subCstrnRepsLocMapFileSize = dto.getSubFormList().get(0).getSubCstrnRepsLocMapFile().getSize();
             String subCstrnRepsLocMapFileType = dto.getSubFormList().get(0).getSubCstrnRepsLocMapFile().getContentType();
             String subCstrnRepsLocMapFileSavedFileName = subCstrnRepsLocMapFileName;
@@ -381,6 +384,11 @@ public class InitiationReportServiceImpl implements InitiationReportService {
     }
 
     @Override
+    public Long getInitiationReportSeq() throws Exception {
+        Long seq = mapper.getInitiationReportSeq();
+        return seq;
+    }
+
     public InitiationReportDTO getInitiationReportDetail(InitiationReportDTO dto) throws Exception {
         dto = mapper.getInitiationReportDetail(dto);
         if (dto.getCstrnLocMapFilePath() != null){
@@ -427,18 +435,19 @@ public class InitiationReportServiceImpl implements InitiationReportService {
         return initRptSubInfoList;
     }
 
-    @Override
-    public int updateInitiationReportApproval(InitiationReportDTO dto) throws Exception {
-        int result = mapper.updateInitiationReportApproval(dto);
-        return result;
-    }
+//    @Override
+//    public int updateInitiationReportApproval(InitiationReportDTO dto) throws Exception {
+//        int result = mapper.updateInitiationReportApproval(dto);
+//        return result;
+//    }
 
     @Override
     @Transactional
     public void updateInitiationReportUpdate(InitiationReportDTO dto) throws Exception {
-        String subCstrnCnt = Integer.toString(dto.getSubFormList().size());
-        logger.debug("subCstrnCnt = ", subCstrnCnt);
-        dto.setSubCstrnCnt(subCstrnCnt);
+//        String subCstrnCnt = Integer.toString(dto.getSubFormList().size());
+//        logger.debug("subCstrnCnt = ", subCstrnCnt);
+//        dto.setSubCstrnCnt(subCstrnCnt);
+        logger.debug("subCstrnCnt = ", dto.getSubCstrnCnt());
 
         // 전체 공사기간 "-" 제거
         String cstrnStDt = dto.getCstrnStDt().replaceAll("-", "");
@@ -788,8 +797,10 @@ public class InitiationReportServiceImpl implements InitiationReportService {
     }
     @Override
     @Transactional
-    public void itiationReportAppr(InitiationReportDTO dto) throws Exception {
+    public InitiationReportDTO initiationReportAppr(InitiationReportDTO dto) throws Exception {
     	mapper.initiationReportApprUpdate(dto);
+    	dto = mapper.getInitiationReportApprInfo(dto);
+        return dto;
     }
 
     @Transactional

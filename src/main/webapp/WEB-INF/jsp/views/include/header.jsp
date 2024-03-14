@@ -68,7 +68,9 @@ String userName = authentication.getName();
 				<ul class="inline mr40">
 		      	  <li><a name="about" href="#" onclick="MainInfo.movePage('about');return false;">RCIC소개</a></li>
 		      	  <li><a name="corporation"  href="#" onclick="MainInfo.movePage('corporation');return false;">공사현황</a></li>
-		          <li><a name="collection" href="#" onclick="MainInfo.movePage('collection');return false;">수집현황</a></li>
+                  <c:if test="${userInfo.auth_no == '1' }">
+                      <li><a name="collection" href="#" onclick="MainInfo.movePage('collection');return false;">수집현황</a></li>
+                  </c:if>
 		          <li><a name="dataApi" href="#" onclick="MainInfo.movePage('dataApi');return false;">데이터제공API</a></li> 
 		          <li><a name="initiationReport" href="#" onclick="MainInfo.movePage('initiationReport');return false;">착수신고현황</a></li>
 		          <li><a name="board" href="#" onclick="MainInfo.movePage('board');return false;">게시판</a></li>
