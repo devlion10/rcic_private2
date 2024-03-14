@@ -11,7 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8934c6fd-86fc-483d-8bb4-bc3e01545389" name="Changes" comment="자원사용 Config.js생성&#10;-브이월드키&#10;-지오서버wms 요청 url">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/context.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/context.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +189,7 @@
       <workItem from="1710118398010" duration="56781000" />
       <workItem from="1710250255844" duration="45884000" />
       <workItem from="1710406789319" duration="553000" />
-      <workItem from="1710407352388" duration="122000" />
+      <workItem from="1710407352388" duration="399000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
