@@ -552,12 +552,6 @@ public class InitiationReportDTO {
      */
 
     /**
-     * 세부공사 seq
-     */
-//    private String subAllSeq;
-    private String subSeq;
-
-    /**
      * 세부공사 - 착수신고서 seq
      */
     private String initRptSeq;

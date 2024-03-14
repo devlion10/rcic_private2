@@ -17,3 +17,5 @@ target
  
 # 예외
 !제외할 파일명.txt
+.idea/.gitignore
+.idea/rcic2.iml

@@ -8,8 +8,8 @@ import kr.or.lx.rcic.modules.initiationReport.service.InitiationReportService;
 import lombok.extern.slf4j.Slf4j;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +27,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -71,7 +76,7 @@ public class InitiationReportController  extends BaseController {
     public Map<String, Object> getAnalysisBidntceno(HttpServletRequest request, InitiationReportDTO dto) throws Exception {
         logger.debug("getAnalysisBidntceno__");
         SimpleData simpleData = getSimpleData(request);
-
+//        log.info("simpleData = " + simpleData);
         dto.setBidntceno(simpleData.get("bidntceno").toString());
 
         dto = initiationReportService.getAnalysisBidntceno(dto);
@@ -260,8 +265,61 @@ public class InitiationReportController  extends BaseController {
 //    }
 
     @RequestMapping(value="/initiationReport/initiationReportRegist")
-    public String initiationReportRegist(ModelAndView mv, @ModelAttribute(value="InitiationReportDTO") InitiationReportDTO dto) throws Exception {
+    @ResponseBody
+    public Map<String, Object> initiationReportRegist(InitiationReportDTO dto, MultipartHttpServletRequest request) throws Exception {
         logger.debug("initiationReportRegist__");
+        logger.debug("dto: {}", dto);
+
+        // 전체공사위치도
+        List<MultipartFile> cstrnLocMapFileList = request.getFiles("cstrnLocMapFile");
+        if(cstrnLocMapFileList != null && !cstrnLocMapFileList.isEmpty()) {
+            MultipartFile cstrnLocMapFile = cstrnLocMapFileList.get(0);
+            logger.debug("cstrnLocMapFile: {}", cstrnLocMapFile);
+            logger.debug("cstrnLocMapFile Original Filename: {}", cstrnLocMapFile.getOriginalFilename());
+            dto.setCstrnLocMapFile(cstrnLocMapFile);
+        }
+
+        for(int i = 0; ; i++) {
+            // 세부공사위치도
+            List<MultipartFile> subCstrnLocMapFileList = request.getFiles("subCstrnLocMapFile" + i);
+            if(subCstrnLocMapFileList != null && !subCstrnLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnLocMapFile = subCstrnLocMapFileList.get(0);
+                logger.debug("subCstrnLocMapFile" + i + ": {}", subCstrnLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnLocMapFile(subCstrnLocMapFile);
+            } else {
+                break;
+            }
+
+            // 세부공사시점
+            List<MultipartFile> subCstrnStLocMapFileList = request.getFiles("subCstrnStLocMapFile" + i);
+            if(subCstrnStLocMapFileList != null && !subCstrnStLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnStLocMapFile = subCstrnStLocMapFileList.get(0);
+                logger.debug("subCstrnStLocMapFile" + i + ": {}", subCstrnStLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnStLocMapFile(subCstrnStLocMapFile);
+            } else {
+                break;
+            }
+
+            // 세부공사종점
+            List<MultipartFile> subCstrnEndLocMapFileList = request.getFiles("subCstrnEndLocMapFile" + i);
+            if(subCstrnEndLocMapFileList != null && !subCstrnEndLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnEndLocMapFile = subCstrnEndLocMapFileList.get(0);
+                logger.debug("subCstrnEndLocMapFile" + i + ": {}", subCstrnEndLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnEndLocMapFile(subCstrnEndLocMapFile);
+            } else {
+                break;
+            }
+
+            // 세부공사대표지점
+            List<MultipartFile> subCstrnRepsLocMapFileList = request.getFiles("subCstrnRepsLocMapFile" + i);
+            if(subCstrnRepsLocMapFileList != null && !subCstrnRepsLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnRepsLocMapFile = subCstrnRepsLocMapFileList.get(0);
+                logger.debug("subCstrnRepsLocMapFile" + i + ": {}", subCstrnRepsLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnRepsLocMapFile(subCstrnRepsLocMapFile);
+            } else {
+                break;
+            }
+        }
 
         // User ID 삽입
         String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -270,7 +328,14 @@ public class InitiationReportController  extends BaseController {
         // 착수신고서 등록
         initiationReportService.insertInitiationReportRegist(dto);
 
-        return "redirect:/rcic/movePage?menuId=initiationReport";
+        Map<String, Object> map = new HashMap<>();
+        Long seq = initiationReportService.getInitiationReportSeq();
+        dto.setSeq(seq);
+        dto = initiationReportService.getInitiationReportDetail(dto);
+        List<InitiationReportDTO> initRptSubInfoList = initiationReportService.getInitiationReportSubListDetail(dto);
+        map.put("initRptInfo", dto);
+        map.put("initRptSubInfoList", initRptSubInfoList);
+        return map;
     }
 
     @RequestMapping(value="/initiationReport/movePageInitiationReportDetail")
@@ -316,31 +381,32 @@ public class InitiationReportController  extends BaseController {
 
     @RequestMapping(value="/initiationReport/initiationReportAppr")
     @ResponseBody
-    public String initiationReportAppr(@RequestBody InitiationReportDTO dto) throws Exception {
+    public InitiationReportDTO initiationReportAppr(@RequestBody InitiationReportDTO dto) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         dto.setInitiationRptApprFlag("1");
         dto.setApproverId(authentication.getName());
 
-        initiationReportService.itiationReportAppr(dto);
-        return "true";
+        dto = initiationReportService.initiationReportAppr(dto);
+        log.info("dto = " + dto);
+        return dto;
     }
 
-    @RequestMapping(value="/initiationReport/initiationReportApproval")
-    @ResponseBody
-    public int initiationReportApproval(HttpServletRequest request, InitiationReportDTO dto) throws Exception {
-        logger.debug("initiationReportApproval__");
-        SimpleData simpleData = getSimpleData(request);
-        dto.setSeq(Long.parseLong(simpleData.get("seq").toString()));
-
-        // User ID 삽입
-        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
-        dto.setRegId(currentUserId);
-
-        int result = initiationReportService.updateInitiationReportApproval(dto);
-
-        return result;
-    }
+//    @RequestMapping(value="/initiationReport/initiationReportApproval")
+//    @ResponseBody
+//    public int initiationReportApproval(HttpServletRequest request, InitiationReportDTO dto) throws Exception {
+//        logger.debug("initiationReportApproval__");
+//        SimpleData simpleData = getSimpleData(request);
+//        dto.setSeq(Long.parseLong(simpleData.get("seq").toString()));
+//
+//        // User ID 삽입
+//        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
+//        dto.setRegId(currentUserId);
+//
+//        int result = initiationReportService.updateInitiationReportApproval(dto);
+//
+//        return result;
+//    }
 
     @RequestMapping(value="/initiationReport/movePageInitiationReportUpdate")
     public String movePageInitiationReportUpdate(Model model, String seq, InitiationReportDTO dto) throws Exception {
@@ -348,6 +414,7 @@ public class InitiationReportController  extends BaseController {
         dto.setSeq(Long.parseLong(seq));
 
         dto = initiationReportService.getInitiationReportDetail(dto);
+        dto.setBrno(dto.getBrno().replaceAll("-", ""));
         List<InitiationReportDTO> initRptSubInfoList = initiationReportService.getInitiationReportSubListDetail(dto);
 
         // 국토관리사무소 selectBox List
@@ -384,8 +451,61 @@ public class InitiationReportController  extends BaseController {
     }
 
     @RequestMapping(value="/initiationReport/initiationReportUpdate")
-    public String initiationReportUpdate(Model model, @ModelAttribute(value="InitiationReportDTO") InitiationReportDTO dto) throws Exception {
+    @ResponseBody
+    public Map<String, Object> initiationReportUpdate(InitiationReportDTO dto, MultipartHttpServletRequest request) throws Exception {
         logger.debug("initiationReportUpdate__");
+        logger.debug("dto: {}", dto);
+
+        // 전체공사위치도
+        List<MultipartFile> cstrnLocMapFileList = request.getFiles("cstrnLocMapFile");
+        if(cstrnLocMapFileList != null && !cstrnLocMapFileList.isEmpty()) {
+            MultipartFile cstrnLocMapFile = cstrnLocMapFileList.get(0);
+            logger.debug("cstrnLocMapFile: {}", cstrnLocMapFile);
+            logger.debug("cstrnLocMapFile Original Filename: {}", cstrnLocMapFile.getOriginalFilename());
+            dto.setCstrnLocMapFile(cstrnLocMapFile);
+        }
+
+        for(int i = 0; ; i++) {
+            // 세부공사위치도
+            List<MultipartFile> subCstrnLocMapFileList = request.getFiles("subCstrnLocMapFile" + i);
+            if(subCstrnLocMapFileList != null && !subCstrnLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnLocMapFile = subCstrnLocMapFileList.get(0);
+                logger.debug("subCstrnLocMapFile" + i + ": {}", subCstrnLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnLocMapFile(subCstrnLocMapFile);
+            } else {
+                break;
+            }
+
+            // 세부공사시점
+            List<MultipartFile> subCstrnStLocMapFileList = request.getFiles("subCstrnStLocMapFile" + i);
+            if(subCstrnStLocMapFileList != null && !subCstrnStLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnStLocMapFile = subCstrnStLocMapFileList.get(0);
+                logger.debug("subCstrnStLocMapFile" + i + ": {}", subCstrnStLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnStLocMapFile(subCstrnStLocMapFile);
+            } else {
+                break;
+            }
+
+            // 세부공사종점
+            List<MultipartFile> subCstrnEndLocMapFileList = request.getFiles("subCstrnEndLocMapFile" + i);
+            if(subCstrnEndLocMapFileList != null && !subCstrnEndLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnEndLocMapFile = subCstrnEndLocMapFileList.get(0);
+                logger.debug("subCstrnEndLocMapFile" + i + ": {}", subCstrnEndLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnEndLocMapFile(subCstrnEndLocMapFile);
+            } else {
+                break;
+            }
+
+            // 세부공사대표지점
+            List<MultipartFile> subCstrnRepsLocMapFileList = request.getFiles("subCstrnRepsLocMapFile" + i);
+            if(subCstrnRepsLocMapFileList != null && !subCstrnRepsLocMapFileList.isEmpty()) {
+                MultipartFile subCstrnRepsLocMapFile = subCstrnRepsLocMapFileList.get(0);
+                logger.debug("subCstrnRepsLocMapFile" + i + ": {}", subCstrnRepsLocMapFile);
+                dto.getSubFormList().get(i).setSubCstrnRepsLocMapFile(subCstrnRepsLocMapFile);
+            } else {
+                break;
+            }
+        }
 
         // User ID 삽입
         String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -394,8 +514,14 @@ public class InitiationReportController  extends BaseController {
         // 착수신고서 수정
         initiationReportService.updateInitiationReportUpdate(dto);
 
-        model.addAttribute("dto", dto);
-        return "redirect:/rcic/initiationReport/movePageInitiationReportDetail?seq="+dto.getSeq();
+        Map<String, Object> map = new HashMap<>();
+        dto = initiationReportService.getInitiationReportDetail(dto);
+        dto.getBrno().replaceAll("-", "");
+        List<InitiationReportDTO> initRptSubInfoList = initiationReportService.getInitiationReportSubListDetail(dto);
+        map.put("initRptInfo", dto);
+        map.put("initRptSubInfoList", initRptSubInfoList);
+
+        return map;
     }
 
 

@@ -181,12 +181,17 @@ var InitiationReportRegist = {
 
 let i = 0;
 // 세부 공사정보 div 추가
-function subConstInfoDivAdd() {
-    const checkVal = document.querySelector('input[name="initRptSubSeq"]');
-
+function subConstInfoDivAdd(param) {
+    const checkVal = document.querySelector('input[name="subFormList[0].initRptSubSeq"]');
+    // const checkVal = document.querySelector('input[name="initRptSubSeq"]');
+    //
     if (checkVal != null) {
         i++;
     };
+
+    let subCstrnCnt = i+1;
+    $("#subCstrnCnt").val(subCstrnCnt);
+    $("#subCstrnCntUpt").val(subCstrnCnt);
 
     let str = `
     <div id="subConstInfoSubDiv">
@@ -220,8 +225,8 @@ function subConstInfoDivAdd() {
                 <!-- 2-1행 -->
                 <div class="row row-tr border-end-0" style="height: 52px;">
                     <div class="col">
-                        <input type="hidden" name="initRptSubSeq" value="`+ (i+1) +`"/>
-                        <input type="text" name="subCstrnNm" class="form-control form-control-sm" placeholder="세부공사명 입력"/>
+                        <input type="hidden" name="subFormList[`+i+`].initRptSubSeq" value="`+ (i+1) +`"/>
+                        <input type="text" name="subFormList[`+i+`].subCstrnNm" class="form-control form-control-sm" placeholder="세부공사명 입력"/>
                         <p class="invalid-feedback">※ 계약서 상에 기재된공사명을 입력해주세요.</p>
                     </div>
                 </div>
@@ -233,7 +238,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">주소 :</span>
                                 </label>
-                                <input type="text" name="subCstrnStLocAddr" class="form-control-sm" placeholder="공사 시점 위치를 입력하세요." style="width: 433px;"/>
+                                <input type="text" name="subFormList[`+i+`].subCstrnStLocAddr" class="form-control-sm" placeholder="공사 시점 위치를 입력하세요." style="width: 433px;"/>
                             </div>
                         </div>
                         <div class="row row-tr border-end-0">
@@ -241,8 +246,8 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">좌표 :</span>
                                 </label>
-                                <input type="text" name="subCstrnStCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;"/>
-                                <input type="text" name="subCstrnStCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;"/>
+                                <input type="text" name="subFormList[`+i+`].subCstrnStCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;"/>
+                                <input type="text" name="subFormList[`+i+`].subCstrnStCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;"/>
                                 <input type="button" id='startCoordBtn' value="지도에서찾기" class="searchBtn w-auto" style="font-size: 12px;" onclick="CoordRegMap.createMapClass(this);">
                             </div>
                         </div>
@@ -251,7 +256,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">노선방향 :</span>
                                 </label>
-                                <input type="text" name="subCstrnStDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
+                                <input type="text" name="subFormList[`+i+`].subCstrnStDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
                             </div>
                         </div>
                     </div>
@@ -327,9 +332,9 @@ function subConstInfoDivAdd() {
                 <!-- 4-1행 -->
                 <div class="row row-tr border-end-0" style="height: 52px;">
                     <div class="col">
-                        <input type="date" max="9999-12-31" name="subCstrnStDt" class="form-control form-control-sm d-inline-block wid30">
+                        <input type="date" max="9999-12-31" name="subFormList[`+i+`].subCstrnStDt" class="form-control form-control-sm d-inline-block wid30">
                         <span> ~ </span>
-                        <input type="date" max="9999-12-31" name="subCstrnEndDt" class="form-control form-control-sm d-inline-block wid30">
+                        <input type="date" max="9999-12-31" name="subFormList[`+i+`].subCstrnEndDt" class="form-control form-control-sm d-inline-block wid30">
                         <p class="invalid-feedback">※ 세부 공사기간을 입력해주세요.</p>
                     </div>
                 </div>
@@ -341,7 +346,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">주소 :</span>
                                 </label>
-                                <input type="text" name="subCstrnEndLocAddr" class="form-control-sm" placeholder="공사 종점 위치를 입력하세요." style="width: 433px;"/>
+                                <input type="text" name="subFormList[`+i+`].subCstrnEndLocAddr" class="form-control-sm" placeholder="공사 종점 위치를 입력하세요." style="width: 433px;"/>
                             </div>
                         </div>
                         <div class="row row-tr border-end-0">
@@ -349,8 +354,8 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">좌표 :</span>
                                 </label>
-                                <input type="text" name="subCstrnEndCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;">
-                                <input type="text" name="subCstrnEndCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;">
+                                <input type="text" name="subFormList[`+i+`].subCstrnEndCoodLatitude" class="form-control-sm" placeholder="위도를 선택하세요." style="width: 150px;">
+                                <input type="text" name="subFormList[`+i+`].subCstrnEndCoodLongitude" class="form-control-sm" placeholder="경도를 선택하세요." style="width: 150px;">
                                 <input type="button" id='endCoordBtn' value="지도에서찾기" class="searchBtn w-auto" style="font-size: 12px;" onclick="CoordRegMap.createMapClass(this);">
                             </div>
                         </div>
@@ -360,7 +365,7 @@ function subConstInfoDivAdd() {
                                 <label class="col-form-label-sm">
                                     <span class="sub_th">노선방향 :</span>
                                 </label>
-                                <input type="text" name="subCstrnEndDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
+                                <input type="text" name="subFormList[`+i+`].subCstrnEndDir" class="form-control-sm" placeholder="노선의 상하행 또는 방향을 입력하세요." style="width: 406px;">
                             </div>
                         </div>
 
@@ -432,180 +437,243 @@ function displayFileList(fileList) {
     }
 }
 
-
-
-function validateForm() {
-
-	var vailiFlag = true;
-	const forms = document.querySelectorAll('.needs-validation');
-	const bidYn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
-	const bidNo = document.querySelector('input[name="bidntceno"]');
-	const bidTxt = document.querySelector('input[name="workDivisionInfo"]');
-	const stDt = document.querySelector('input[name="cstrnStDt"]');
-	const endDt = document.querySelector('input[name="cstrnEndDt"]');
-	var f = document.forms[0];
-	for(var i=0; i<f.elements.length-1; i++) {
-		if(f.elements[i].value === 'all' || f.elements[i].value === '0'){
-			if(f.elements[i].value === 'all'){
-				var eLtxt = f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText;
-				alert(eLtxt.replace("*", "").trim() +"을 선택해 주세요.");
-				setTimeout(function(){
-					f.elements[i].focus();
-				}, 1);
-				return vailiFlag = false;
-			}
-			if(f.elements[i].value === '0'){
-				var eLtxt = f.elements[i][0].innerText;
-				alert(eLtxt +"해 주세요.");
-				setTimeout(function(){
-					f.elements[i].focus();
-				}, 1);
-				return vailiFlag = false;
-			}
-		}
-		if(!f.elements[i].value && f.elements[i].type != 'file' && f.elements[i].type != 'button' && f.elements[i].type != 'hidden') {
-			console.log(f.elements[i].type);
-			console.log("f.elements[i].type = ", f.elements[i].type);
-			console.log("!f.elements[i].id = ", !f.elements[i].id);
-			if(f.elements[i].name === 'bidntceno'){
-				if(bidYn === "Y"){
-					alert(f.elements[i].placeholder +"을 입력해 주세요.");
-					setTimeout(function(){
-						f.elements[i].focus();
-					}, 1);
-					return vailiFlag = false;
-				}
-			}else if(f.elements[i].name === 'workDivisionInfo'){
-				if(bidYn === "N"){
-					alert(f.elements[i].placeholder +"을 입력해 주세요.");
-					setTimeout(function(){
-						f.elements[i].focus();
-					}, 1);
-					return vailiFlag = false;
-				}
-			}else if(f.elements[i].name === 'bon' || f.elements[i].name === 'bu'){
-				alert("공사시행위치 본번 또는 부번을 입력해 주세요.");
-				setTimeout(function(){
-					f.elements[i].focus();
-				}, 1);
-				return vailiFlag = false;
-			}else if(f.elements[i].type === 'select-one'){
-				var eLtxt = f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText;
-				alert(eLtxt.replace("*", "").trim() +"을  선택해 주세요.");
-				setTimeout(function(){
-					f.elements[i].focus();
-				}, 1);
-				return vailiFlag = false;
-			}else if(f.elements[i].type === 'date'){
-				var eLtxt = "";
-				if(f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText != null){
-					eLtxt = f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText;
-				}else {
-					eLtxt = f.elements[i].parentNode.parentNode.parentNode.previousElementSibling.childNodes[1].childNodes[3].innerText;
-				}
-				alert(eLtxt.replace("*", "").trim() +"을 입력해 주세요.");
-				setTimeout(function(){
-					f.elements[i].focus();
-				}, 1);
-				return vailiFlag = false;
-			}else{
-				console.log(f.elements);
-				alert(f.elements[i].placeholder +"을 입력해 주세요.");
-				setTimeout(function(){
-					f.elements[i].focus();
-				}, 1);
-				return vailiFlag = false;
-			}
-		}
-	}
-	return vailiFlag;
-}
-
-// 제출 버튼 클릭 -> 착수신고서 등록
-// function initiationReportRegist() {
-//     let bidntcenoyn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
-//     if (bidntcenoyn === "N"){
-//         $('#bidntceno').val('');
-//         $('#bidntceno').attr("disabled", "disabled");
-//     }
-//     // $("#initiationReportRegistForm").submit; 안돼
-//     // $("#initiationReportRegistForm").submit(); 안돼
-//     let subCstrnLength = $("input[name=initRptSubSeq]").length;
-//     // let subCstrnLength = document.getElement("input[name=initRptSubSeq]").length;
-//
-//     console.log("subCstrnLength = ", subCstrnLength);
-//
-//     let initRptSubSeqArr = new Array(subCstrnLength);
-//     let subCstrnNmArr = new Array(subCstrnLength);
-//     let subCstrnStLocAddrArr = new Array(subCstrnLength);
-//     let subCstrnStCoodLatitudeArr = new Array(subCstrnLength);
-//     let subCstrnStCoodLongitudeArr = new Array(subCstrnLength);
-//     let subCstrnStDirArr = new Array(subCstrnLength);
-//     let subCstrnStDtArr = new Array(subCstrnLength);
-//     let subCstrnEndDtArr = new Array(subCstrnLength);
-//     let subCstrnEndLocAddrArr = new Array(subCstrnLength);
-//     let subCstrnEndCoodLatitudeArr = new Array(subCstrnLength);
-//     let subCstrnEndCoodLongitudeArr = new Array(subCstrnLength);
-//     let subCstrnEndDirArr = new Array(subCstrnLength);
-//
-//     for (let j=0; j < subCstrnLength; j++) {
-//         initRptSubSeqArr[j] = $("input[name=initRptSubSeq]").eq(j).val();
-//         subCstrnNmArr[j] = $("input[name=subCstrnNm]").eq(j).val();
-//         subCstrnStLocAddrArr[j] = $("input[name=subCstrnStLocAddr]").eq(j).val();
-//         subCstrnStCoodLatitudeArr[j] = $("input[name=subCstrnStCoodLatitude]").eq(j).val();
-//         subCstrnStCoodLongitudeArr[j] = $("input[name=subCstrnStCoodLongitude]").eq(j).val();
-//         subCstrnStDirArr[j] = $("input[name=subCstrnStDir]").eq(j).val();
-//         subCstrnStDtArr[j] = $("input[name=subCstrnStDt]").eq(j).val();
-//         subCstrnEndDtArr[j] = $("input[name=subCstrnEndDt]").eq(j).val();
-//         subCstrnEndLocAddrArr[j] = $("input[name=subCstrnEndLocAddr]").eq(j).val();
-//         subCstrnEndCoodLatitudeArr[j] = $("input[name=subCstrnEndCoodLatitude]").eq(j).val();
-//         subCstrnEndCoodLongitudeArr[j] = $("input[name=subCstrnEndCoodLongitude]").eq(j).val();
-//         subCstrnEndDirArr[j] = $("input[name=subCstrnEndDir]").eq(j).val();
-//
-//         console.log(initRptSubSeqArr[j]);
-//         console.log(subCstrnNmArr[j]);
-//         console.log(subCstrnStLocAddrArr[j]);
-//         console.log(subCstrnStCoodLatitudeArr[j]);
-//         console.log(subCstrnStCoodLongitudeArr[j]);
-//         console.log(subCstrnStDirArr[j]);
-//         console.log(subCstrnStDtArr[j]);
-//         console.log(subCstrnEndDtArr[j]);
-//         console.log(subCstrnEndLocAddrArr[j]);
-//         console.log(subCstrnEndCoodLatitudeArr[j]);
-//         console.log(subCstrnEndCoodLongitudeArr[j]);
-//         console.log(subCstrnEndDirArr[j]);
-//     }
-//
-//     if ($("input[name=brno]").val().length < 10) { return alert("사업자등록번호 또는 주민번호는 10자리 이상 입력해주세요.");}
-// 	// if (validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
-//
-//     let formData = new FormData($("#initiationReportRegistForm")[0]);
-//     formData = $("#initiationReportRegistForm").serializeObject();
-//     formData.currPage = '';
-//     formData.listCnt = 0;
-//     formData.url = "/rcic/initiationReport/initiationReportRegist";
-//     let dataList = setDefault(formData);
-//
-//     if (validateForm()){
-//         $.commonAjax(dataList,'', function(response, status, headers, config) {
-//             console.log("넵");
-//             console.log(response);
-//         });
-//     }
-// }
-
-// 제출 버튼 클릭 -> 착수신고서 등록
 function initiationReportRegist() {
-    let bidntcenoyn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
-    if (bidntcenoyn === "N"){
-        $('#bidntceno').val('');
-        $('#bidntceno').attr("disabled", "disabled");
+    let formData = new FormData(document.querySelector('#initiationReportRegistForm'))
+
+    for(let i = 0; ; i++) {
+        // 세부공사위치도
+        const subCstrnLocMapFile = $(`input[name='subCstrnLocMapFileBtn${i}']`)
+        if(!subCstrnLocMapFile.length) break
+        formData.append(`subCstrnLocMapFile${i}`, subCstrnLocMapFile[0].files[0])
+
+        // 세부공사시점
+        const subCstrnStLocMapFile = $(`input[name='subCstrnStLocMapFileBtn${i}']`)
+        if(!subCstrnStLocMapFile.length) break
+        formData.append(`subCstrnStLocMapFile${i}`, subCstrnStLocMapFile[0].files[0])
+
+        // 세부공사종점
+        const subCstrnEndLocMapFile = $(`input[name='subCstrnEndLocMapFileBtn${i}']`)
+        if(!subCstrnEndLocMapFile.length) break
+        formData.append(`subCstrnEndLocMapFile${i}`, subCstrnEndLocMapFile[0].files[0])
+
+        // 세부공사대표지점
+        const subCstrnRepsLocMapFile = $(`input[name='subCstrnRepsLocMapFileBtn${i}']`)
+        if(!subCstrnRepsLocMapFile.length) break
+        formData.append(`subCstrnRepsLocMapFile${i}`, subCstrnRepsLocMapFile[0].files[0])
     }
-    // $("#initiationReportRegistForm").submit; 안돼
-    // $("#initiationReportRegistForm").submit(); 안돼
-    if ($("input[name=brno]").val().length < 10) { return alert("사업자등록번호 또는 주민번호는 10자리 이상 입력해주세요.");}
-    if(validateForm()){document.getElementById("initiationReportRegistForm").submit();} // 돼 왜?
+
+
+
+    if (validateForm()){
+        $.ajax({
+            url: '/rcic/initiationReport/initiationReportRegist',
+            type: 'POST',
+            enctype: 'multipart/form-data',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                // console.log("result = ", result);
+                // console.log("result.initRptInfo = ", result.initRptInfo);
+                // console.log("result.initRptSubInfoList = ", result.initRptSubInfoList);
+                let initRptInfo = result.initRptInfo;
+                let initRptSubList = result.initRptSubInfoList;
+
+                // 안전지킴이 파라미터
+                let paramObj = {
+                    "work_no": initRptInfo.seq,
+                    "ref_no": initRptInfo.bidntceno,
+                    "work_nm": initRptInfo.cstrn,
+                    "reg_dt": initRptInfo.regDt,
+                    "work_st_dt": initRptInfo.cstrnStDt,
+                    "work_en_dt": initRptInfo.cstrnEndDt,
+                    "road_type": initRptInfo.roadTypeCd,
+                    "road_no": initRptInfo.roadRteNo,
+                    "work_type": initRptInfo.cstrnTypeCd,
+                    "user_id": initRptInfo.regId,
+                    "instt_nm": initRptInfo.dclNm,
+                    "brno": initRptInfo.brno,
+                    "dcl_addr": initRptInfo.dclAddr,
+                    "initiation_rpt_appr_flag": initRptInfo.initiationRptApprFlag,
+                    "ntnlty_land_mng_ofc_cd": initRptInfo.ntnltyLandMngOfcCd,
+                    "work_loc_map_file": initRptInfo.cstrnLocMapFileOriginNm,
+                }
+                let subList = new Array();
+                for (let j = 0; j < initRptSubList.length; j++) {
+                    let subListData = {
+                        "sub_work_no": initRptSubList[j].initRptSubSeq,
+                        "sub_work_st_addr": initRptSubList[j].subCstrnStLocAddr,
+                        "sub_work_st_cood": initRptSubList[j].subCstrnStCoodLongitude + "," + initRptSubList[j].subCstrnStCoodLatitude,
+                        "sub_work_st_dir": initRptSubList[j].subCstrnStDir,
+                        "sub_work_en_addr": initRptSubList[j].subCstrnEndLocAddr,
+                        "sub_work_en_cood": initRptSubList[j].subCstrnEndCoodLongitude + "," + initRptSubList[j].subCstrnEndCoodLatitude,
+                        "sub_work_en_dir": initRptSubList[j].subCstrnEndDir,
+                        "sub_work_nm": initRptSubList[j].subCstrnNm,
+                        "sub_work_dt": initRptSubList[j].subCstrnStDt + "~"+ initRptSubList[j].subCstrnEndDt,
+                        "sub_work_loc_map_file": initRptSubList[j].subCstrnLocMapFileOriginNm,
+                        "sub_work_st_loc_map_file": initRptSubList[j].subCstrnStLocMapFileOriginNm,
+                        "sub_work_end_loc_map_file": initRptSubList[j].subCstrnEndLocMapFileOriginNm,
+                        "sub_work_reps_loc_map_file": initRptSubList[j].subCstrnRepsLocMapFileOriginNm,
+                    };
+                    subList[j] = subListData;
+                }
+                //paramObj.sub_list = subList;
+                paramObj={
+                    "work_no": "공사번호",
+                    "ref_no": "입찰공고번호",
+                    "work_nm": "공사명",
+                    "reg_dt": "등록일",
+                    "work_st_dt": "공사시작일",
+                    "work_en_dt": "공사종료일",
+                    "road_type": "도로종류",
+                    "road_no": "노선번호",
+                    "work_type": "공사종류",
+                    "user_id": "업체_아이디",
+                    "instt_nm": "업체명",
+                    "brno": "사업자등록번호",
+                    "dcl_addr": "신고인주소(업체주소)",
+                    "initiation_rpt_appr_flag": "착수신고서승인여부",
+                    "ntnlty_land_mng_ofc_cd": "국토관리사무소코드",
+                    "work_loc_map_file" : "전체공사 위치도(첨부파일명)",
+                    "sub_list": [{
+                        "sub_work_no": "세부공사순번",
+                        "sub_work_st_addr": "시점주소",
+                        "sub_work_st_cood": "시점좌표",
+                        "sub_work_st_dir": "시점방향",
+                        "sub_work_en_addr": "종점주소",
+                        "sub_work_en_cood": "종점좌표",
+                        "sub_work_en_dir": "종점방향",
+                        "sub_work_nm": "세부공사명",
+                        "sub_work_dt": "세부공사기간",
+                        "sub_work_loc_map_file" : "세부공사 위치도(첨부파일명)",
+                        "sub_work_st_loc_map_file" : "공사시점(첨부파일명)",
+                        "sub_work_end_loc_map_file" : "공사종점(첨부파일명)",
+                        "sub_work_reps_loc_map_file" : "대표지점(첨부파일명)",
+                    } ]
+                }
+                var settings = {
+                    "url": "http://hms-api.dev.seesunit.com/strt-dclrtn/crt",
+                    "method": "POST",
+                    "headers": {
+                        ContentType: 'application/json', // 500 (Internal Server Error)
+                        APIKEY: 'dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17' // 500 (Internal Server Error)
+                        // "Content-Type": "application/json", // 400 (Bad Request)
+                        // "API-KEY": "dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17" // 400 (Bad Request)
+                    },
+                    data: JSON.stringify(paramObj),
+                };
+                $.ajax(settings).done(function (response) {
+                    console.log("response = ", response);
+                }); // ajax
+
+                // alert("등록되었습니다.");
+                // MainInfo.movePage('initiationReport');
+            } // ajax success
+        }); // ajax
+    } // validate check
+} // function initiationReportRegist()
+
+
+function test() {
+    // debugger;
+
+    paramObj={
+        "work_nm":"work_nm는.",
+        "ntnlty_land_mng_ofc_cd":"33",
+        "work_no":38,
+        "work_type":"C01",
+        "ref_no":"444",
+        "instt_nm":"i44",
+        "reg_dt":"i44",
+        "user_id":"dsalefs@naver.com",
+        "road_no":"i44",
+        "road_type":"i44",
+        "work_st_dt":"w333",
+        "work_en_dt":"333",
+        "initiation_rpt_appr_flag":"Y",
+        "approver_nm":"3333",
+        "work_loc_map_file":"파일",
+        "sub_list":[{
+            "sub_work_nm":"sub_work_nm 필수값입니다.",
+            "sub_work_end_loc_map_file":"getSub_wokr_end_loc_map_file는 필수 값 입니다.",
+            "sub_work_st_dir":"sub_work_st_dir는 필수 값 입니다.",
+            "sub_work_no":1,
+            "sub_work_st_addr":"sub_work_st_addr는 필수 값 입니다.",
+            "sub_work_dt":"sub_work_d.",
+            "sub_work_st_cood":"sub_work_st_cood는 필수 값 입니다.",
+            "sub_work_loc_map_file":"sub_work_loc_map_file는 필수 값 입니다.",
+            "sub_work_reps_loc_map_file":"getSub_work_reps_loc_map_file는 필수 값 입니다.",
+            "sub_work_st_loc_map_file":"getSub_work_st_loc_map_file는 필수 값 입니다.",
+            "sub_work_en_dir":"sub_work_en_dir",
+            "sub_work_en_addr":"sub_work_en_addr는 필수 값 입니다.",
+            "sub_work_en_cood":"sub_work_en_cood는 필수 값 입니다."
+        }]
+    }
+
+    var settings = {
+        "url": "https://hms-api.dev.seesunit.com/strt-dclrtn/crt",
+        // "url": "https://cors-anywhere.herokuapp.com/http://hms-api.dev.seesunit.com/strt-dclrtn/crt",
+        "method": "POST",
+        "headers": {
+            // ContentType: 'application/json', // 500 (Internal Server Error)
+            // APIKEY: 'dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17' // 500 (Internal Server Error)
+            "Content-Type": "application/json", // 400 (Bad Request)
+            "API-KEY": "dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17" // 400 (Bad Request)
+        },
+        data: JSON.stringify(paramObj),
+    };
+    $.ajax(settings).done(function (response) {
+        console.log("response = ", response);
+    }); // ajax
 }
+
+// function test() {
+//     var settings = {
+//         "url": "http://hms-api.dev.seesunit.com/strt-dclrtn/crt",
+//         "method": "POST",
+//         "headers": {
+//             "Content-Type": "application/json",
+//             "API-KEY": "dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17",
+//         },
+//         "data": JSON.stringify({
+//             "work_no": "공사번호",
+//             "ref_no": "입찰공고번호",
+//             "work_nm": "공사명",
+//             "reg_dt": "등록일",
+//             "work_st_dt": "공사시작일",
+//             "work_en_dt": "공사종료일",
+//             "road_type": "도로종류",
+//             "road_no": "노선번호",
+//             "work_type": "공사종류",
+//             "user_id": "업체_아이디",
+//             "instt_nm": "업체명",
+//             "brno": "사업자등록번호",
+//             "dcl_addr": "신고인주소(업체주소)",
+//             "initiation_rpt_appr_flag": "착수신고서승인여부",
+//             "ntnlty_land_mng_ofc_cd": "국토관리사무소코드",
+//             "work_loc_map_file": "전체공사 위치도(첨부파일명)",
+//             "sub_list": [{
+//                 "sub_work_no": "세부공사순번",
+//                 "sub_work_st_addr": "시점주소",
+//                 "sub_work_st_cood": "시점좌표",
+//                 "sub_work_st_dir": "시점방향",
+//                 "sub_work_en_addr": "종점주소",
+//                 "sub_work_en_cood": "종점좌표",
+//                 "sub_work_en_dir": "종점방향",
+//                 "sub_work_nm": "세부공사명",
+//                 "sub_work_dt": "세부공사기간",
+//                 "sub_work_loc_map_file": "세부공사 위치도(첨부파일명)",
+//                 "sub_work_st_loc_map_file": "공사시점(첨부파일명)",
+//                 "sub_work_end_loc_map_file": "공사종점(첨부파일명)",
+//                 "sub_work_reps_loc_map_file": "대표지점(첨부파일명)",
+//             }]
+//         })
+//     };
+//
+//     $.ajax(settings).done(function (response) {
+//         console.log(response);
+//     });
+// }
 
 // 수정 버튼 클릭 -> 착수신고서 수정
 function initiationReportUpdate() {
@@ -615,7 +683,106 @@ function initiationReportUpdate() {
         $('#bidntceno').attr("disabled", "disabled");
     }
 
-    if(validateForm()){document.getElementById("initiationReportUpdateForm").submit();} // 돼 왜?
+    let formData = new FormData(document.querySelector('#initiationReportUpdateForm'))
+
+    for(let i = 0; ; i++) {
+        // 세부공사위치도
+        const subCstrnLocMapFile = $(`input[name='subCstrnLocMapFileBtn${i}']`)
+        if(!subCstrnLocMapFile.length) break
+        formData.append(`subCstrnLocMapFile${i}`, subCstrnLocMapFile[0].files[0])
+
+        // 세부공사시점
+        const subCstrnStLocMapFile = $(`input[name='subCstrnStLocMapFileBtn${i}']`)
+        if(!subCstrnStLocMapFile.length) break
+        formData.append(`subCstrnStLocMapFile${i}`, subCstrnStLocMapFile[0].files[0])
+
+        // 세부공사종점
+        const subCstrnEndLocMapFile = $(`input[name='subCstrnEndLocMapFileBtn${i}']`)
+        if(!subCstrnEndLocMapFile.length) break
+        formData.append(`subCstrnEndLocMapFile${i}`, subCstrnEndLocMapFile[0].files[0])
+
+        // 세부공사대표지점
+        const subCstrnRepsLocMapFile = $(`input[name='subCstrnRepsLocMapFileBtn${i}']`)
+        if(!subCstrnRepsLocMapFile.length) break
+        formData.append(`subCstrnRepsLocMapFile${i}`, subCstrnRepsLocMapFile[0].files[0])
+    }
+
+    if (validateForm()){
+        $.ajax({
+            url: '/rcic/initiationReport/initiationReportUpdate',
+            type: 'POST',
+            enctype: 'multipart/form-data',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                console.log("result = ", result);
+                console.log("result.initRptInfo = ", result.initRptInfo);
+                console.log("result.initRptSubInfoList = ", result.initRptSubInfoList);
+                let initRptInfo = result.initRptInfo;
+                let initRptSubList = result.initRptSubInfoList;
+
+                // 안전지킴이 파라미터
+                let paramObj = {
+                    work_no: initRptInfo.seq,
+                    ref_no: initRptInfo.bidntceno,
+                    work_nm: initRptInfo.cstrn,
+                    reg_dt: initRptInfo.regDt,
+                    work_st_dt: initRptInfo.cstrnStDt,
+                    work_en_dt: initRptInfo.cstrnEndDt,
+                    road_type: initRptInfo.roadTypeCd,
+                    // road_type: initRptInfo.roadTypeNm,
+                    road_no: initRptInfo.roadRteNo,
+                    work_type: initRptInfo.cstrnTypeCd,
+                    // work_type: initRptInfo.cstrnTypeNm,
+                    user_id: initRptInfo.regId,
+                    instt_nm: initRptInfo.dclNm,
+                    brno: initRptInfo.brno,
+                    dcl_addr: initRptInfo.dclAddr,
+                    initiation_rpt_appr_flag: initRptInfo.initiationRptApprFlag,
+                    ntnlty_land_mng_ofc_cd: initRptInfo.ntnltyLandMngOfcCd,
+                    work_loc_map_file : initRptInfo.cstrnLocMapFileOriginNm,
+                }
+                let subList = new Array();
+                for (let j = 0; j < initRptSubList.length; j++) {
+                    let subListData = {
+                        sub_work_no: initRptSubList[j].initRptSubSeq,
+                        sub_work_st_addr: initRptSubList[j].subCstrnStLocAddr,
+                        sub_work_st_cood: initRptSubList[j].subCstrnStCoodLongitude + ',' + initRptSubList[j].subCstrnStCoodLatitude,
+                        sub_work_st_dir: initRptSubList[j].subCstrnStDir,
+                        sub_work_en_addr: initRptSubList[j].subCstrnEndLocAddr,
+                        sub_work_en_cood: initRptSubList[j].subCstrnEndCoodLongitude + ',' + initRptSubList[j].subCstrnEndCoodLatitude,
+                        sub_work_en_dir: initRptSubList[j].subCstrnEndDir,
+                        sub_work_nm: initRptSubList[j].subCstrnNm,
+                        sub_work_dt: initRptSubList[j].subCstrnStDt + '~'+ initRptSubList[j].subCstrnEndDt,
+                        sub_work_loc_map_file : initRptSubList[j].subCstrnLocMapFileOriginNm,
+                        sub_work_st_loc_map_file : initRptSubList[j].subCstrnStLocMapFileOriginNm,
+                        sub_work_end_loc_map_file : initRptSubList[j].subCstrnEndLocMapFileOriginNm,
+                        sub_work_reps_loc_map_file : initRptSubList[j].subCstrnRepsLocMapFileOriginNm,
+                    };
+                    subList[j] = subListData;
+                }
+                paramObj.sub_list = subList;
+                var settings = {
+                    url: "http://hms-api.dev.seesunit.com/strt-dclrtn/crt",
+                    method: "POST",
+                    headers: {
+                        ContentType: "application/json",
+                        APIKEY: "dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17"
+                        // Content-Type: "application/json",
+                        // API-KEY: "dca0dc8e1100ce39f1d90a78e6296233117a3790109f3dbdc5612515e78bdf17"
+                    },
+                    data: JSON.stringify(paramObj),
+                };
+                $.ajax(settings).done(function (response) {
+                    console.log("response = ", response);
+                }); // ajax
+
+                // alert("수정되었습니다.");
+                // location.href="/rcic/initiationReport/movePageInitiationReportDetail?seq="+initRptInfo.seq;
+            } // ajax success
+        }); // ajax
+    } // validate check
 }
 
 function bidntcenoynChange(){
@@ -686,9 +853,9 @@ function earthMountainChange(){
 // 세부공사정보 수정 파일체크(다건)
 function fileCheckUpt(_this, idx) {
     let file = _this;
-    console.log(file);
+    // console.log(file);
     let inputId = _this.id;
-    console.log(inputId);
+    // console.log(inputId);
 
     //파일 경로.
     let filePath = file.value;
@@ -759,6 +926,94 @@ function fileCheckUpt(_this, idx) {
         document.getElementById("subCstrnRepsLocMapFileBtnUpt"+idx).setAttribute("name", "subFormList["+idx+"].subCstrnRepsLocMapFile");
     }
 };
+
+
+function validateForm() {
+
+    var vailiFlag = true;
+    const forms = document.querySelectorAll('.needs-validation');
+    const bidYn = document.querySelector('input[name="bidntcenoyn"]:checked').value;
+    const bidNo = document.querySelector('input[name="bidntceno"]');
+    const bidTxt = document.querySelector('input[name="workDivisionInfo"]');
+    const stDt = document.querySelector('input[name="cstrnStDt"]');
+    const endDt = document.querySelector('input[name="cstrnEndDt"]');
+    var f = document.forms[0];
+    for(var i=0; i<f.elements.length-1; i++) {
+        if(f.elements[i].value === 'all' || f.elements[i].value === '0'){
+            if(f.elements[i].value === 'all'){
+                var eLtxt = f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText;
+                alert(eLtxt.replace("*", "").trim() +"을 선택해 주세요.");
+                setTimeout(function(){
+                    f.elements[i].focus();
+                }, 1);
+                return vailiFlag = false;
+            }
+            if(f.elements[i].value === '0'){
+                var eLtxt = f.elements[i][0].innerText;
+                alert(eLtxt +"해 주세요.");
+                setTimeout(function(){
+                    f.elements[i].focus();
+                }, 1);
+                return vailiFlag = false;
+            }
+        }
+        if(!f.elements[i].value && f.elements[i].type != 'file' && f.elements[i].type != 'button' && f.elements[i].type != 'hidden') {
+            // console.log(f.elements[i].type);
+            // console.log("f.elements[i].type = ", f.elements[i].type);
+            // console.log("!f.elements[i].id = ", !f.elements[i].id);
+            if(f.elements[i].name === 'bidntceno'){
+                if(bidYn === "Y"){
+                    alert(f.elements[i].placeholder +"을 입력해 주세요.");
+                    setTimeout(function(){
+                        f.elements[i].focus();
+                    }, 1);
+                    return vailiFlag = false;
+                }
+            }else if(f.elements[i].name === 'workDivisionInfo'){
+                if(bidYn === "N"){
+                    alert(f.elements[i].placeholder +"을 입력해 주세요.");
+                    setTimeout(function(){
+                        f.elements[i].focus();
+                    }, 1);
+                    return vailiFlag = false;
+                }
+            }else if(f.elements[i].name === 'bon' || f.elements[i].name === 'bu'){
+                alert("공사시행위치 본번 또는 부번을 입력해 주세요.");
+                setTimeout(function(){
+                    f.elements[i].focus();
+                }, 1);
+                return vailiFlag = false;
+            }else if(f.elements[i].type === 'select-one'){
+                var eLtxt = f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText;
+                alert(eLtxt.replace("*", "").trim() +"을  선택해 주세요.");
+                setTimeout(function(){
+                    f.elements[i].focus();
+                }, 1);
+                return vailiFlag = false;
+            }else if(f.elements[i].type === 'date'){
+                var eLtxt = "";
+                if(f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText != null){
+                    eLtxt = f.elements[i].parentNode.previousElementSibling.childNodes[1].innerText;
+                }else {
+                    eLtxt = f.elements[i].parentNode.parentNode.parentNode.previousElementSibling.childNodes[1].childNodes[3].innerText;
+                }
+                alert(eLtxt.replace("*", "").trim() +"을 입력해 주세요.");
+                setTimeout(function(){
+                    f.elements[i].focus();
+                }, 1);
+                return vailiFlag = false;
+            }else{
+                console.log(f.elements);
+                alert(f.elements[i].placeholder +"을 입력해 주세요.");
+                setTimeout(function(){
+                    f.elements[i].focus();
+                }, 1);
+                return vailiFlag = false;
+            }
+        }
+    }
+    return vailiFlag;
+}
 
 function ajaxCall(url, type, param, contentType, callback) {
     $.ajax({
