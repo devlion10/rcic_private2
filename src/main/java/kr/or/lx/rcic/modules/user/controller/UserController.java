@@ -95,11 +95,12 @@ public class UserController  extends BaseController{
     	
     	// 20220420 byjang : 로컬에서 메일 테스트시 개발서버주소로 전환
     	// 완료 후 삭제 필요
+		/*
     	if(rcicUrl.indexOf("localhost:8080") == 0) {
     		rcicUrl = "http://geonworks.iptime.org:20015";
     	} else {
     	}
-    	
+    	*/
     		
     	String encryptEmail = AES256.getInstance().encrypt(e_mail);
 //    	String mailContent = "<h3>안녕하세요. " + name + "님</h3>" + "<p>인증하기 버튼을 누르시면 인증이 완료됩니다."
