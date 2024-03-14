@@ -305,9 +305,10 @@ public class SearchController extends BaseController{
 			if(null != paramMap.get("prdtReliChk")) {
 				prdtReliCd = (String) paramMap.get("prdtReliCd");
 				if(null == paramMap.get("prdtReliCd") || "".equals(paramMap.get("prdtReliCd"))) {
+					/*
 					if(!"1".equals(paramMap.get("authNo"))){
-						keyword += " AND loc_prdt_reli_cd:[2 TO 3]";
-					}
+					}*/
+					keyword += " AND loc_prdt_reli_cd:[2 TO 3]";
 				}else {
 					keyword += " AND loc_prdt_reli_cd:("+prdtReliCd+")";
 				}
