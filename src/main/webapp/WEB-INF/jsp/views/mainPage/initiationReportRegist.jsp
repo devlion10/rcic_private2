@@ -164,7 +164,7 @@
                     <p>도로공사 착수신고서 표준서식 등록</p>
                 </div>
                 <div class="sectionBtm">
-                    <form id="initiationReportRegistForm" class="needs-validation" action="/rcic/initiationReport/initiationReportRegist" method="post" enctype="multipart/form-data">
+                    <form id="initiationReportRegistForm" class="needs-validation" > <!-- action="/rcic/initiationReport/initiationReportRegist" method="post" enctype="multipart/form-data" -->
                         <p class="text-right mb-3"style="font-size: 14px;"><span style="color: red">*&nbsp;</span>필수 입력 항목입니다.</p>
                         <!-- 1행 -->
                         <div class="row row-tr row_first">
@@ -364,6 +364,7 @@
                         <div class="optionBtnBox d-flex justify-content-between pb-3 mt-5" style="border-bottom: 1px solid #ccc;">
                             <span style="font-size: x-large;">세부공사 정보 등록</span>
                             <input type="button" value="+ 세부 공사정보 추가" class="searchBtn w-auto" onclick="subConstInfoDivAdd()"/>
+                            <input type="hidden" name="subCstrnCnt"/>
                         </div>
                         <!-- 세부공사 1건 -->
                         <div id="subConstInfoDiv">
@@ -610,6 +611,7 @@
                             <div class="optionBtnBox text-right">
                                 <input type="button" value="목록" class="resetBtn" onclick="MainInfo.movePage('initiationReport');return false;" style="float: left;">
                                 <input type="button" value="취소" class="resetBtn" onclick="InitiationReportRegist.resetClick()">
+                                <!--<input type="submit" value="제출" class="ms-2 me-0 searchBtn">-->
                                 <input type="button" value="제출" class="ms-2 me-0 searchBtn" onclick="initiationReportRegist()">
                             </div>
                         </div>
@@ -639,7 +641,7 @@
                     <p>도로공사 착수신고서 표준서식 수정</p>
                 </div>
                 <div class="sectionBtm">
-                    <form id="initiationReportUpdateForm" class="needs-validation" action="/rcic/initiationReport/initiationReportUpdate" method="post" enctype="multipart/form-data">
+                    <form id="initiationReportUpdateForm" class="needs-validation"><%--action="/rcic/initiationReport/initiationReportUpdate" method="post" enctype="multipart/form-data"--%>
                         <input type="hidden" id="seq" name="seq" value="${dto.seq}"/>
                         <input type="hidden" id="initRptSeq" name="initRptSeq" value="${dto.seq}"/>
                         <p class="text-right mb-3"style="font-size: 14px;"><span style="color: red">*&nbsp;</span>필수 입력 항목입니다.</p>
@@ -857,6 +859,7 @@
                         <div class="optionBtnBox d-flex justify-content-between pb-3 mt-5" style="border-bottom: 1px solid #ccc;">
                             <span style="font-size: x-large;">세부공사 정보 등록</span>
                             <input type="button" value="+ 세부 공사정보 추가" class="searchBtn w-auto" onclick="subConstInfoDivAdd()"/>
+                            <input type="hidden" id="subCstrnCntUpt" name="subCstrnCnt"/>
                         </div>
                         <!-- 세부공사 1건 -->
                         <div id="subConstInfoDiv">

@@ -601,6 +601,16 @@
          WHERE seq = #{seq}
     </update>
 
+    <!-- 착수신고현황 - 상세 - 착수신고서 관리청 승인 후 안전지킴이 API 파라미터 조회-->
+    <select id="getInitiationReportApprInfo" parameterType="kr.or.lx.rcic.modules.initiationReport.entity.InitiationReportDTO" resultType="kr.or.lx.rcic.modules.initiationReport.entity.InitiationReportDTO">
+        /* InitiationReportMapper.getInitiationReportApprInfo */
+        SELECT SEQ
+             , APPROVER_NM
+             , INITIATION_RPT_APPR_FLAG
+          FROM RCIC.TB_INITIATION_RPT
+         WHERE SEQ = #{seq}
+    </select>
+
     <!-- 착수신고현황 - 삭제 - 공사정보삭제 -->
     <delete id="itiationReportDel" parameterType="String">
         /* InitiationReportMapper.itiationReportDel */
@@ -694,6 +704,11 @@
           FROM RCIC.TB_INITIATION_RPT_SUB
          WHERE init_rpt_seq = #{initRptSeq}
            AND init_rpt_sub_seq = #{initRptSubSeq}
+    </select>
+
+    <select id="getInitiationReportSeq" resultType="Long">
+        SELECT max(seq)
+          FROM RCIC.TB_INITIATION_RPT
     </select>
 
 </mapper>

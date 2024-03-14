@@ -27,11 +27,13 @@ public interface InitiationReportMapper {
 
     void insertInitiationReportSubRegist(InitiationReportDTO dto);
 
-    //    void updateMngInitiationReportRegist(InitiationReport initiationReport);
+    Long getInitiationReportSeq();
+
 	List<Map<String, Object>> getInitiationReportList(Map<String, Object> param);
+
     InitiationReportDTO getInitiationReportDetail(InitiationReportDTO dto);
 
-    int updateInitiationReportApproval(InitiationReportDTO dto);
+//    int updateInitiationReportApproval(InitiationReportDTO dto);
 
     int getInitiationReportSubListCnt(InitiationReportDTO dto);
 
@@ -46,6 +48,7 @@ public interface InitiationReportMapper {
 
     void updateInitiationReportSubUpdate(InitiationReportDTO dto);
 	void initiationReportApprUpdate(InitiationReportDTO dto);
+    InitiationReportDTO getInitiationReportApprInfo(InitiationReportDTO dto);
 	void itiationReportDel(String seq);
     void itiationReportSubDel(String seq);
 	InitiationReportDTO getAtchFile(Map<String, Object> params);
