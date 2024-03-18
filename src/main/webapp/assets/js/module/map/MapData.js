@@ -519,10 +519,20 @@
                                         + $.setDateStrUnderBar(resultData[i].prmsnDt)
                                         + '</span></div>'
 
+                                if(resultData[i].workStDt === undefined){
+                                    var workStDt=''
+                                }else{
+                                    var workStDt=resultData[i].workStDt
+                                }
+                                if(resultData[i].workEnDt === undefined){
+                                    var workEnDt=''
+                                }else{
+                                    var workEnDt=resultData[i].workEnDt
+                                }
                                 html += '<div class="mCorDate"><span class="mr10">공사기간</span><span>'
-                                            + $.setDateStrUnderBar(resultData[i].workStDt)
+                                            + $.setDateStrUnderBar(workStDt)
                                             + '~'
-                                            + $.setDateStrUnderBar(resultData[i].workEnDt)
+                                            + $.setDateStrUnderBar(workEnDt)
                                             + '</span></div>'
                                html += '</li>';
                             }//for loop end..
@@ -672,8 +682,20 @@
             var roadNm=fulladdr.getElementsByClassName('roadNm_InputHidden')[0].defaultValue;
             var roadType=fulladdr.getElementsByClassName('roadType_InputHidden')[0].defaultValue;
             var stateCd=fulladdr.getElementsByClassName('stateCd_InputHidden')[0].defaultValue;
-            var workEnDt=fulladdr.getElementsByClassName('workEnDt_InputHidden')[0].defaultValue;
+
             var workStDt=fulladdr.getElementsByClassName('workStDt_InputHidden')[0].defaultValue;
+            var workEnDt=fulladdr.getElementsByClassName('workEnDt_InputHidden')[0].defaultValue;
+
+            if(workStDt === 'undefined'){
+                workStDt=''
+            }else{
+
+            }
+            if(workEnDt === 'undefined'){
+                workEnDt=''
+            }else{
+
+            }
             //항목 요소 클릭 시 해당하는 DATA모두 파라미터 셋팅
             var html=''
            html += "<div class='mapPopupWrap corInfoBox ui-draggable' style='display: block; left: 38px; top: -27px;' id='corInfoDiv'>"
