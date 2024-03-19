@@ -1,5 +1,6 @@
 package kr.or.lx.rcic.modules.initiationReport.controller;
 
+import kr.or.lx.rcic.frmwrk.user.User;
 import kr.or.lx.rcic.frmwrk.util.CmmnUtil;
 import kr.or.lx.rcic.frmwrk.util.SimpleData;
 import kr.or.lx.rcic.frmwrk.web.BaseController;
@@ -252,7 +253,9 @@ public class InitiationReportController  extends BaseController {
     @ResponseBody
     public InitiationReportDTO initiationReportAppr(@RequestBody InitiationReportDTO dto) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        user.getUsername();
+        // user 이름 등록 -> initiationReportApprUpdate 쿼리 수정
         dto.setInitiationRptApprFlag("1");
         dto.setApproverId(authentication.getName());
 

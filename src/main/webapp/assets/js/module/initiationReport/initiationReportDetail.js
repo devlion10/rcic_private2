@@ -26,7 +26,7 @@ var InitiationReportDetail = {
 			datatype: "json",
 			contentType: contentType,
 			success: function(result) {
-				// console.log("result = ", result);
+				console.log("result = ", result);
 
 				alert('승인되었습니다.');
 				location.href = "/rcic/initiationReport/movePageInitiationReportDetail?seq="+parseInt(document.getElementById("seq").value);
