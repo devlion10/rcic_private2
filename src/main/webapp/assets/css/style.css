@@ -5582,7 +5582,7 @@ input[type="radio"] + label:before, input[type="radio"] + label:after {
 .mInfoBox .mArea {
     background-color: #FFF;
     border: 1px solid #C1C1C1;
-    width: 370px;
+    width: max-content;
     height: 40px;
     text-align: center;
     line-height: 36px;
