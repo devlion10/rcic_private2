@@ -787,7 +787,7 @@
             var siExChk='';
             var siTbExChk='N';//검색어에 특별,자치, 광역 시 포함 되어 있는지 체크하는 변수
 
-             if(fulladdrStr.includes("특별")|| fulladdrStr.includes("서울") || fulladdrStr.includes("광역시") || fulladdrStr.includes("자치시")){//특별시인경우
+             if(fulladdrStr.includes("특별")|| fulladdrStr.includes("서울") || fulladdrStr.includes("광역시") || fulladdrStr.includes("자치시") || fulladdrStr.includes("세종")){//특별시인경우, 세종
                     siTbExChk='Y'
               }
 
@@ -814,8 +814,13 @@
 
             for (var i = 0; i < stringToArray.length; i++) {
                   var str=stringToArray[i]
-                    if(str.charAt(str.length - 1)==='도' ||str.includes("특별")|| str.includes("서울") || str.includes("광역시") || str.includes("자치시")){//시도
-                        var sidoNm=str;
+                    if(str.charAt(str.length - 1)==='도' ||str.includes("특별")|| str.includes("서울") || str.includes("광역시") || str.includes("자치시") || str.includes("세종") ){//시도
+                        if(str.includes("세종")){//세종특별자치시인 경우 .. 승격한 경우라 시 다음 읍면동단위
+                             var sggNm='세종특별자치시';// 세종시 인경우도 존재하여, '세종특별자치시'로 하드코딩
+                        }else{
+                             var sidoNm=str;
+                        }
+
                         continue;
 
 
@@ -869,16 +874,29 @@
                             var liNm=str;
                       }
 
-                      if(str.charAt(str.length - 1)==='번지' || str.includes("번지") || str.includes('-')){
-                        var jibun=str;
-                        if(jibun.includes('산')){//산인경우
-                            mountainChk=2
-                        }else{
-                            mountainChk=1
-                        }
-                        var jibunRmvKor=jibun.replace( /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '' ) ;//지번에서 한글제거
-                        var finalJibun=jibunRmvKor.replace( ')', '' ).replace( '(', '' );//지번에서 괄호제거
+
+                      //배열요소가 글자 '산' 하나인경우
+                      if(str ==='산'){
+                        mountainChk =2
                       }
+
+                      if((/\d/).test(str)){//지번 정보라 추측되는 문자열이 숫자를 포함하는경우
+                            if(str.charAt(str.length - 1)==='번지' || str.includes("번지") || str.includes('-') || (/^[0-9]*$/).test(str)){
+                                //숫자를포함하는 문자열중 번지,지번,- 포함하거나 숫자만 있을 경우
+                                var jibun=str;
+                                if(jibun.includes('산')){//산인경우
+                                    mountainChk=2
+                                }else if(mountainChk !==2){
+                                    mountainChk=1
+                                }
+                                var jibunRmvKor=jibun.replace( /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '' ) ;//지번에서 한글제거
+                                var finalJibun=jibunRmvKor.replace( ')', '' ).replace( '(', '' );//지번에서 괄호제거
+                            }
+                      }
+
+
+
+
 
                       //pnu추출을 위해 지번 본번 부번으로 분리
                         var jibunArray = finalJibun.split("-");
@@ -1050,6 +1068,12 @@
 
 
                            }else{
+                                   for(let i = 0; i < mapInit.map.getLayers().getArray().length; i++) {//지도에 존재하는 지번이동결과 레이어 삭제
+                                         if( mapInit.map.getLayers().getArray()[i].values_.id === "analysisDetailBmngLayer")  {
+                                           mapInit.map.getLayers().getArray().splice(i, 1);
+                                           i--;
+                                         }
+                                   };
 
                                    var geoGeom = data.cnbdList[0].geoGeom;
                                    console.info(geoGeom);
